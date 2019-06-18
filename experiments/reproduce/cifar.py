@@ -3,11 +3,13 @@ from scheduling import launch
 
 
 def create_jobs():
-    template = "python main.py --no_visdom --no_tqdm "
+    # template = "python main.py --no_visdom --no_tqdm "
+    template = "python main.py "
     wrn_opts = " --depth 40 --width 4 --epochs 200"
-    dn_opts = " --depth 40 --growth 40 --epochs 300"
+    dn_opts = " --depth 40 --growth 40 --epochs 400"
 
-    with open("reproduce/hparams/cifar.yaml", "r") as f:
+    # with open("reproduce/hparams/cifar.yaml", "r") as f:
+    with open("reproduce/hparams/cifar_alig_only.yaml", "r") as f:
         hparams = yaml.safe_load(f)
 
     jobs = []
@@ -19,6 +21,8 @@ def create_jobs():
             command += dn_opts
         else:
             raise ValueError("Model {} not recognized".format(hparam["model"]))
+        if hparam['active_func'] == "softplus":
+            command += " activation_func --softplus"
         jobs.append(command)
     return jobs
 

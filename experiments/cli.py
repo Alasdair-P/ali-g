@@ -49,6 +49,8 @@ def _add_model_parser(parser):
                           help="bottleneck on densenet")
     m_parser.add_argument('--dropout', type=float, default=0,
                           help="dropout rate")
+    m_parser.add_argument('--activation_func', type=str, default='relu',
+                          help="activation function")
     m_parser.add_argument('--load_model', default=None,
                           help='data file with model')
     m_parser.set_defaults(pretrained=False, wrn=False, densenet=False, bottleneck=True)
@@ -71,7 +73,9 @@ def _add_optimization_parser(parser):
     o_parser.add_argument('--decay_factor', type=float, default=0.1,
                           help="decay factor for the learning rate / proximal term")
     o_parser.add_argument('--load_opt', default=None,
-                          help='data file with opt')
+                          help='data file with opt' )
+    o_parser.add_argument('--fd', type=float, default=1e-3,
+                          help="finite difference for hessian approxiamtion")
 
 
 def _add_loss_parser(parser):
@@ -95,9 +99,9 @@ def _add_misc_parser(parser):
                           help="use cuda")
     m_parser.add_argument('--no_visdom', dest='visdom', action='store_false',
                           help='do not use visdom')
-    m_parser.add_argument('--server', type=str, default=None,
+    m_parser.add_argument('--server', type=str, default='http://helios',
                           help="server for visdom")
-    m_parser.add_argument('--port', type=int, default=None,
+    m_parser.add_argument('--port', type=int, default=9007,
                           help="port for visdom")
     m_parser.add_argument('--xp_name', type=str, default=None,
                           help="name of experiment")
@@ -109,6 +113,8 @@ def _add_misc_parser(parser):
                           help="parallel gpu computation")
     m_parser.add_argument('--no_tqdm', dest='tqdm', action='store_false',
                           help="use of tqdm progress bars")
+    m_parser.add_argument('--run_no', type=str, default='0',
+                          help="which run for repeats")
     m_parser.set_defaults(visdom=True, log=True, debug=False, parallel_gpu=False, tqdm=True)
 
 
@@ -120,10 +126,10 @@ def set_xp_name(args):
             os.makedirs(args.xp_name)
     elif args.xp_name is None:
         xp_name = '../results/{data}/'.format(data=args.dataset)
-        xp_name += "{model}{data}-{opt}--eta-{eta}--l2-{l2}--b-{b}"
+        xp_name += "{model}{data}-{opt}--eta-{eta}--l2-{l2}--b-{b}--run-{run}"
         l2 = args.max_norm if args.opt == 'alig' else args.weight_decay
         data = args.dataset.replace("cifar", "")
-        args.xp_name = xp_name.format(model=args.model, data=data, opt=args.opt, eta=args.eta, l2=l2, b=args.batch_size)
+        args.xp_name = xp_name.format(model=args.model, data=data, opt=args.opt, eta=args.eta, l2=l2, b=args.batch_size, run=args.run_no)
 
     if args.log:
         # generate automatic experiment name if not provided

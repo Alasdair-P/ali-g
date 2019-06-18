@@ -20,7 +20,7 @@ def main(args):
     loader_train, loader_val, loader_test = get_data_loaders(args)
     loss = get_loss(args)
     model = get_model(args)
-    optimizer = get_optimizer(args, parameters=model.parameters())
+    optimizer = get_optimizer(args, model, loss,  parameters=model.parameters())
     xp = setup_xp(args, model, optimizer)
 
     for i in range(args.epochs):

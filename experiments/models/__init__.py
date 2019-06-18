@@ -1,16 +1,30 @@
 import os
 import torch
+import torch.nn as nn
 from .densenet import DenseNet3
 from .wide_resnet import WideResNet
 from collections import OrderedDict
 
 
 def get_model(args):
+
+    activation_func = nn.ReLU
+    if args.activation_func == 'elu':
+        activation_func = nn.ELU
+    elif args.activation_func == 'softplus':
+        activation_func = nn.Softplus
+    else:
+        print('the choice of activation function: ', args.activation_func, 'is not implemented please use relu, elu or softplus')
+        raise ValueError
+
+    if args.opt == 'cgd':
+        activation_func = nn.Softplus
+
     if args.model == "dn":
-        model = DenseNet3(args.depth, args.n_classes, args.growth,
+        model = DenseNet3(args.depth, args.n_classes, activation_func, args.growth,
                           bottleneck=bool(args.bottleneck), dropRate=args.dropout)
     elif args.model == "wrn":
-        model = WideResNet(args.depth, args.n_classes, args.width, dropRate=args.dropout)
+        model = WideResNet(args.depth, args.n_classes, activation_func, args.width, dropRate=args.dropout)
     else:
         raise NotImplementedError
 

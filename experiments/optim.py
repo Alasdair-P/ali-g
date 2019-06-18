@@ -5,9 +5,10 @@ from dfw.baselines import BPGrad
 from l4pytorch import L4Mom, L4Adam
 from alig.th import AliG
 from alig.th.projection import l2_projection
+from cgd import CGD
 
 
-def get_optimizer(args, parameters):
+def get_optimizer(args, model, loss, parameters):
     parameters = list(parameters)
     if args.opt == 'sgd':
         optimizer = torch.optim.SGD(parameters, lr=args.eta, weight_decay=args.weight_decay,
@@ -25,6 +26,9 @@ def get_optimizer(args, parameters):
     elif args.opt == 'alig':
         optimizer = AliG(parameters, max_lr=args.eta, momentum=args.momentum,
                          projection_fn=lambda: l2_projection(parameters, args.max_norm))
+    elif args.opt == 'cgd':
+        optimizer = CGD(parameters, model, loss, eta=args.eta, momentum=args.momentum,
+                         projection_fn=lambda: l2_projection(parameters, args.max_norm), debug=args.debug, eps=args.fd)
     elif args.opt == 'bpgrad':
         optimizer = BPGrad(parameters, eta=args.eta, momentum=args.momentum, weight_decay=args.weight_decay)
     elif args.opt == 'l4adam':

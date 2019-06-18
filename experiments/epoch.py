@@ -25,10 +25,18 @@ def train(model, loss, optimizer, loader, args, xp):
 
         # backward pass
         optimizer.zero_grad()
-        loss_value.backward()
+        if args.opt == 'cgd':
+            loss_value.backward(create_graph=True)
 
-        # optimization step
-        optimizer.step(lambda: float(loss_value))
+            # optimization step
+            optimizer.step(lambda: float(loss_value), x, y)
+
+
+        else:
+            loss_value.backward()
+
+            # optimization step
+            optimizer.step(lambda: float(loss_value))
 
         # monitoring
         batch_size = x.size(0)
