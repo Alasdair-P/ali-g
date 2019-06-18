@@ -1,6 +1,6 @@
 # Adaptive Learning Rates for Interpolation with Gradients
 
-This repository contains the implementation of the paper [Training Neural Networks for and by Interpolation](https://arxiv.org) in PyTorch and Tensorflow. If you use this work for your research, please cite the paper:
+This repository contains the implementation of the paper [Training Neural Networks for and by Interpolation](http://arxiv.org/abs/1906.05661) in PyTorch and Tensorflow. If you use this work for your research, please cite the paper:
 
 ```
 @Article{berrada2019training,
@@ -90,7 +90,7 @@ optimizer = AliG(params, max_lr=0.1,
 ## Technical Requirements for Applicability
 
 AliG exploits the interpolation property to compute a step-size. This induces the following two requirements for its applicability:
-* The model should be able to achieve a loss of zero on all training samples.
+* The model should be able to achieve a loss of zero on all training samples (typically in the order of 0.01 or less).
 * If there is regularization, it should be expressed as a constraint (see example above).
 
 
