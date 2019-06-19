@@ -49,7 +49,7 @@ def _add_model_parser(parser):
                           help="bottleneck on densenet")
     m_parser.add_argument('--dropout', type=float, default=0,
                           help="dropout rate")
-    m_parser.add_argument('--activation_func', type=str, default='relu',
+    m_parser.add_argument('--active_func', type=str, default='relu',
                           help="activation function")
     m_parser.add_argument('--load_model', default=None,
                           help='data file with model')

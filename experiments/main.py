@@ -33,6 +33,7 @@ def main(args):
             decay_optimizer(optimizer, args.decay_factor)
 
     load_best_model(model, '{}/best_model.pkl'.format(args.xp_name))
+    test(model, optimizer, loader_val, args, xp)
     test(model, optimizer, loader_test, args, xp)
 
 

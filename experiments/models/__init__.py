@@ -9,12 +9,12 @@ from collections import OrderedDict
 def get_model(args):
 
     activation_func = nn.ReLU
-    if args.activation_func == 'elu':
+    if args.active_func == 'elu':
         activation_func = nn.ELU
-    elif args.activation_func == 'softplus':
+    elif args.active_func == 'softplus':
         activation_func = nn.Softplus
     else:
-        print('the choice of activation function: ', args.activation_func, 'is not implemented please use relu, elu or softplus')
+        print('the choice of activation function: ', args.active_func, 'is not implemented please use relu, elu or softplus')
         raise ValueError
 
     if args.opt == 'cgd':

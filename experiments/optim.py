@@ -1,8 +1,8 @@
 import torch.optim
 
-from dfw import DFW
-from dfw.baselines import BPGrad
-from l4pytorch import L4Mom, L4Adam
+# from dfw import DFW
+# from dfw.baselines import BPGrad
+# from l4pytorch import L4Mom, L4Adam
 from alig.th import AliG
 from alig.th.projection import l2_projection
 from cgd import CGD
@@ -19,22 +19,22 @@ def get_optimizer(args, model, loss, parameters):
         optimizer = torch.optim.Adagrad(parameters, lr=args.eta, weight_decay=args.weight_decay)
     elif args.opt == "amsgrad":
         optimizer = torch.optim.Adam(parameters, lr=args.eta, weight_decay=args.weight_decay, amsgrad=True)
-    elif args.opt == 'dfw':
-        optimizer = DFW(parameters, eta=args.eta, momentum=args.momentum, weight_decay=args.weight_decay)
-    elif args.opt == 'bpgrad':
-        optimizer = BPGrad(parameters, eta=args.eta, momentum=args.momentum, weight_decay=args.weight_decay)
+    # elif args.opt == 'dfw':
+        # optimizer = DFW(parameters, eta=args.eta, momentum=args.momentum, weight_decay=args.weight_decay)
+    # elif args.opt == 'bpgrad':
+        # optimizer = BPGrad(parameters, eta=args.eta, momentum=args.momentum, weight_decay=args.weight_decay)
     elif args.opt == 'alig':
         optimizer = AliG(parameters, max_lr=args.eta, momentum=args.momentum,
                          projection_fn=lambda: l2_projection(parameters, args.max_norm))
     elif args.opt == 'cgd':
         optimizer = CGD(parameters, model, loss, eta=args.eta, momentum=args.momentum,
                          projection_fn=lambda: l2_projection(parameters, args.max_norm), debug=args.debug, eps=args.fd)
-    elif args.opt == 'bpgrad':
-        optimizer = BPGrad(parameters, eta=args.eta, momentum=args.momentum, weight_decay=args.weight_decay)
-    elif args.opt == 'l4adam':
-        optimizer = L4Adam(parameters, weight_decay=args.weight_decay)
-    elif args.opt == 'l4mom':
-        optimizer = L4Mom(parameters, weight_decay=args.weight_decay)
+    # elif args.opt == 'bpgrad':
+        # optimizer = BPGrad(parameters, eta=args.eta, momentum=args.momentum, weight_decay=args.weight_decay)
+    # elif args.opt == 'l4adam':
+        # optimizer = L4Adam(parameters, weight_decay=args.weight_decay)
+    # elif args.opt == 'l4mom':
+        # optimizer = L4Mom(parameters, weight_decay=args.weight_decay)
     else:
         raise ValueError(args.opt)
 
