@@ -126,10 +126,10 @@ def set_xp_name(args):
             os.makedirs(args.xp_name)
     elif args.xp_name is None:
         xp_name = '../results/{data}/'.format(data=args.dataset)
-        xp_name += "{model}{data}-{opt}--eta-{eta}--l2-{l2}--b-{b}--run-{run}"
+        xp_name += "{model}{data}-{opt}--eta-{eta}--l2-{l2}--b-{b}--run-{run}--max."
         l2 = args.max_norm if args.opt == 'alig' else args.weight_decay
         data = args.dataset.replace("cifar", "")
-        args.xp_name = xp_name.format(model=args.model, data=data, opt=args.opt, eta=args.eta, l2=l2, b=args.batch_size, run=args.run_no)
+        args.xp_name = xp_name.format(model=args.model, data=data, opt=args.opt, eta=args.eta, l2=args.max_norm, b=args.batch_size, run=args.run_no)
 
     if args.log:
         # generate automatic experiment name if not provided
