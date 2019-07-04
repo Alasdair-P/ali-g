@@ -1,7 +1,7 @@
 import torch
 
 from tqdm import tqdm
-from dfw.losses import set_smoothing_enabled
+# from dfw.losses import set_smoothing_enabled
 from utils import accuracy, regularization
 
 
@@ -20,8 +20,8 @@ def train(model, loss, optimizer, loader, args, xp):
         scores = model(x)
 
         # compute the loss function, possibly using smoothing
-        with set_smoothing_enabled(args.smooth_svm):
-            loss_value = loss(scores, y)
+        # with set_smoothing_enabled(args.smooth_svm):
+        loss_value = loss(scores, y)
 
         # backward pass
         optimizer.zero_grad()

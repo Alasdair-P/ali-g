@@ -1,12 +1,13 @@
 import torch.nn as nn
-from dfw.losses import MultiClassHingeLoss, set_smoothing_enabled
+# from dfw.losses import MultiClassHingeLoss, set_smoothing_enabled
 
 
 def get_loss(args):
     if args.opt == 'dfw':
-        loss_fn = MultiClassHingeLoss()
+        assert 2 == 1
+        """loss_fn = MultiClassHingeLoss()
         if 'cifar' in args.dataset:
-            args.smooth_svm = True
+            args.smooth_svm = True"""
     else:
         loss_fn = nn.CrossEntropyLoss()
 

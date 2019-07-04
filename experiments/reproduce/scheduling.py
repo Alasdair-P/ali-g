@@ -16,7 +16,7 @@ def run_command(command, on_gpu, noprint):
             if psutil.getloadavg()[0] < 12:
                 break
     elif waitGPU is not None:
-        waitGPU.wait(nproc=0, interval=1, ngpu=1, gpu_ids=[0, 1, 2, 3])
+        waitGPU.wait(nproc=0, interval=10, ngpu=8, gpu_ids=[0, 1, 2, 3, 4, 5, 6, 7, 8])
     command = " ".join(command.split())
     if noprint:
         command = "{} > /dev/null".format(command)
