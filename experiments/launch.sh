@@ -8,5 +8,5 @@ export VISION_DATA="/jmain01/home/JAD035/pkm01/aap21-pkm01/data/vision/datasets"
 nvidia-smi
 echo "Using CUDA device" $CUDA_VISIBLE_DEVICES
 
-python reproduce/cifar.py
+python reproduce/cifar_jade.py
 # python test.py
