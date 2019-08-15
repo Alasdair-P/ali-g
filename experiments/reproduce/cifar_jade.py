@@ -12,7 +12,7 @@ jobs = [
 ]
 """
 
-jobs = ["python main.py --batch_size 512 --dataset cifar100 --eta 1 --max_norm 150 --model wrn --momentum 0.9 --opt cgd --active_func softplus --depth 40 --width 4 --epochs 200 --no_tqdm --no_visdom"]
+jobs = ["python main.py --batch_size 64 --dataset cifar100 --eta 1 --max_norm 150 --model wrn --momentum 0.9 --opt cgd --active_func softplus --depth 40 --width 4 --epochs 200 --no_tqdm --no_visdom"]
 
 def run_command(command, noprint=True):
     command = " ".join(command.split())
