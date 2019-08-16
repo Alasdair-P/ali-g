@@ -10,6 +10,7 @@ from data import get_data_loaders
 from models import get_model, load_best_model
 from optim import get_optimizer, decay_optimizer
 from epoch import train, test
+from reg import Reg
 
 
 def main(args):
@@ -20,13 +21,14 @@ def main(args):
     loader_train, loader_val, loader_test = get_data_loaders(args)
     loss = get_loss(args)
     model = get_model(args)
-    optimizer = get_optimizer(args, model, loss,  parameters=model.parameters())
+    optimizer = get_optimizer(args, model, loss, parameters=model.parameters())
     xp = setup_xp(args, model, optimizer)
+    reg = Reg(args, model)
 
     for i in range(args.epochs):
         xp.epoch.update(i)
 
-        train(model, loss, optimizer, loader_train, args, xp)
+        train(model, loss, optimizer, loader_train, args, xp, reg)
         test(model, optimizer, loader_val, args, xp)
 
         if (i + 1) in args.T:

@@ -5,7 +5,7 @@ from tqdm import tqdm
 from utils import accuracy, regularization
 
 
-def train(model, loss, optimizer, loader, args, xp):
+def train(model, loss, optimizer, loader, args, xp, reg):
 
     model.train()
 
@@ -21,22 +21,18 @@ def train(model, loss, optimizer, loader, args, xp):
 
         # compute the loss function, possibly using smoothing
         # with set_smoothing_enabled(args.smooth_svm):
-        loss_value = loss(scores, y)
+        if args.teacher:
+            loss, loss_ce, loss_kl = obj(scores, y, x)
+        else:
+            loss_value = loss(scores, y)
 
         # backward pass
         optimizer.zero_grad()
-        if args.opt == 'cgd':
-            loss_value.backward(create_graph=True)
 
-            # optimization step
-            optimizer.step(lambda: float(loss_value), x, y)
+        loss_value.backward()
 
-
-        else:
-            loss_value.backward()
-
-            # optimization step
-            optimizer.step(lambda: float(loss_value))
+        # optimization step
+        optimizer.step(lambda: float(loss_value))
 
         # monitoring
         batch_size = x.size(0)

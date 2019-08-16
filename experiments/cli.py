@@ -88,6 +88,8 @@ def _add_loss_parser(parser):
                           help="loss function to use ('svm' or 'ce')")
     l_parser.add_argument('--smooth_svm', dest="smooth_svm", action="store_true",
                           help="smooth SVM")
+    l_parser.add_argument('--teacher', dest="teacher", type=str, default=None
+                          help="path to teacher model")
     l_parser.set_defaults(smooth_svm=False)
 
 

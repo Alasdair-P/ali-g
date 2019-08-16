@@ -1,18 +1,7 @@
 import os
 import time
 
-"""
-base_cmd = "python main.py --dataset cifar100 --wrn --depth 16 --width 4 --batch-size 128 --opt {opt} --eta {eta} --max-norm {ma\
-x_norm} --l2 {l2} --momentum 0.9 --epochs 160 --dropout 0.4 --no-data-augmentation --no-visdom --no-tqdm"
-
-jobs = [
-    base_cmd.format(opt='nrgd', eta=0.001, max_norm=50, l2=0),
-    base_cmd.format(opt='nrgd', eta=0.01, max_norm=50, l2=0),
-    base_cmd.format(opt='nrgd', eta=0.1, max_norm=50, l2=0),
-]
-"""
-
-jobs = ["python main.py --batch_size 64 --dataset cifar100 --eta 1 --max_norm 150 --model wrn --momentum 0.9 --opt cgd --active_func softplus --depth 40 --width 4 --epochs 200 --no_tqdm --no_visdom"]
+jobs = ["python main.py --batch_size 256 --dataset ImageNet --eta 0.001 --model ResNet18 --momentum 0.9 --opt sgd --epochs 50 --no_tqdm --no_visdom --T 1 2 3 4 4 5 6 7 8 9 10 11 12 13 14 15 16 17 18 19 20 21 22 23 23 24 25 26 27 28 29 30 31 32 33 34 35 36 37 38 39 40 41 42 43 44 45 46 47 48 49 50 --decay_factor 1.14816 --xp_name start_point"]
 
 def run_command(command, noprint=True):
     command = " ".join(command.split())

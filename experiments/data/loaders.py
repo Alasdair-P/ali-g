@@ -177,3 +177,48 @@ def loaders_svhn(dataset, batch_size, cuda,
     return create_loaders(dataset_train, dataset_val,
                           dataset_test, train_size, val_size, test_size,
                           batch_size, test_batch_size, cuda, num_workers=4, split=split)
+
+
+def loaders_imagenet(dataset, batch_size, cuda,
+                     train_size=1231166, augment=True, val_size=50000,
+                     test_size=50000, test_batch_size=256, topk=None, noise=False,
+                     multiple_crops=False, data_root=None, **kwargs):
+
+    assert dataset == 'imagenet'
+
+    root = '{}/{}'.format(os.environ['VISION_DATA'], dataset)
+
+    # Data loading code
+    mean = [0.485, 0.456, 0.406]
+    std = [0.229, 0.224, 0.225]
+    normalize = transforms.Normalize(mean=mean, std=std)
+
+    if multiple_crops:
+        print('Using multiple crops')
+        transform_test = transforms.Compose([
+            transforms.Resize(256),
+            transforms.TenCrop(224),
+            lambda x: [normalize(transforms.functional.to_tensor(img)) for img in x]])
+    else:
+        transform_test = transforms.Compose([
+            transforms.Resize(224),
+            transforms.CenterCrop(224),
+            transforms.ToTensor(),
+            normalize])
+    if augment:
+        transform_train = transforms.Compose([
+            transforms.RandomCrop(224),
+            transforms.RandomHorizontalFlip(),
+            transforms.ToTensor(),
+            normalize])
+    else:
+        transform_train = transform_test
+
+    dataset_train = datasets.ImageFolder(root=root, split='train', download=True, transform=transform_train)
+    dataset_val = datasets.ImageFolder(root=root, split='train', download=True, transform=transform_test)
+    dataset_test = datasets.ImageFolder(root=root, split='val', download=True, transform=transform_test)
+
+    return create_loaders(dataset_train, dataset_val,
+                          dataset_test, train_size, val_size, test_size,
+                          batch_size, test_batch_size, cuda, num_workers=8, split=True)
+
