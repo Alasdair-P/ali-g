@@ -88,7 +88,7 @@ def _add_loss_parser(parser):
                           help="loss function to use ('svm' or 'ce')")
     l_parser.add_argument('--smooth_svm', dest="smooth_svm", action="store_true",
                           help="smooth SVM")
-    l_parser.add_argument('--teacher', dest="teacher", type=str, default=None
+    l_parser.add_argument('--teacher', dest="teacher", type=str, default=None,
                           help="path to teacher model")
     l_parser.set_defaults(smooth_svm=False)
 
@@ -151,6 +151,10 @@ def set_num_classes(args):
         args.n_classes = 3
     elif 'svhn' in args.dataset:
         args.n_classes = 10
+    elif args.dataset == 'imagenet':
+        args.n_classes = 1000
+    elif args.dataset == 'tiny_imagenet':
+        args.n_classes = 200
     else:
         raise ValueError
 

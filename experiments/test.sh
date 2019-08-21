@@ -1,12 +1,12 @@
 #!/bin/bash
 
-#SBATCH --partition=devel
+#SBATCH --partition=small
 
 # set the number of nodes
 #SBATCH --nodes=1                                                                                                          
 
 # set max wallclock time
-#SBATCH --time=01:00:00
+#SBATCH --time=144:00:00
 
 # set name of job
 #SBATCH --job-name=cross_val

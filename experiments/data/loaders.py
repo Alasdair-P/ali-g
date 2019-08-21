@@ -214,11 +214,50 @@ def loaders_imagenet(dataset, batch_size, cuda,
     else:
         transform_train = transform_test
 
-    dataset_train = datasets.ImageFolder(root=root, split='train', download=True, transform=transform_train)
-    dataset_val = datasets.ImageFolder(root=root, split='train', download=True, transform=transform_test)
-    dataset_test = datasets.ImageFolder(root=root, split='val', download=True, transform=transform_test)
+    dataset_train = datasets.ImageNet(root=root, split='train', download=True, transform=transform_train)
+    dataset_val = datasets.ImageNet(root=root, split='train', download=True, transform=transform_test)
+    dataset_test = datasets.ImageNet(root=root, split='val', download=True, transform=transform_test)
 
     return create_loaders(dataset_train, dataset_val,
                           dataset_test, train_size, val_size, test_size,
                           batch_size, test_batch_size, cuda, num_workers=8, split=True)
 
+
+def loaders_tiny_imagenet(dataset, batch_size, cuda,
+                     train_size=100000, augment=True, val_size=10000,
+                     test_size=10000, test_batch_size=128, topk=None, noise=False,
+                     multiple_crops=False, data_root=None, **kwargs):
+    assert dataset == 'tiny_imagenet'
+    data_root = data_root if data_root is not None else os.environ['VISION_DATA']
+    root = '{}/tiny-imagenet-200'.format(data_root)
+    mean = [0.4802, 0.4481, 0.3975]
+    std = [0.2302, 0.2265, 0.2262]
+    traindir = os.path.join(root, 'train')
+    valdir = os.path.join(root, 'val')
+    testdir = os.path.join(root, 'test')
+    normalize = transforms.Normalize(mean=mean, std=std)
+    if multiple_crops:
+        print('Using multiple crops')
+        transform_test = transforms.Compose([
+            transforms.Pad((4,4)),
+            transforms.TenCrop(64),
+            lambda x: [normalize(transforms.functional.to_tensor(img)) for img in x]])
+    else:
+        transform_test = transforms.Compose([
+            transforms.ToTensor(),
+            normalize])
+    if augment:
+        transform_train = transforms.Compose([
+            transforms.Pad((4,4)),
+            transforms.RandomCrop(64),
+            transforms.RandomHorizontalFlip(),
+            transforms.ToTensor(),
+            normalize])
+    else:
+        transform_train = transform_test
+    dataset_train = datasets.ImageFolder(traindir, transform_train)
+    dataset_val = datasets.ImageFolder(valdir, transform_test)
+    dataset_test = datasets.ImageFolder(testdir, transform_test)
+    return create_loaders(dataset_train, dataset_val,
+                          dataset_test, train_size, val_size, test_size,
+                          batch_size, test_batch_size, cuda, num_workers=8, split=False)
