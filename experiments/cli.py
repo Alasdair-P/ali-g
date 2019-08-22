@@ -74,9 +74,10 @@ def _add_optimization_parser(parser):
                           help="decay factor for the learning rate / proximal term")
     o_parser.add_argument('--load_opt', default=None,
                           help='data file with opt' )
-    o_parser.add_argument('--fd', type=float, default=1e-3,
-                          help="finite difference for hessian approxiamtion")
-
+    o_parser.add_argument('--temp_rate', type=float, default=1e-6,
+                          help="rate at which temperature is increase")
+    o_parser.add_argument('--hq_epoch', type=int, default=-1,
+                          help="hard qunatisation epoch")
 
 def _add_loss_parser(parser):
     l_parser = parser.add_argument_group(title='Loss parameters')
@@ -117,6 +118,8 @@ def _add_misc_parser(parser):
                           help="use of tqdm progress bars")
     m_parser.add_argument('--run_no', type=str, default='0',
                           help="which run for repeats")
+    m_parser.add_argument('--reg', action='store_true',
+                          help="add proxquant style reg")
     m_parser.set_defaults(visdom=True, log=True, debug=False, parallel_gpu=False, tqdm=True)
 
 

@@ -2,7 +2,6 @@ import torch.nn as nn
 import torch.nn.functional as F
 import torch
 
-
 def get_model(args):
 
     if args.model == "ResNet18":

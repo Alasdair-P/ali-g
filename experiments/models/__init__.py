@@ -3,19 +3,51 @@ import torch
 import torch.nn as nn
 from collections import OrderedDict
 import torchvision.models as models
-
+from model.resnet_proxquant import ResNet_cifar
 
 def get_model(args):
 
-    if args.model == "ResNet18":
-        model = models.resnet18()
-    elif args.model == "ResNet18_pretrained":
-        model = models.resnet18(pretrained=True)
-    elif args.model == "ResNet34":
-        model = models.resnet34()
-    elif args.model == "ResNet34_pretrained":
-        model = models.resnet34(pretrained=True)
+   if 'cifar' in args.dataset or 'tiny' in args.dataset:
+
+        if args.dataset == 'cifar10':
+            num_classes = 10
+        elif args.dataset == 'cifar100':
+            num_classes = 100
+        elif args.dataset == 'tiny_imagenet':
+            num_classes = 200
+        else:
+            raise ValueError
+
+        if args.model_name == 'ResNet20':
+            model = ResNet_cifar(num_classes=num_classes, depth=20)
+        elif args.model_name == 'ResNet32':
+            model = ResNet_cifar(num_classes=num_classes, depth=32)
+        elif args.model_name == 'ResNet44':
+            model = ResNet_cifar(num_classes=num_classes, depth=44)
+        elif args.model_name == 'ResNet56':
+            model = ResNet_cifar(num_classes=num_classes, depth=56)
+        elif args.model_name == 'ResNet110':
+            model = ResNet_cifar(num_classes=num_classes, depth=110)
+        elif args.model_name == 'WideResNet40_4':
+            model = WideResNet(40, num_classes, nonlinearity, widen_factor=4, dropRate=0.0)
+        elif args.model_name == 'DenseNet40_40':
+            model = DenseNet3(40, num_classes, nonlinearity, growth_rate=40, reduction=0.5, bottleneck=True, dropRate=0.0)
+        else:
+            raise ValueError
+
+    elif args.dataset ==  imagenet:
+        if args.model == "ResNet18":
+            model = models.resnet18()
+        elif args.model == "ResNet18_pretrained":
+            model = models.resnet18(pretrained=True)
+        elif args.model == "ResNet34":
+            model = models.resnet34()
+        elif args.model == "ResNet34_pretrained":
+            model = models.resnet34(pretrained=True)
+        else:
+            raise NotImplementedError
     else:
+        print('unknown data set')
         raise NotImplementedError
 
     if args.load_model:

@@ -8,8 +8,7 @@ class Reg(object):
     def __init__(self, args, model):
         print('w - reg')
         self.temperature = 0.0
-        self.beta_scale = args.beta_scale
-        self.beta_rate = args.beta_rate
+        self.beta_scale = args.temp_rate
         self.t = 0
         self.epoch = 0
         self.model = model
