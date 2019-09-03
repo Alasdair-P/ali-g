@@ -119,16 +119,16 @@ class ResNet(nn.Module):
         x = self.relu(x)
         x = self.maxpool(x)
 
-        x = self.layer1(x)
-        x = self.layer2(x)
-        x = self.layer3(x)
+        out_1 = self.layer1(x)
+        out_2 = self.layer2(out_1)
+        x = self.layer3(out_2)
         x = self.layer4(x)
 
         x = self.avgpool(x)
         x = x.view(x.size(0), -1)
         x = self.fc(x)
 
-        return x
+        return x, out_1, out_2
 
 
 class ResNet_imagenet(ResNet):

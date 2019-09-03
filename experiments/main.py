@@ -27,16 +27,25 @@ def main(args):
 
     for i in range(args.epochs):
         xp.epoch.update(i)
+        reg.epoch_update()
+
+        if i == args.hq_epoch and reg:
+            reg.hard_quantize(optimizer)
+            loss.K = 0
 
         train(model, loss, optimizer, loader_train, args, xp, reg)
-        test(model, optimizer, loader_val, args, xp)
+        test(model, optimizer, loader_val, args, xp, i)
 
         if (i + 1) in args.T:
             decay_optimizer(optimizer, args.decay_factor)
 
+    test(model, optimizer, loader_val, args, xp, i)
+    test(model, optimizer, loader_test, args, xp, i)
+    reg.calc_dist_to_binary()
     load_best_model(model, '{}/best_model.pkl'.format(args.xp_name))
-    test(model, optimizer, loader_val, args, xp)
-    test(model, optimizer, loader_test, args, xp)
+    test(model, optimizer, loader_val, args, xp, i)
+    test(model, optimizer, loader_test, args, xp, i)
+    reg.calc_dist_to_binary()
 
 
 if __name__ == '__main__':

@@ -29,7 +29,6 @@ class Reg(object):
             self.t += 1
 
     def epoch_update(self):
-        self.calc_dist_to_binary()
         self.epoch += 1
         if self.active:
             self.calc_new_beta()
@@ -63,8 +62,7 @@ class Reg(object):
             print('Percentage non-binary: ', "{0:.6f}".format(self.percent_binary))
             print('Max w: ', "{0:.6f}".format(float(max_w)))
             print('Min w: ', "{0:.6f}".format(float(min_w)))
-            print('beta/temp: ', self.temperature)
-            print('t', self.t)
+            # print('beta/temp: ', self.temperature)
         else:
             print('no layers of correct type found!')
 

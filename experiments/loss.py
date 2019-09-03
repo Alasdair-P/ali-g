@@ -93,17 +93,22 @@ class Distillation_Loss(nn.Module):
 
         self.lambda_t = args.lambda_t
         self.tau = args.tau
+        self.K = args.K
 
         self.loss = nn.CrossEntropyLoss()
 
-    def forward(self, scores, y, x):
+    def forward(self, scores, a_1, a_2, y, x):
         with torch.no_grad():
-            scores_teacher = self.teacher_model(x).detach()
+            scores_teacher, t_a_1, t_a_2 = self.teacher_model(x).detach()
+
+        loss_l2_1 = (t_a_1 - a_1).pow(2).mean()
+
+        loss_l2_2 = (t_a_2 - a_2).pow(2).mean()
 
         loss_ce = self.loss(scores, y).mean()
 
         loss_dist = -(F.softmax(scores_teacher.div(self.tau),dim=1).mul( F.log_softmax(scores.div(self.tau),dim=1) - F.log_softmax(scores_teacher.div(self.tau),dim=1) )).sum(dim=1).mean()
 
-        loss = loss_ce + loss_dist.mul(self.lambda_t)
+        loss = loss_ce + loss_dist.mul(self.lambda_t) + loss_l2_1.mul(self.K) + loss_l2_2.mul(self.K)
 
         return loss

@@ -17,12 +17,12 @@ def train(model, loss, optimizer, loader, args, xp, reg):
         (x, y) = (x.cuda(), y.cuda()) if args.cuda else (x, y)
 
         # forward pass
-        scores = model(x)
+        scores, a_1, a_2 = model(x)
 
         # compute the loss function, possibly using smoothing
         # with set_smoothing_enabled(args.smooth_svm):
         if args.teacher:
-            loss, loss_ce, loss_kl = obj(scores, y, x)
+            loss, loss_ce, loss_kl = obj(scores, a_1, a_2, y, x)
         else:
             loss_value = loss(scores, y)
 
@@ -33,6 +33,9 @@ def train(model, loss, optimizer, loader, args, xp, reg):
 
         # optimization step
         optimizer.step(lambda: float(loss_value))
+
+        if reg:
+            reg.iter_update()
 
         # monitoring
         batch_size = x.size(0)
@@ -62,7 +65,7 @@ def train(model, loss, optimizer, loader, args, xp, reg):
 
 
 @torch.autograd.no_grad()
-def test(model, optimizer, loader, args, xp):
+def test(model, optimizer, loader, args, xp, epoch):
     model.eval()
 
     if loader.tag == 'val':
@@ -93,7 +96,12 @@ def test(model, optimizer, loader, args, xp):
                   acc=xp_group.acc.value))
 
     if loader.tag == 'val':
-        xp.max_val.update(xp.val.acc.value).log(time=xp.epoch.value)
+        if args.hq_epoch and epoch >= args.hq_epoch:
+            xp.max_val.update(xp.val.acc.value).log(time=xp.epoch.value)
+        elif args.hq_epoch:
+            xp.max_val.update(0).log(time=xp.epoch.value)
+        else:
+            xp.max_val.update(xp.val.acc.value).log(time=xp.epoch.value)
 
     for metric in xp_group.metrics():
         metric.log(time=xp.epoch.value)

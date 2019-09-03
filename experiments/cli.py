@@ -91,6 +91,12 @@ def _add_loss_parser(parser):
                           help="smooth SVM")
     l_parser.add_argument('--teacher', dest="teacher", type=str, default=None,
                           help="path to teacher model")
+    l_parser.add_argument('--tau', type=float, default=3,
+                          help="distill loss smoothing")
+    l_parser.add_argument('--lambda_t', type=float, default=10,
+                          help="distll loss strenght")
+    l_parser.add_argument('--K', type=float, default=0,
+                          help="l2 distill loss strenght")
     l_parser.set_defaults(smooth_svm=False)
 
 
