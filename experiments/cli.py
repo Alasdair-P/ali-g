@@ -51,7 +51,7 @@ def _add_model_parser(parser):
                           help="dropout rate")
     m_parser.add_argument('--active_func', type=str, default='relu',
                           help="activation function")
-    m_parser.add_argument('--load_model', default=None,
+    m_parser.add_argument('--load_model', '--load-model', dest='load_model', default=None,
                           help='data file with model')
     m_parser.set_defaults(pretrained=False, wrn=False, densenet=False, bottleneck=True)
 
@@ -60,7 +60,7 @@ def _add_optimization_parser(parser):
     o_parser = parser.add_argument_group(title='Training parameters')
     o_parser.add_argument('--epochs', type=int, default=None,
                           help="number of epochs")
-    o_parser.add_argument('--batch_size', type=int, default=None,
+    o_parser.add_argument('--batch_size', '--batch-size', '--b', dest='batch_size', type=int, default=None,
                           help="batch size")
     o_parser.add_argument('--eta', type=float, default=0.1,
                           help="initial / maximal learning rate")
@@ -70,7 +70,7 @@ def _add_optimization_parser(parser):
                           help="optimizer to use")
     o_parser.add_argument('--T', type=int, default=[-1], nargs='+',
                           help="number of epochs between proximal updates / lr decay")
-    o_parser.add_argument('--decay_factor', type=float, default=0.1,
+    o_parser.add_argument('--decay_factor', '--decay-factor', dest='decay_factor', type=float, default=0.1,
                           help="decay factor for the learning rate / proximal term")
     o_parser.add_argument('--load_opt', default=None,
                           help='data file with opt' )
@@ -106,8 +106,10 @@ def _add_misc_parser(parser):
                           help="server for visdom")
     m_parser.add_argument('--port', type=int, default=9007,
                           help="port for visdom")
-    m_parser.add_argument('--xp_name', type=str, default=None,
+    m_parser.add_argument('--xp_name', "--xp-name", dest="xp_name", type=str, default=None,
                           help="name of experiment")
+    m_parser.add_argument('--xp_dir', type=str, default='/',
+                          help="root dir for experiment")
     m_parser.add_argument('--no_log', dest='log', action='store_false',
                           help='do not log results')
     m_parser.add_argument('--debug', dest='debug', action='store_true',
@@ -138,6 +140,7 @@ def set_xp_name(args):
 
     if args.log:
         # generate automatic experiment name if not provided
+        # args.xp_name = os.path.join(args.xp_dir, args.xp_name)
         if os.path.exists(args.xp_name):
             warnings.warn('An experiment already exists at {}'
                           .format(os.path.abspath(args.xp_name)))

@@ -1,5 +1,6 @@
 import torch.nn as nn
 import torch.nn.functional as F
+from models.main import get_model, load_best_model
 import torch
 
 def get_model(args):

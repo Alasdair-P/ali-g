@@ -7,7 +7,7 @@ from cli import parse_command
 from loss import get_loss
 from utils import setup_xp, set_seed, save_state
 from data import get_data_loaders
-from models import get_model, load_best_model
+from models.main import get_model, load_best_model
 from optim import get_optimizer, decay_optimizer
 from epoch import train, test
 from reg import Reg

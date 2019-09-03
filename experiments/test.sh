@@ -6,10 +6,10 @@
 #SBATCH --nodes=1                                                                                                          
 
 # set max wallclock time
-#SBATCH --time=144:00:00
+#SBATCH --time=24:00:00
 
 # set name of job
-#SBATCH --job-name=cross_val
+#SBATCH --job-name=test
 
 # set number of GPUs
 #SBATCH --gres=gpu:1
