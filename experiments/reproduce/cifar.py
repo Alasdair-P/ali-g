@@ -7,10 +7,11 @@ def create_jobs():
     # template = "python main.py --no_tqdm --no_visdom "
     wrn_opts = " --depth 40 --width 4 --epochs 200"
     dn_opts = " --depth 40 --growth 40 --epochs 400"
+    resnet_opts = " --depth 20 --epochs 200 --momentum 0.9 --teacher /data0/binary-networks-data/cifar100/cifar100_resnet32/model.pkl --batch_size 128 --run teacher32"
 
     # with open("reproduce/hparams/cifar.yaml", "r") as f:
-    with open("reproduce/hparams/cross_val_cgd_0_1_large_batch.yaml", "r") as f:
-    # with open("reproduce/hparams/test.yaml", "r") as f:
+    # with open("reproduce/hparams/cross_val_cgd_0_1_large_batch.yaml", "r") as f:
+    with open("reproduce/hparams/distill.yaml", "r") as f:
         hparams = yaml.safe_load(f)
 
     jobs = []
@@ -20,6 +21,8 @@ def create_jobs():
             command += wrn_opts
         elif hparam['model'] == "dn":
             command += dn_opts
+        elif hparam['model'] == "resnet":
+            command += resnet_opts
         else:
             raise ValueError("Model {} not recognized".format(hparam["model"]))
         jobs.append(command)

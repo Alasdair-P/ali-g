@@ -17,22 +17,25 @@ def train(model, loss, optimizer, loader, args, xp, reg):
         (x, y) = (x.cuda(), y.cuda()) if args.cuda else (x, y)
 
         # forward pass
-        scores, a_1, a_2 = model(x)
-
-        # compute the loss function, possibly using smoothing
-        # with set_smoothing_enabled(args.smooth_svm):
-        if args.teacher:
-            loss, loss_ce, loss_kl = obj(scores, a_1, a_2, y, x)
-        else:
-            loss_value = loss(scores, y)
+        optimizer.zero_grad()
+        scores = model(x)
 
         # backward pass
-        optimizer.zero_grad()
+        if args.opt == 'dfw':
+            with set_smoothing_enabled(args.smooth_svm):
+                loss_value, kl = loss(scores, y, x)
+        else:
+            loss_value, kl = loss(scores, y, x)
 
-        loss_value.backward()
-
-        # optimization step
-        optimizer.step(lambda: float(loss_value))
+        if 'cgd' in args.opt:
+            if args.debug:
+                loss_value.backward(create_graph=True)
+            else:
+                loss_value.backward()
+            optimizer.step(lambda: float(loss_value), x, y)
+        else:
+            loss_value.backward()
+            optimizer.step(lambda: float(loss_value))
 
         if reg:
             reg.iter_update()
@@ -40,11 +43,13 @@ def train(model, loss, optimizer, loader, args, xp, reg):
         # monitoring
         batch_size = x.size(0)
         xp.train.acc.update(accuracy(scores, y), weighting=batch_size)
-        xp.train.loss.update(loss(scores, y), weighting=batch_size)
+        xp.train.loss.update(float(loss_value), weighting=batch_size)
+        xp.train.kl.update(float(kl), weighting=batch_size)
         xp.train.step_size.update(optimizer.step_size, weighting=batch_size)
         xp.train.step_size_u.update(optimizer.step_size_unclipped, weighting=batch_size)
 
     xp.train.weight_norm.update(torch.sqrt(sum(p.norm() ** 2 for p in model.parameters())))
+    xp.train.grad_norm.update(torch.sqrt(sum(p.grad.norm() ** 2 for p in model.parameters())))
     xp.train.reg.update(0.5 * args.weight_decay * xp.train.weight_norm.value ** 2)
     xp.train.obj.update(xp.train.reg.value + xp.train.loss.value)
     xp.train.timer.update()

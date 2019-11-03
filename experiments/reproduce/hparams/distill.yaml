@@ -1,0 +1,17 @@
+- {model: resnet, dataset: cifar100, opt: adagrad, weight_decay: 0.0001, eta: 0.001}
+- {model: resnet, dataset: cifar100, opt: adagrad, weight_decay: 0.0001, eta: 0.01}
+- {model: resnet, dataset: cifar100, opt: adagrad, weight_decay: 0.0001, eta: 0.1}
+- {model: resnet, dataset: cifar100, opt: amsgrad, weight_decay: 0.0001, eta: 0.0001}
+- {model: resnet, dataset: cifar100, opt: amsgrad, weight_decay: 0.0001, eta: 0.001}
+- {model: resnet, dataset: cifar100, opt: amsgrad, weight_decay: 0.0001, eta: 0.01}
+- {model: resnet, dataset: cifar100, opt: adam, weight_decay: 0.0001, eta: 0.0001}
+- {model: resnet, dataset: cifar100, opt: adam, weight_decay: 0.0001, eta: 0.001}
+- {model: resnet, dataset: cifar100, opt: adam, weight_decay: 0.0001, eta: 0.01}
+- {model: resnet, dataset: cifar100, opt: sgd,  weight_decay: 0.0001, decay_factor: 0.1, eta: 0.1, T: 100 150}
+- {model: resnet, dataset: cifar100, opt: sgd,  weight_decay: 0.0001, decay_factor: 0.1, eta: 0.01, T: 100 150}
+- {model: resnet, dataset: cifar100, opt: sgd,  weight_decay: 0.0001, eta: 0.1}
+- {model: resnet, dataset: cifar100, opt: sgd,  weight_decay: 0.0001, eta: 0.01}
+#- {model: resnet, dataset: cifar100, opt: alig, max_norm: 100, eta: 0.01}
+#- {model: resnet, dataset: cifar100, opt: alig, max_norm: 100, eta: 0.1}
+#- {model: resnet, dataset: cifar100, opt: alig, max_norm: 100, eta: 1}
+#- {model: resnet, dataset: cifar100, opt: cgd,  max_norm: 100, eta: 0.1}

@@ -7,6 +7,7 @@ except ImportError:
 import subprocess
 import time
 import psutil
+import os
 
 
 def run_command(command, on_gpu, noprint):
@@ -16,7 +17,12 @@ def run_command(command, on_gpu, noprint):
             if psutil.getloadavg()[0] < 12:
                 break
     elif waitGPU is not None:
-        waitGPU.wait(nproc=0, interval=10, ngpu=8, gpu_ids=[0, 1, 2, 3, 4, 5, 6, 7, 8])
+        ngpu = int(os.environ['NGPU']) if 'NGPU' in os.environ else 1
+        if 'CUDA_VISIBLE_DEVICES' in os.environ:
+            waitGPU.wait(nproc=0, interval=10, ngpu=ngpu, gpu_ids=[int(os.environ['CUDA_VISIBLE_DEVICES'])])
+        else:
+            waitGPU.wait(nproc=0, interval=10, ngpu=ngpu, gpu_ids=[0, 1, 2, 3])
+            # waitGPU.wait(nproc=0, interval=10, ngpu=8, gpu_ids=[0, 1, 2, 3, 4, 5, 6, 7, 8])
     command = " ".join(command.split())
     if noprint:
         command = "{} > /dev/null".format(command)

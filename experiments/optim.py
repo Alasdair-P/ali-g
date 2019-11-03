@@ -3,9 +3,9 @@ import torch.optim
 # from dfw import DFW
 # from dfw.baselines import BPGrad
 # from l4pytorch import L4Mom, L4Adam
-# from alig.th import AliG
+from alig.th import AliG
 # from alig.th.projection import l2_projection
-# from cgd import CGD
+from cgd import CGD
 
 @torch.autograd.no_grad()
 def l2_projection(parameters, max_norm):
@@ -32,12 +32,12 @@ def get_optimizer(args, model, loss, parameters):
         # optimizer = DFW(parameters, eta=args.eta, momentum=args.momentum, weight_decay=args.weight_decay)
     # elif args.opt == 'bpgrad':
         # optimizer = BPGrad(parameters, eta=args.eta, momentum=args.momentum, weight_decay=args.weight_decay)
-    # elif args.opt == 'alig':
-        # optimizer = AliG(parameters, max_lr=args.eta, momentum=args.momentum,
-                         # projection_fn=lambda: l2_projection(parameters, args.max_norm))
-    # elif args.opt == 'cgd':
-        # optimizer = CGD(parameters, model, loss, eta=args.eta, momentum=args.momentum,
-                         # projection_fn=lambda: l2_projection(parameters, args.max_norm), debug=args.debug, eps=args.fd)
+    elif args.opt == 'alig':
+        optimizer = AliG(parameters, max_lr=args.eta, momentum=args.momentum,
+                         projection_fn=lambda: l2_projection(parameters, args.max_norm), lower_bound=args.B)
+    elif args.opt == 'cgd':
+        optimizer = CGD(parameters, model, loss, eta=args.eta, momentum=args.momentum,
+                         projection_fn=lambda: l2_projection(parameters, args.max_norm), debug=args.debug, eps=args.fd)
     # elif args.opt == 'bpgrad':
         # optimizer = BPGrad(parameters, eta=args.eta, momentum=args.momentum, weight_decay=args.weight_decay)
     # elif args.opt == 'l4adam':

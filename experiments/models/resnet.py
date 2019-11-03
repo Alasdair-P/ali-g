@@ -23,11 +23,11 @@ def init_model(model, BatchNorm2d):
 class BasicBlock(nn.Module):
     expansion = 1
 
-    def __init__(self, inplanes, planes, ReLU, Conv2d, BatchNorm2d, stride=1, downsample=None):
+    def __init__(self, inplanes, planes, relu, Conv2d, BatchNorm2d, stride=1, downsample=None):
         super(BasicBlock, self).__init__()
         self.conv1 = conv3x3(inplanes, planes, Conv2d, stride)
         self.bn1 = BatchNorm2d(planes)
-        self.relu = nn.ReLU(inplace=True)
+        self.relu = relu()
         self.conv2 = conv3x3(planes, planes, Conv2d)
         self.bn2 = BatchNorm2d(planes)
         self.downsample = downsample
@@ -55,7 +55,7 @@ class BasicBlock(nn.Module):
 class Bottleneck(nn.Module):
     expansion = 4
 
-    def __init__(self, inplanes, planes, ReLU, Conv2d, BatchNorm2d, stride=1, downsample=None):
+    def __init__(self, inplanes, planes, relu, Conv2d, BatchNorm2d, stride=1, downsample=None):
         super(Bottleneck, self).__init__()
         self.conv1 = nn.Conv2d(inplanes, planes, kernel_size=1, bias=False)
         self.bn1 = BatchNorm2d(planes)
@@ -64,7 +64,7 @@ class Bottleneck(nn.Module):
         self.bn2 = BatchNorm2d(planes)
         self.conv3 = nn.Conv2d(planes, planes * 4, kernel_size=1, bias=False)
         self.bn3 = BatchNorm2d(planes * 4)
-        self.relu = nn.ReLU(inplace=True)
+        self.relu = relu()
         self.downsample = downsample
         self.stride = stride
 
@@ -96,7 +96,7 @@ class ResNet(nn.Module):
     def __init__(self):
         super(ResNet, self).__init__()
 
-    def _make_layer(self, Conv2d, ReLU, BatchNorm2d, block, planes, blocks, stride=1):
+    def _make_layer(self, Conv2d, relu, BatchNorm2d, block, planes, blocks, stride=1):
         downsample = None
         if stride != 1 or self.inplanes != planes * block.expansion:
             downsample = nn.Sequential(
@@ -106,10 +106,10 @@ class ResNet(nn.Module):
             )
 
         layers = []
-        layers.append(block(self.inplanes, planes, ReLU, Conv2d, BatchNorm2d, stride, downsample))
+        layers.append(block(self.inplanes, planes, relu, Conv2d, BatchNorm2d, stride, downsample))
         self.inplanes = planes * block.expansion
         for i in range(1, blocks):
-            layers.append(block(self.inplanes, planes, ReLU, Conv2d, BatchNorm2d))
+            layers.append(block(self.inplanes, planes, relu, Conv2d, BatchNorm2d))
 
         return nn.Sequential(*layers)
 
@@ -128,7 +128,7 @@ class ResNet(nn.Module):
         x = x.view(x.size(0), -1)
         x = self.fc(x)
 
-        return x, out_1, out_2
+        return x
 
 
 class ResNet_imagenet(ResNet):
@@ -161,17 +161,17 @@ class ResNet_imagenet(ResNet):
 
 class ResNet_cifar(ResNet):
 
-    def __init__(self, num_classes=10, depth=20, block=BasicBlock, width=1, Conv2d=nn.Conv2d, Linear=nn.Linear, RELU=nn.ReLU, BatchNorm2d=nn.BatchNorm2d):
+    def __init__(self, num_classes=10, depth=20, block=BasicBlock, width=1, Conv2d=nn.Conv2d, Linear=nn.Linear, relu=nn.ReLU, BatchNorm2d=nn.BatchNorm2d):
         super(ResNet_cifar, self).__init__()
         self.inplanes = 16*width
         n = int((depth - 2) / 6)
         self.conv1 = Conv2d(3, 16*width, kernel_size=3, stride=1, padding=1, bias=False)
         self.bn1 = BatchNorm2d(16*width)
-        self.relu = nn.ReLU(inplace=True)
+        self.relu = relu()
         self.maxpool = lambda x: x
-        self.layer1 = self._make_layer(Conv2d, RELU, BatchNorm2d, block, 16*width, n)
-        self.layer2 = self._make_layer(Conv2d, RELU, BatchNorm2d, block, 32*width, n, stride=2)
-        self.layer3 = self._make_layer(Conv2d, RELU, BatchNorm2d, block, 64*width, n, stride=2)
+        self.layer1 = self._make_layer(Conv2d, relu, BatchNorm2d, block, 16*width, n)
+        self.layer2 = self._make_layer(Conv2d, relu, BatchNorm2d, block, 32*width, n, stride=2)
+        self.layer3 = self._make_layer(Conv2d, relu, BatchNorm2d, block, 64*width, n, stride=2)
         self.layer4 = lambda x: x
         self.avgpool = nn.AvgPool2d(8)
         if num_classes == 200:

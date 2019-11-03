@@ -3,7 +3,6 @@ import torch.optim as optim
 
 from torch.optim.optimizer import required
 
-
 class CGD(optim.Optimizer):
     def __init__(self, params, model, obj, eta=None, momentum=0, projection_fn=None, debug=False, eps=1e-3, adjusted_momentum=False):
         if eta is not None and eta <= 0.0:
@@ -77,7 +76,8 @@ class CGD(optim.Optimizer):
 
         with torch.enable_grad():
             self.model.zero_grad()
-            loss = self.obj(self.model(x), y)
+            # loss = self.obj(self.model(x), y)
+            loss = self.obj(self.model(x), y, x)
             loss.backward()
 
         for group in self.param_groups:
@@ -87,7 +87,8 @@ class CGD(optim.Optimizer):
 
         with torch.enable_grad():
             self.model.zero_grad()
-            loss = self.obj(self.model(x), y)
+            # loss = self.obj(self.model(x), y)
+            loss = self.obj(self.model(x), y, x)
             loss.backward()
 
         for group in self.param_groups:
@@ -156,9 +157,10 @@ class CGD(optim.Optimizer):
             step_size = group["step_size"]
             momentum = group["momentum"]
             for p in group['params']:
-                if p.grad is None:
+                grad = -self.state[p]['descent_dir']
+                if grad is None:
                     continue
-                p.add_(-step_size, p.grad)
+                p.data.add_(-step_size, grad)
                 # Nesterov momentum
                 if momentum:
                     self.apply_momentum(p, step_size, momentum)
@@ -168,10 +170,9 @@ class CGD(optim.Optimizer):
         self.step_counter += 1
         for group in self.param_groups:
             for p in group['params']:
-                self.state[p]['w_0'] = p.data.clone()
-                self.state[p]['descent_dir'] = -p.grad.data.clone()
+                self.state[p]['w_0'] = p.data.detach().clone()
+                self.state[p]['descent_dir'] = -p.grad.data.detach().clone()
 
-        # calculate hessien vector product
         if 'exact' in self.step_type or 'debug' in self.step_type:
             self.exact_Hv_prod()
         if 'fd' in self.step_type or 'debug' in self.step_type:
@@ -195,48 +196,4 @@ class CGD(optim.Optimizer):
         buffer = self.state[p]['momentum_buffer']
         buffer.mul_(momentum).sub_(p.grad)
         p.add_(step_size * momentum, buffer)
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
 

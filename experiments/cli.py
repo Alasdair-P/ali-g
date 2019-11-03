@@ -34,7 +34,6 @@ def _add_dataset_parser(parser):
                           action='store_false', help='no data augmentation')
     d_parser.set_defaults(augment=True)
 
-
 def _add_model_parser(parser):
     m_parser = parser.add_argument_group(title='Model parameters')
     m_parser.add_argument('--model', type=str,
@@ -54,7 +53,6 @@ def _add_model_parser(parser):
     m_parser.add_argument('--load_model', '--load-model', dest='load_model', default=None,
                           help='data file with model')
     m_parser.set_defaults(pretrained=False, wrn=False, densenet=False, bottleneck=True)
-
 
 def _add_optimization_parser(parser):
     o_parser = parser.add_argument_group(title='Training parameters')
@@ -78,6 +76,8 @@ def _add_optimization_parser(parser):
                           help="rate at which temperature is increase")
     o_parser.add_argument('--hq_epoch', type=int, default=-1,
                           help="hard qunatisation epoch")
+    o_parser.add_argument('--fd', type=float, default=1e-2,
+                          help="finite difference")
 
 def _add_loss_parser(parser):
     l_parser = parser.add_argument_group(title='Loss parameters')
@@ -97,8 +97,9 @@ def _add_loss_parser(parser):
                           help="distll loss strenght")
     l_parser.add_argument('--K', type=float, default=0,
                           help="l2 distill loss strenght")
+    l_parser.add_argument('--B', type=float, default=0,
+                          help="lower bound on loss")
     l_parser.set_defaults(smooth_svm=False)
-
 
 def _add_misc_parser(parser):
     m_parser = parser.add_argument_group(title='Misc parameters')
@@ -110,12 +111,13 @@ def _add_misc_parser(parser):
                           help='do not use visdom')
     m_parser.add_argument('--server', type=str, default='http://helios',
                           help="server for visdom")
-    m_parser.add_argument('--port', type=int, default=9007,
+    m_parser.add_argument('--port', type=int, default=9012,
                           help="port for visdom")
     m_parser.add_argument('--xp_name', "--xp-name", dest="xp_name", type=str, default=None,
                           help="name of experiment")
-    m_parser.add_argument('--xp_dir', type=str, default='/',
-                          help="root dir for experiment")
+    m_parser.add_argument('--xp_dir', type=str,
+                          default='/data0/binary-networks-data',
+                          help="data root directory for experiments")
     m_parser.add_argument('--no_log', dest='log', action='store_false',
                           help='do not log results')
     m_parser.add_argument('--debug', dest='debug', action='store_true',
@@ -146,13 +148,16 @@ def set_xp_name(args):
 
     if args.log:
         # generate automatic experiment name if not provided
-        # args.xp_name = os.path.join(args.xp_dir, args.xp_name)
+        args.xp_name = os.path.join(args.xp_dir, args.xp_name)
         if os.path.exists(args.xp_name):
-            warnings.warn('An experiment already exists at {}'
+            warnings.warn('An experiment already exists at rm -r {}'
                           .format(os.path.abspath(args.xp_name)))
+            raise ValueError
         else:
             os.makedirs(args.xp_name)
 
+    if args.load_model:
+        args.load_model = os.path.join(args.xp_dir, args.xp_name)
 
 def set_num_classes(args):
     if args.dataset == 'cifar10':
@@ -172,10 +177,12 @@ def set_num_classes(args):
 
 
 def set_visdom(args):
+    print(args.visdom)
     if not args.visdom:
         return
     if args.server is None:
         if 'VISDOM_SERVER' in os.environ:
+            print('visdom server', os.environ['VISDOM_SERVER'])
             args.server = os.environ['VISDOM_SERVER']
         else:
             args.visdom = False

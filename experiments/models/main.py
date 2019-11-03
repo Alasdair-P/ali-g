@@ -4,34 +4,24 @@ import torch.nn as nn
 from collections import OrderedDict
 import torchvision.models as models
 from models.resnet import ResNet_cifar
+from models.wide_resnet import WideResNet
+
 
 def get_model(args):
 
+    if args.opt == 'cgd' or args.active_func == 'softplus':
+        nonlinearity = nn.Softplus
+    else:
+        nonlinearity = nn.ReLU
+
     if 'cifar' in args.dataset or 'tiny' in args.dataset:
 
-        if args.dataset == 'cifar10':
-            num_classes = 10
-        elif args.dataset == 'cifar100':
-            num_classes = 100
-        elif args.dataset == 'tiny_imagenet':
-            num_classes = 200
-        else:
-            raise ValueError
-
-        if args.model == 'ResNet20':
-            model = ResNet_cifar(num_classes=num_classes, depth=20)
-        elif args.model == 'ResNet32':
-            model = ResNet_cifar(num_classes=num_classes, depth=32)
-        elif args.model == 'ResNet44':
-            model = ResNet_cifar(num_classes=num_classes, depth=44)
-        elif args.model == 'ResNet56':
-            model = ResNet_cifar(num_classes=num_classes, depth=56)
-        elif args.model == 'ResNet110':
-            model = ResNet_cifar(num_classes=num_classes, depth=110)
-        elif args.model == 'WideResNet40_4':
-            model = WideResNet(40, num_classes, nonlinearity, widen_factor=4, dropRate=0.0)
-        elif args.model == 'DenseNet40_40':
-            model = DenseNet3(40, num_classes, nonlinearity, growth_rate=40, reduction=0.5, bottleneck=True, dropRate=0.0)
+        if args.model == 'resnet':
+            model = ResNet_cifar(num_classes=args.n_classes, depth=args.depth, relu=nonlinearity)
+        elif args.model == "dn":
+            model = DenseNet3(args.depth, args.n_classes, args.growth, bottleneck=bool(args.bottleneck), dropRate=args.dropout)
+        elif args.model == "wrn":
+            model = WideResNet(args.depth, args.n_classes, args.width, dropRate=args.dropout)
         else:
             print('unknown model')
             raise ValueError
