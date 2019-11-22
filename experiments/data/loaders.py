@@ -5,6 +5,7 @@ import torchvision.datasets as datasets
 import torchvision.transforms as transforms
 
 from .utils import random_subsets, Subset
+from data.spiral import generate_spiral_data
 
 
 def create_loaders(dataset_train, dataset_val, dataset_test,
@@ -40,9 +41,13 @@ def create_loaders(dataset_train, dataset_val, dataset_test,
           .format(len(dataset_train), len(dataset_val), len(dataset_test)))
     print('Batch size: \t {}'.format(batch_size))
 
+    # shuffling = False
+    shuffling = True
+    print(' \t shuffling = {} \t'.format(shuffling))
+
     train_loader = data.DataLoader(dataset_train,
                                    batch_size=batch_size,
-                                   shuffle=True, **kwargs)
+                                   shuffle=shuffling, **kwargs)
 
     val_loader = data.DataLoader(dataset_val,
                                  batch_size=test_batch_size,
@@ -57,6 +62,28 @@ def create_loaders(dataset_train, dataset_val, dataset_test,
     test_loader.tag = 'test'
 
     return train_loader, val_loader, test_loader
+
+
+def loaders_spiral(dataset, batch_size=64, cuda=0,
+                  train_size=100, val_size=100, test_size=100,
+                  test_batch_size=200, augment=False, noise=0, **kwargs):
+
+    assert dataset == 'spiral'
+    gen = generate_spiral_data
+
+    x_train, y_train = gen(train_size, noise)
+    x_val, y_val = gen(val_size, noise)
+    x_test, y_test = gen(test_size, noise)
+
+    dataset_train = data.TensorDataset(x_train, y_train)
+    dataset_val = data.TensorDataset(x_val, y_val)
+    dataset_test = data.TensorDataset(x_test, y_test)
+
+    return create_loaders(dataset_train, dataset_val,
+                          dataset_test, train_size, val_size, test_size,
+                          batch_size=batch_size,
+                          test_batch_size=test_batch_size,
+                          cuda=cuda, num_workers=1, split=False)
 
 
 def loaders_mnist(dataset, batch_size=64, cuda=0,
@@ -261,3 +288,4 @@ def loaders_tiny_imagenet(dataset, batch_size, cuda,
     return create_loaders(dataset_train, dataset_val,
                           dataset_test, train_size, val_size, test_size,
                           batch_size, test_batch_size, cuda, num_workers=8, split=False)
+

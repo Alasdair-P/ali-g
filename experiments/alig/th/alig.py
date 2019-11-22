@@ -68,7 +68,7 @@ class AliG(torch.optim.Optimizer):
                 grad_sqrd_norm += p.grad.data.norm() ** 2
 
         # compute unclipped step-size
-        self.step_size_unclipped = float((loss - self.B) / (grad_sqrd_norm + self.eps))
+        self.step_size_unclipped = float((loss-self.B) / (grad_sqrd_norm + self.eps))
 
         # compute effective step-size (clipped)
         for group in self.param_groups:

@@ -42,6 +42,7 @@ def setup_xp(args, model, optimizer):
     xp.train = mlogger.Container()
     xp.train.acc = mlogger.metric.Average(plotter=plotter, plot_title="Accuracy", plot_legend="training")
     xp.train.loss = mlogger.metric.Average(plotter=plotter, plot_title="Objective", plot_legend="loss")
+    xp.train.lower_bound = mlogger.metric.Average(plotter=plotter, plot_title="Objective", plot_legend="lb")
     xp.train.kl = mlogger.metric.Average(plotter=plotter, plot_title="Objective", plot_legend="kl")
     xp.train.obj = mlogger.metric.Simple(plotter=plotter, plot_title="Objective", plot_legend="objective")
     xp.train.reg = mlogger.metric.Simple(plotter=plotter, plot_title="Objective", plot_legend="regularization")
@@ -72,7 +73,7 @@ def setup_xp(args, model, optimizer):
 
         # log after final evaluation on test set
         xp.test.acc.hook_on_update(lambda: xp.save_to('{}/results.json'.format(args.xp_name)))
-        xp.test.acc.hook_on_update(lambda: save_state(model, optimizer, '{}/model.pkl'.format(args.xp_name)))
+        xp.test.acc.hook_on_update(lambda: save_state(model, optimizer, '{}/best_model.pkl'.format(args.xp_name)))
 
         # save results and model for best validation performance
         xp.max_val.hook_on_new_max(lambda: save_state(model, optimizer, '{}/best_model.pkl'.format(args.xp_name)))

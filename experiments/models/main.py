@@ -5,6 +5,7 @@ from collections import OrderedDict
 import torchvision.models as models
 from models.resnet import ResNet_cifar
 from models.wide_resnet import WideResNet
+from models.mlp import MLP
 
 
 def get_model(args):
@@ -14,7 +15,10 @@ def get_model(args):
     else:
         nonlinearity = nn.ReLU
 
-    if 'cifar' in args.dataset or 'tiny' in args.dataset:
+    if 'spiral' in args.dataset:
+        model = MLP(num_classes=args.n_classes, width=args.width, depth=args.depth)
+
+    elif 'cifar' in args.dataset or 'tiny' in args.dataset:
 
         if args.model == 'resnet':
             model = ResNet_cifar(num_classes=args.n_classes, depth=args.depth, relu=nonlinearity)
@@ -26,7 +30,7 @@ def get_model(args):
             print('unknown model')
             raise ValueError
 
-    elif args.dataset == imagenet:
+    elif args.dataset == 'imagenet':
         if args.model == "ResNet18":
             model = models.resnet18()
         elif args.model == "ResNet18_pretrained":

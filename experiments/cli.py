@@ -1,6 +1,7 @@
 import os
 import argparse
 import warnings
+import copy
 
 from cuda import set_cuda
 
@@ -30,8 +31,12 @@ def _add_dataset_parser(parser):
                           help="val data size")
     d_parser.add_argument('--test_size', type=int, default=None,
                           help="test data size")
+    d_parser.add_argument('--noise', type=float, default=0,
+                          help="noise for spiral data set")
     d_parser.add_argument('--no_data_augmentation', dest='augment',
                           action='store_false', help='no data augmentation')
+    d_parser.add_argument('--no_shuffling', dest='no_shuffle',
+                          action='store_true', help='no shuffling')
     d_parser.set_defaults(augment=True)
 
 def _add_model_parser(parser):
@@ -78,6 +83,8 @@ def _add_optimization_parser(parser):
                           help="hard qunatisation epoch")
     o_parser.add_argument('--fd', type=float, default=1e-2,
                           help="finite difference")
+    o_parser.add_argument('--max_epochs', type=int, default=0,
+                          help="max epochs before decaying lower bound")
 
 def _add_loss_parser(parser):
     l_parser = parser.add_argument_group(title='Loss parameters')
@@ -85,7 +92,7 @@ def _add_loss_parser(parser):
                           help="l2-regularization")
     l_parser.add_argument('--max_norm', type=float, default=None,
                           help="maximal l2-norm for constrained optimizers")
-    l_parser.add_argument('--loss', type=str, default='ce', choices=("svm", "ce"),
+    l_parser.add_argument('--loss', type=str, default='ce', choices=("svm", "ce", "distill", "kl"),
                           help="loss function to use ('svm' or 'ce')")
     l_parser.add_argument('--smooth_svm', dest="smooth_svm", action="store_true",
                           help="smooth SVM")
@@ -95,10 +102,10 @@ def _add_loss_parser(parser):
                           help="distill loss smoothing")
     l_parser.add_argument('--lambda_t', type=float, default=10,
                           help="distll loss strenght")
-    l_parser.add_argument('--K', type=float, default=0,
-                          help="l2 distill loss strenght")
     l_parser.add_argument('--B', type=float, default=0,
                           help="lower bound on loss")
+    l_parser.add_argument('--decay_lower_bound', type=float, default=0,
+                          help="factor to decay lower bound by")
     l_parser.set_defaults(smooth_svm=False)
 
 def _add_misc_parser(parser):
@@ -111,7 +118,7 @@ def _add_misc_parser(parser):
                           help='do not use visdom')
     m_parser.add_argument('--server', type=str, default='http://helios',
                           help="server for visdom")
-    m_parser.add_argument('--port', type=int, default=9012,
+    m_parser.add_argument('--port', type=int, default=9020,
                           help="port for visdom")
     m_parser.add_argument('--xp_name', "--xp-name", dest="xp_name", type=str, default=None,
                           help="name of experiment")
@@ -132,8 +139,9 @@ def _add_misc_parser(parser):
                           help="add proxquant style reg")
     m_parser.set_defaults(visdom=True, log=True, debug=False, parallel_gpu=False, tqdm=True)
 
-
 def set_xp_name(args):
+    if args.dataset == 'spiral':
+        args.model = 'mlp_d_' + str(args.depth) + '_w_' + str(args.width)
     if args.debug:
         args.log = args.visdom = False
         args.xp_name = '../debug'
@@ -144,7 +152,7 @@ def set_xp_name(args):
         xp_name += "{model}{data}-{opt}--eta-{eta}--l2-{l2}--b-{b}--run-{run}"
         l2 = args.max_norm if args.opt == 'alig' else args.weight_decay
         data = args.dataset.replace("cifar", "")
-        args.xp_name = xp_name.format(model=args.model, data=data, opt=args.opt, eta=args.eta, l2=args.max_norm, b=args.batch_size, run=args.run_no)
+        args.xp_name = xp_name.format(model=args.model, data=data, opt=args.opt, eta=args.eta, l2=args.max_norm or args.weight_decay, b=args.batch_size, run=args.run_no)
 
     if args.log:
         # generate automatic experiment name if not provided
@@ -157,10 +165,12 @@ def set_xp_name(args):
             os.makedirs(args.xp_name)
 
     if args.load_model:
-        args.load_model = os.path.join(args.xp_dir, args.xp_name)
+        args.load_model = os.path.join(args.xp_dir, args.load_model)
 
 def set_num_classes(args):
-    if args.dataset == 'cifar10':
+    if args.dataset == 'spiral':
+        args.n_classes = 2
+    elif args.dataset == 'cifar10':
         args.n_classes = 10
     elif args.dataset == 'cifar100':
         args.n_classes = 100
@@ -175,7 +185,6 @@ def set_num_classes(args):
     else:
         raise ValueError
 
-
 def set_visdom(args):
     print(args.visdom)
     if not args.visdom:
@@ -188,9 +197,10 @@ def set_visdom(args):
             args.visdom = False
             print("Could not find a valid visdom server, de-activating visdom...")
 
-
 def filter_args(args):
     args.T = list(args.T)
+    args.eta_initial = copy.copy(args.eta)
+    args.i = 0
     set_cuda(args)
     set_xp_name(args)
     set_visdom(args)

@@ -77,7 +77,7 @@ class CGD(optim.Optimizer):
         with torch.enable_grad():
             self.model.zero_grad()
             # loss = self.obj(self.model(x), y)
-            loss = self.obj(self.model(x), y, x)
+            loss, _ = self.obj(self.model(x), y, x)
             loss.backward()
 
         for group in self.param_groups:
@@ -88,7 +88,7 @@ class CGD(optim.Optimizer):
         with torch.enable_grad():
             self.model.zero_grad()
             # loss = self.obj(self.model(x), y)
-            loss = self.obj(self.model(x), y, x)
+            loss, _ = self.obj(self.model(x), y, x)
             loss.backward()
 
         for group in self.param_groups:
@@ -157,10 +157,10 @@ class CGD(optim.Optimizer):
             step_size = group["step_size"]
             momentum = group["momentum"]
             for p in group['params']:
-                grad = -self.state[p]['descent_dir']
+                grad = self.state[p]['descent_dir']
                 if grad is None:
                     continue
-                p.data.add_(-step_size, grad)
+                p.data.add_(step_size, grad)
                 # Nesterov momentum
                 if momentum:
                     self.apply_momentum(p, step_size, momentum)
@@ -188,7 +188,8 @@ class CGD(optim.Optimizer):
     @torch.autograd.no_grad()
     def apply_momentum_standard(self, p, step_size, momentum):
         buffer = self.state[p]['momentum_buffer']
-        buffer.mul_(momentum).add_(-step_size, p.grad)
+        grad = self.state[p]['descent_dir']
+        buffer.mul_(momentum).add_(step_size, grad)
         p.add_(momentum, buffer)
 
     @torch.autograd.no_grad()

@@ -27,7 +27,7 @@ def train(model, loss, optimizer, loader, args, xp, reg):
         else:
             loss_value, kl = loss(scores, y, x)
 
-        if 'cgd' in args.opt:
+        if 'cgd' in args.opt or 'segd' in args.opt:
             if args.debug:
                 loss_value.backward(create_graph=True)
             else:
@@ -45,6 +45,7 @@ def train(model, loss, optimizer, loader, args, xp, reg):
         xp.train.acc.update(accuracy(scores, y), weighting=batch_size)
         xp.train.loss.update(float(loss_value), weighting=batch_size)
         xp.train.kl.update(float(kl), weighting=batch_size)
+        xp.train.lower_bound.update(args.B, weighting=batch_size)
         xp.train.step_size.update(optimizer.step_size, weighting=batch_size)
         xp.train.step_size_u.update(optimizer.step_size_unclipped, weighting=batch_size)
 
@@ -53,6 +54,8 @@ def train(model, loss, optimizer, loader, args, xp, reg):
     xp.train.reg.update(0.5 * args.weight_decay * xp.train.weight_norm.value ** 2)
     xp.train.obj.update(xp.train.reg.value + xp.train.loss.value)
     xp.train.timer.update()
+
+
 
     print('\nEpoch: [{0}] (Train) \t'
           '({timer:.2f}s) \t'

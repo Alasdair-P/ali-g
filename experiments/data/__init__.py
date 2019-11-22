@@ -1,4 +1,4 @@
-from data.loaders import loaders_cifar, loaders_mnist, loaders_svhn, loaders_imagenet, loaders_tiny_imagenet
+from data.loaders import loaders_cifar, loaders_mnist, loaders_svhn, loaders_imagenet, loaders_tiny_imagenet, loaders_spiral
 
 
 def get_data_loaders(args):
@@ -9,8 +9,9 @@ def get_data_loaders(args):
     for k in ('train_size', 'val_size', 'test_size'):
         if args.__dict__[k] is None:
             args.__dict__.pop(k)
-
-    if args.dataset == 'mnist':
+    if args.dataset == 'spiral':
+        loader_train, loader_val, loader_test = loaders_spiral(**vars(args))
+    elif args.dataset == 'mnist':
         loader_train, loader_val, loader_test = loaders_mnist(**vars(args))
     elif 'cifar' in args.dataset:
         loader_train, loader_val, loader_test = loaders_cifar(**vars(args))

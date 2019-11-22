@@ -1,0 +1,24 @@
+- {batch_size: 512, dataset: cifar100, eta: 0.01, model: resnet, opt: segd, weight_decay: 0.0, momentum: 0.0}
+- {batch_size: 512, dataset: cifar100, eta: 0.1, model: resnet, opt: segd, weight_decay: 0.0, momentum: 0.0}
+- {batch_size: 512, dataset: cifar100, eta: 1, model: resnet, opt: segd, weight_decay: 0.0, momentum: 0.0}
+- {batch_size: 512, dataset: cifar100, eta: 10, model: resnet, opt: segd, weight_decay: 0.0, momentum: 0.0}
+
+- {batch_size: 256, dataset: cifar100, eta: 0.01, model: resnet, opt: segd, weight_decay: 0.0, momentum: 0.0}
+- {batch_size: 256, dataset: cifar100, eta: 0.1, model: resnet, opt: segd, weight_decay: 0.0, momentum: 0.0}
+- {batch_size: 256, dataset: cifar100, eta: 1, model: resnet, opt: segd, weight_decay: 0.0, momentum: 0.0}
+- {batch_size: 256, dataset: cifar100, eta: 10, model: resnet, opt: segd, weight_decay: 0.0, momentum: 0.0}
+
+- {batch_size: 128, dataset: cifar100, eta: 0.01, model: resnet, opt: segd, weight_decay: 0.0, momentum: 0.0}
+- {batch_size: 128, dataset: cifar100, eta: 0.1, model: resnet, opt: segd, weight_decay: 0.0, momentum: 0.0}
+- {batch_size: 128, dataset: cifar100, eta: 1, model: resnet, opt: segd, weight_decay: 0.0, momentum: 0.0}
+- {batch_size: 128, dataset: cifar100, eta: 10, model: resnet, opt: segd, weight_decay: 0.0, momentum: 0.0}
+
+- {batch_size: 64, dataset: cifar100, eta: 0.01, model: resnet, opt: segd, weight_decay: 0.0, momentum: 0.0}
+- {batch_size: 64, dataset: cifar100, eta: 0.1, model: resnet, opt: segd, weight_decay: 0.0, momentum: 0.0}
+- {batch_size: 64, dataset: cifar100, eta: 1, model: resnet, opt: segd, weight_decay: 0.0, momentum: 0.0}
+- {batch_size: 64, dataset: cifar100, eta: 10, model: resnet, opt: segd, weight_decay: 0.0, momentum: 0.0}
+
+- {batch_size: 32, dataset: cifar100, eta: 0.01, model: resnet, opt: segd, weight_decay: 0.0, momentum: 0.0}
+- {batch_size: 32, dataset: cifar100, eta: 0.1, model: resnet, opt: segd, weight_decay: 0.0, momentum: 0.0}
+- {batch_size: 32, dataset: cifar100, eta: 1, model: resnet, opt: segd, weight_decay: 0.0, momentum: 0.0}
+- {batch_size: 32, dataset: cifar100, eta: 10, model: resnet, opt: segd, weight_decay: 0.0, momentum: 0.0}
