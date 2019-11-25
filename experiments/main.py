@@ -39,13 +39,11 @@ def main(args):
 
         decay_stuff(xp, model, args, optimizer, loss, i)
 
-    test(model, optimizer, loader_val, args, xp, i)
-    test(model, optimizer, loader_test, args, xp, i)
-    reg.calc_dist_to_binary()
+    # reg.calc_dist_to_binary()
     load_best_model(model, '{}/best_model.pkl'.format(args.xp_name))
     test(model, optimizer, loader_val, args, xp, i)
     test(model, optimizer, loader_test, args, xp, i)
-    reg.calc_dist_to_binary()
+    # reg.calc_dist_to_binary()
     plot_decsion_boundary(model, args)
 
 

@@ -4,7 +4,6 @@ from tqdm import tqdm
 # from dfw.losses import set_smoothing_enabled
 from utils import accuracy, regularization
 
-
 def train(model, loss, optimizer, loader, args, xp, reg):
 
     model.train()
@@ -14,7 +13,8 @@ def train(model, loss, optimizer, loader, args, xp, reg):
 
     for x, y in tqdm(loader, disable=not args.tqdm, desc='Train Epoch',
                      leave=False, total=len(loader)):
-        (x, y) = (x.cuda(), y.cuda()) if args.cuda else (x, y)
+
+        x, y = (x.cuda(), y.cuda()) if args.cuda else (x, y)
 
         # forward pass
         optimizer.zero_grad()

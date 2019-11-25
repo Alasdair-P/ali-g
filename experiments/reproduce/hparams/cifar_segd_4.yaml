@@ -1,0 +1,6 @@
+- {batch_size: 128, dataset: cifar100, eta: 0.1, model: wrn, opt: alig, max_norm: 100, momentum: 0.9}
+- {batch_size: 128, dataset: cifar100, eta: 0.1, model: wrn, opt: segd, max_norm: 100, momentum: 0.9}
+- {batch_size:  64, dataset: cifar100, eta: 0.1, model: wrn, opt: segd, max_norm: 100, momentum: 0.9}
+- {batch_size:  32, dataset: cifar100, eta: 0.1, model: wrn, opt: segd, max_norm: 100, momentum: 0.9}
+- {batch_size: 256, dataset: cifar100, eta: 0.1, model: wrn, opt: segd, max_norm: 100, momentum: 0.9}
+- {batch_size: 512, dataset: cifar100, eta: 0.1, model: wrn, opt: segd, max_norm: 100, momentum: 0.9}

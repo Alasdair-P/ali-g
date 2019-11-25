@@ -7,6 +7,15 @@ import torchvision.transforms as transforms
 from .utils import random_subsets, Subset
 from data.spiral import generate_spiral_data
 
+class IndexedDataset(data.Dataset):
+    def __init__(self, dataset):
+        self._dataset = dataset
+
+    def __getitem__(self, idx):
+        return idx, self._dataset[idx]
+
+    def __len__(self):
+        return self._dataset.__len__()
 
 def create_loaders(dataset_train, dataset_val, dataset_test,
                    train_size, val_size, test_size, batch_size, test_batch_size,
@@ -44,6 +53,11 @@ def create_loaders(dataset_train, dataset_val, dataset_test,
     # shuffling = False
     shuffling = True
     print(' \t shuffling = {} \t'.format(shuffling))
+
+    # dataset_train_index = IndexedDataset(dataset_train)
+    # train_loader = data.DataLoader(dataset_train_index,
+                                   # batch_size=batch_size,
+                                   # shuffle=shuffling, **kwargs)
 
     train_loader = data.DataLoader(dataset_train,
                                    batch_size=batch_size,
