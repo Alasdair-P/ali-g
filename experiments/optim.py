@@ -101,6 +101,7 @@ def reset_lr(args, optimizer):
     print('updatign T to:', args.T)
 
 def decay_stuff(xp, model, args, optimizer, loss, i):
+    return
     max_epochs = args.max_epochs
     if max_epochs:
         if xp.train.obj.value / (args.B + 1e-9) <= (1 + 1e-3) or args.i % max_epochs == (max_epochs - 1):

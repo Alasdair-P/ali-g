@@ -5,7 +5,11 @@ import torch
 
 def get_loss(args):
     if args.teacher:
-        loss_fn = Distillation_Loss(args)
+        if args.decay_lower_bound:
+            loss_fn = Distillation_Loss_2(args)
+        else:
+            loss_fn = Distillation_Loss(args)
+
     elif args.loss == 'ce':
         loss_fn = CE_Loss()
     else:
@@ -138,6 +142,7 @@ class Distillation_Loss_2(nn.Module):
         self.lambda_t = args.lambda_t
         self.tau = args.tau
         self.lower_bound = torch.zeros(arg.train_size).fill_(args.B)
+        self.decay_lower_bound = args.decay_lower_bound
 
         self.loss = nn.CrossEntropyLoss()
 
@@ -153,7 +158,10 @@ class Distillation_Loss_2(nn.Module):
 
         if self.kl:
             lower_bound = self.lower_bound[idx]
-            if 
+            mask = (loss_dist <= lower_bound).long()
+            decay_amount = torch.ones_like(loss_dist)
+            dacay_amount -= (1-self.decay_lower_bound)*mask
+            lower_bound *= decay_amount
 
             loss = loss_dist.clamp(min=self.lower_bound).mean()
         else:
