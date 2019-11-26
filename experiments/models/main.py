@@ -5,6 +5,7 @@ from collections import OrderedDict
 import torchvision.models as models
 from models.resnet import ResNet_cifar
 from models.wide_resnet import WideResNet
+from models.densenet import DenseNet3
 from models.mlp import MLP
 
 
