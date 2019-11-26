@@ -94,7 +94,7 @@ class Distillation_Loss(nn.Module):
             loss = loss_ce.mean() + loss_dist.mul(self.lambda_t).mean()
         return loss, loss_dist.mean()
 
-'''
+
 class Distillation_Loss_2(nn.Module):
 
     def __init__(self, args):
@@ -145,17 +145,20 @@ class Distillation_Loss_2(nn.Module):
         if args.loss == 'kl':
             self.kl = True
 
-    def forward(self, scores, y, x):
+    def forward(self, scores, y, x, idx):
         with torch.no_grad():
             scores_teacher = self.teacher_model(x).detach()
         loss_ce = self.loss(scores, y)
         loss_dist = -(F.softmax(scores_teacher.div(self.tau),dim=1).mul( F.log_softmax(scores.div(self.tau),dim=1) - F.log_softmax(scores_teacher.div(self.tau),dim=1) )).sum(dim=1)
 
         if self.kl:
+            lower_bound = self.lower_bound[idx]
+            if 
+
             loss = loss_dist.clamp(min=self.lower_bound).mean()
         else:
-            # loss = loss_ce.mul(1-self.lambda_t) + loss_dist.mul(self.lambda_t)
             loss = loss_ce.mean() + loss_dist.mul(self.lambda_t).mean()
 
         return loss, loss_dist.mean()
+'''
 '''
