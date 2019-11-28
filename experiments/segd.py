@@ -8,6 +8,8 @@ class SEGD(optim.Optimizer):
             raise ValueError("Invalid eta: {}".format(eta))
         if momentum < 0.0:
             raise ValueError("Invalid momentum value: {}".format(momentum))
+        if weight_decay < 0.0:
+            raise ValueError("weight_decay not implymented: {}".format(weight_decay))
 
         params_list = list(params)
         defaults = dict(eta=eta, momentum=momentum, step_size=None, weight_decay=weight_decay)

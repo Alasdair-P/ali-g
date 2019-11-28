@@ -1,8 +1,4 @@
-- {batch_size: 128, dataset: cifar100, eta: 0.1, model: wrn, opt: segd, max_norm: 100, momentum: 0.9, epochs: 400, run: -2}
-- {batch_size: 256, dataset: cifar10, eta: 1, max_norm: 100, model: wrn, momentum: 0.9, opt: alig, epochs: 200}
-- {batch_size: 256, dataset: cifar10, eta: 1, max_norm: 100, model: wrn, momentum: 0.9, opt: segd, epochs: 400}
 - {batch_size: 256, dataset: cifar100, eta: 0.1, max_norm: 75, model: dn, momentum: 0.9, opt: alig, epochs: 400}
 - {batch_size: 64, dataset: cifar10, eta: 0.1, max_norm: 75, model: dn, momentum: 0.9, opt: alig, epochs: 400}
 - {batch_size: 256, dataset: cifar100, eta: 0.1, max_norm: 75, model: dn, momentum: 0.9, opt: segd, epochs: 600}
 - {batch_size: 64, dataset: cifar10, eta: 0.1, max_norm: 75, model: dn, momentum: 0.9, opt: segd, epochs: 600}
-- {batch_size: 256, dataset: cifar100, eta: 0.1, model: wrn, opt: segd, max_norm: 100, momentum: 0.9, epochs: 400, run: -2}
