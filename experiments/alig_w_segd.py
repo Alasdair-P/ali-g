@@ -23,8 +23,6 @@ class ALIG_SEGD(optim.Optimizer):
                 for p in group['params']:
                     self.state[p]['momentum_buffer'] = torch.zeros_like(p.data, requires_grad=False)
 
-        self.apply_momentum = self.apply_momentum_standard
-
         if self.projection is not None:
             self.projection()
 
@@ -68,7 +66,7 @@ class ALIG_SEGD(optim.Optimizer):
                     numerator += eta * (g_e).norm()**2
                     denominator += eta * (g_t - g_e).norm()**2
 
-        step_size_unclipped_alig = float(loss_t / (grad_sqrd_norm + self.eps))
+        step_size_unclipped_alig = loss_t / (grad_sqrd_norm + self.eps)
         self.step_size_unclipped_alig = float(step_size_unclipped_alig)
         self.step_size_alig = float(step_size_unclipped_alig.clamp(min=0,max=1))
 
@@ -90,18 +88,21 @@ class ALIG_SEGD(optim.Optimizer):
         return step_size * self.state[p]['g_t'] + (1 - step_size) * self.state[p]['g_e']
 
     @torch.autograd.no_grad()
-    def update_parameters(self):
-        if abs(self.step_size - 1) < 1e-6 and abs(self.step_size_alig - 1) < 1e-6:
+    def update_parameters(self, x, y):
+        if abs(self.step_size - 1) < 1e-4 and abs(self.step_size_alig - 1) < 1e-4:
             for group in self.param_groups:
+                self.step_size = group['step_size_alig']
+                group['step_size'] = group['step_size_alig']
+                self.step_size_unclipped = group['step_size_segd']
                 for p in group['params']:
                     update = self.update_alig(group, p)
                     p.data.copy_(self.state[p]['w_t'] - group['eta'] * update)
                     self.apply_momentum(p, update, group['eta'], group['momentum'])
         else:
-            self.compute_best_step()
+            self.compute_best_step(x, y)
 
     @torch.autograd.no_grad()
-    def compute_best_step(self):
+    def compute_best_step(self, x, y):
         for group in self.param_groups:
             for p in group['params']:
                 p.data.copy_(self.state[p]['w_t'] - group['eta'] * self.update_segd(group, p))
@@ -118,20 +119,21 @@ class ALIG_SEGD(optim.Optimizer):
             self.type_of_step += 1
             for group in self.param_groups:
                 self.step_size = group['step_size_alig']
-                self.step_size_unclipped = group['step_size_sedg']
+                group['step_size'] = group['step_size_alig']
+                self.step_size_unclipped = group['step_size_segd']
                 for p in group['params']:
                     update = self.update_alig(group, p)
                     self.apply_momentum(p, update, group['eta'], group['momentum'])
         else:
             self.type_of_step -= 1
             for group in self.param_groups:
-                self.step_size = group['step_size']
+                self.step_size = group['step_size_segd']
+                group['step_size'] = group['step_size_segd']
                 self.step_size_unclipped = group['step_size_alig']
                 for p in group['params']:
                     update = self.update_segd(group, p)
                     p.data.copy_(self.state[p]['w_t'] - group['eta'] * update)
                     self.apply_momentum(p, update, group['eta'], group['momentum'])
-
 
     @torch.autograd.no_grad()
     def step(self, loss, x, y):
@@ -145,7 +147,7 @@ class ALIG_SEGD(optim.Optimizer):
 
         self.compute_step_sizes(loss)
 
-        self.update_parameters()
+        self.update_parameters(x, y)
 
         if self.projection is not None:
             self.projection()

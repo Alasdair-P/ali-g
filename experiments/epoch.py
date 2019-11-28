@@ -48,6 +48,7 @@ def train(model, loss, optimizer, loader, args, xp, reg):
         xp.train.lower_bound.update(args.B, weighting=batch_size)
         xp.train.step_size.update(optimizer.step_size, weighting=batch_size)
         xp.train.step_size_u.update(optimizer.step_size_unclipped, weighting=batch_size)
+        xp.train.step_type.update(optimizer.type_of_step, weighting=batch_size)
 
     xp.train.weight_norm.update(torch.sqrt(sum(p.norm() ** 2 for p in model.parameters())))
     xp.train.grad_norm.update(torch.sqrt(sum(p.grad.norm() ** 2 for p in model.parameters())))

@@ -8,8 +8,6 @@ class SEGD(optim.Optimizer):
             raise ValueError("Invalid eta: {}".format(eta))
         if momentum < 0.0:
             raise ValueError("Invalid momentum value: {}".format(momentum))
-        if weight_decay < 0.0:
-            raise ValueError("weight_decay not implymented: {}".format(weight_decay))
 
         params_list = list(params)
         defaults = dict(eta=eta, momentum=momentum, step_size=None, weight_decay=weight_decay)
@@ -38,27 +36,28 @@ class SEGD(optim.Optimizer):
     @torch.autograd.no_grad()
     def calc_extra_gradient(self, x, y):
 
+        self.l2_w_e = 0
         for group in self.param_groups:
             for p in group['params']:
                 p.copy_(self.state[p]['w_t'] - group['eta'] * self.state[p]['g_t'])
                 self.state[p]['w_e'] = p.data.detach().clone()
+                self.l2_w_e += 0.5 * group['weight_decay'] * p.data.norm() ** 2
 
         with torch.enable_grad():
             self.model.zero_grad()
             loss, _ = self.obj(self.model(x), y, x)
             loss.backward()
-            self.loss_w_e = float(loss)
+            self.loss_w_e = loss
 
         for group in self.param_groups:
             for p in group['params']:
-                self.state[p]['g_e'] = p.grad.data.clone()
+                self.state[p]['g_e'] = p.grad.data.detach().clone() + group['weight_decay'] * p.data.detach().clone()
 
     @torch.autograd.no_grad()
     def compute_step_size(self, closure):
         # calculate step size
-        loss_t = float(closure())
-        loss_e = self.loss_w_e
-        eta_2 = self.eta_2
+        loss_t = float(closure() + self.l2_w_t)
+        loss_e = float(self.loss_w_e + self.l2_w_e)
 
         numerator = 0
         denominator = 0
@@ -77,9 +76,6 @@ class SEGD(optim.Optimizer):
         step_size_unclipped = (numerator + loss_t - loss_e) / (denominator + self.eps)
         self.step_size_unclipped = float(step_size_unclipped)
         self.step_size = float(step_size_unclipped.clamp(min=0,max=1))
-        # print('step unclipped', self.step_size_unclipped)
-        # print('step ', self.step_size)
-        # xp.train.reg.update(0.5 * args.weight_decay * xp.train.weight_norm.value ** 2)
 
         for group in self.param_groups:
             group["step_size"] = self.step_size
@@ -105,10 +101,12 @@ class SEGD(optim.Optimizer):
     @torch.autograd.no_grad()
     def step(self, loss, x, y):
 
+        self.l2_w_t = 0
         for group in self.param_groups:
             for p in group['params']:
                 self.state[p]['w_t'] = p.data.detach().clone()
-                self.state[p]['g_t'] = p.grad.data.detach().clone()
+                self.state[p]['g_t'] = p.grad.data.detach().clone() + group['weight_decay'] * p.data.detach().clone()
+                self.l2_w_t += 0.5 * group['weight_decay'] * p.data.norm() ** 2
 
         self.calc_extra_gradient(x, y)
 
