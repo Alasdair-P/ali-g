@@ -163,10 +163,10 @@ class Distillation_Loss_2(nn.Module):
             dacay_amount -= (1-self.decay_lower_bound)*mask
             lower_bound *= decay_amount
 
-            loss = loss_dist.clamp(min=self.lower_bound).mean()
-        else:
-            loss = loss_ce.mean() + loss_dist.mul(self.lambda_t).mean()
+            # loss = loss_dist.clamp(min=self.lower_bound).mean()
+            loss = (loss_dist - lower_bound).mean()
+            max_loss = loss_dist.clamp(min=lower_bound).mean()
 
-        return loss, loss_dist.mean()
+        return loss, loss_dist.mean(), max_loss
 '''
 '''

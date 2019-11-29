@@ -42,7 +42,6 @@ class AliG(torch.optim.Optimizer):
         self.adjusted_momentum = adjusted_momentum
         self.projection = projection_fn
         self.eps = eps
-        self.B = lower_bound
 
         for group in self.param_groups:
             if group['momentum']:
@@ -68,7 +67,7 @@ class AliG(torch.optim.Optimizer):
                 grad_sqrd_norm += p.grad.data.norm() ** 2
 
         # compute unclipped step-size
-        self.step_size_unclipped = float((loss-self.B) / (grad_sqrd_norm + self.eps))
+        self.step_size_unclipped = float((loss) / (grad_sqrd_norm + self.eps))
 
         # compute effective step-size (clipped)
         for group in self.param_groups:
