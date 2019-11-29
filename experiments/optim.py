@@ -60,7 +60,9 @@ def get_optimizer(args, model, loss, parameters):
     optimizer.step_size = args.eta
     optimizer.step_size_unclipped = args.eta
     optimizer.momentum = args.momentum
-    optimizer.type_of_step = 0
+    optimizer.sgd_step = 0
+    optimizer.segd_step = 0
+    optimizer.alig_step = 0
 
     if args.load_opt:
         state = torch.load(args.load_opt)['optimizer']

@@ -90,6 +90,7 @@ class ALIG_SEGD(optim.Optimizer):
     @torch.autograd.no_grad()
     def update_parameters(self, x, y):
         if abs(self.step_size - 1) < 1e-4 and abs(self.step_size_alig - 1) < 1e-4:
+            self.sgd_step += 1
             for group in self.param_groups:
                 self.step_size = group['step_size_alig']
                 group['step_size'] = group['step_size_alig']
@@ -116,7 +117,7 @@ class ALIG_SEGD(optim.Optimizer):
         loss_alig, _ = self.obj(self.model(x), y, x)
 
         if loss_alig < loss_segd:
-            self.type_of_step += 1
+            self.alig_step += 1
             for group in self.param_groups:
                 self.step_size = group['step_size_alig']
                 group['step_size'] = group['step_size_alig']
@@ -125,7 +126,7 @@ class ALIG_SEGD(optim.Optimizer):
                     update = self.update_alig(group, p)
                     self.apply_momentum(p, update, group['eta'], group['momentum'])
         else:
-            self.type_of_step -= 1
+            self.segd_step += 1
             for group in self.param_groups:
                 self.step_size = group['step_size_segd']
                 group['step_size'] = group['step_size_segd']
