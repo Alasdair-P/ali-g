@@ -56,7 +56,6 @@ class SEGD(optim.Optimizer):
         # calculate step size
         loss_t = float(closure())
         loss_e = self.loss_w_e
-        eta_2 = self.eta_2
 
         numerator = 0
         denominator = 0
@@ -67,38 +66,37 @@ class SEGD(optim.Optimizer):
                 for p in group['params']:
                     g_t = self.state[p]['g_t']
                     g_e = self.state[p]['g_e']
-
-                    # calculate u
-                    numerator += eta * (g_e).norm()**2
+                    numerator += eta * (g_t).norm()**2
                     denominator += eta * (g_t - g_e).norm()**2
 
-        step_size_unclipped = (numerator + loss_t - loss_e) / (denominator + self.eps)
-        self.step_size_unclipped = float(step_size_unclipped)
-        self.step_size = float(step_size_unclipped.clamp(min=0,max=1))
-        # print('step unclipped', self.step_size_unclipped)
-        # print('step ', self.step_size)
-        # xp.train.reg.update(0.5 * args.weight_decay * xp.train.weight_norm.value ** 2)
+        # calcuates v
+        step_size_unclipped = (numerator - loss_t + loss_e) / (denominator + self.eps)
+        # update in terms of u so 1-v 
+        self.step_size_unclipped = 1 - float(step_size_unclipped)
+        self.step_size = 1 - float(step_size_unclipped.clamp(min=0,max=1))
 
         for group in self.param_groups:
             group["step_size"] = self.step_size
 
     @torch.autograd.no_grad()
+    def w_update(self, p, group):
+        step_size = group['step_size']
+        eta = group['eta']
+        return - eta * (1 - step_size) * self.state[p]['g_t'] - eta * step_size * self.state[p]['g_e'] # step size = v
+        # return - eta * step_size * self.state[p]['g_t'] - eta * (1 - step_size) * self.state[p]['g_e'] # step size = u
+
+    @torch.autograd.no_grad()
     def update_parameters(self):
         # update parameters of model
         for group in self.param_groups:
-            eta = group['eta']
-            step_size = group["step_size"]
             momentum = group["momentum"]
             if group['eta'] > 0.0:
                 for p in group['params']:
-                    grad_t = self.state[p]['g_t']
-                    grad_e = self.state[p]['g_e']
-                    update = step_size * grad_t + (1 - step_size) * grad_e
                     p.data.copy_(self.state[p]['w_t'])
-                    p.data.add_(-eta, update)
+                    p.data.add_(self.w_update(p, group))
                     # Nesterov momentum
                     if momentum:
-                        self.apply_momentum(p, step_size, eta, momentum)
+                        self.apply_momentum(p, group, momentum)
 
     @torch.autograd.no_grad()
     def step(self, loss, x, y):
@@ -118,12 +116,9 @@ class SEGD(optim.Optimizer):
             self.projection()
 
     @torch.autograd.no_grad()
-    def apply_momentum_standard(self, p, step_size, eta, momentum):
+    def apply_momentum_standard(self, p, group, momentum):
         buffer = self.state[p]['momentum_buffer']
-        grad_t = self.state[p]['g_t']
-        grad_e = self.state[p]['g_e']
-        update = step_size * grad_t + (1 - step_size) * grad_e
-        buffer.mul_(momentum).add_(-eta, update)
-        p.add_(momentum, buffer)
+        buffer.mul_(momentum).add_(self.w_update(p, group))
+        p.data.add_(momentum, buffer)
 
 
