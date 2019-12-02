@@ -140,7 +140,7 @@ class Distillation_Loss_2(nn.Module):
 
         self.lambda_t = args.lambda_t
         self.tau = args.tau
-        self.lower_bound = torch.zeros(args.train_size).fill_(args.B)
+        self.lower_bound = torch.zeros(args.train_size).fill_(args.B).cuda()
         self.decay_lower_bound = args.decay_lower_bound
 
         self.loss = nn.CrossEntropyLoss()
@@ -156,16 +156,16 @@ class Distillation_Loss_2(nn.Module):
         loss_dist = -(F.softmax(scores_teacher.div(self.tau),dim=1).mul( F.log_softmax(scores.div(self.tau),dim=1) - F.log_softmax(scores_teacher.div(self.tau),dim=1) )).sum(dim=1)
 
         if self.kl:
-            lower_bound = self.lower_bound[idx]
-            mask = (loss_dist <= lower_bound).long()
+            mask = (loss_dist <= self.lower_bound[idx]).float()
             decay_amount = torch.ones_like(loss_dist)
-            dacay_amount -= (1-self.decay_lower_bound)*mask
-            lower_bound *= decay_amount
+            decay_amount -= (1-self.decay_lower_bound)*mask
+            # print('self.lower_bound[idx]', self.lower_bound[idx])
+            # print('decay_amount', decay_amount)
+            self.lower_bound[idx] *= decay_amount
 
-            # loss = loss_dist.clamp(min=self.lower_bound).mean()
-            loss = (loss_dist - lower_bound).mean()
-            max_loss = loss_dist.clamp(min=lower_bound).mean()
+            loss = (loss_dist - self.lower_bound[idx]).clamp(min=0).mean()
+            # print('loss_dist', loss_dist)
+            # print('self.lower_bound[idx]', self.lower_bound[idx])
+            # input('press any key')
 
         return loss, loss_dist.mean()
-'''
-'''

@@ -14,10 +14,8 @@ def train(model, loss, optimizer, loader, args, xp, reg):
 
     for idx, data in tqdm(loader, disable=not args.tqdm, desc='Train Epoch',
                      leave=False, total=len(loader)):
-        data = x, y
+        x, y = data
         (x, y) = (x.cuda(), y.cuda()) if args.cuda else (x, y)
-        print('idx', idx, 'x', x, 'y', y)
-        input('press any key')
 
         # forward pass
         optimizer.zero_grad()
@@ -51,7 +49,7 @@ def train(model, loss, optimizer, loader, args, xp, reg):
         xp.train.acc.update(accuracy(scores, y), weighting=batch_size)
         xp.train.loss.update(float(loss_value), weighting=batch_size)
         xp.train.kl.update(float(kl), weighting=batch_size)
-        xp.train.lower_bound.update(args.B, weighting=batch_size)
+        xp.train.lower_bound.update(loss.lower_bound.mean(), weighting=batch_size)
         xp.train.step_size.update(optimizer.step_size, weighting=batch_size)
         xp.train.step_size_u.update(optimizer.step_size_unclipped, weighting=batch_size)
 
