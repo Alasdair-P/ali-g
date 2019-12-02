@@ -12,9 +12,12 @@ def train(model, loss, optimizer, loader, args, xp, reg):
     for metric in xp.train.metrics():
         metric.reset()
 
-    for x, y in tqdm(loader, disable=not args.tqdm, desc='Train Epoch',
+    for idx, data in tqdm(loader, disable=not args.tqdm, desc='Train Epoch',
                      leave=False, total=len(loader)):
+        data = x, y
         (x, y) = (x.cuda(), y.cuda()) if args.cuda else (x, y)
+        print('idx', idx, 'x', x, 'y', y)
+        input('press any key')
 
         # forward pass
         optimizer.zero_grad()
@@ -25,7 +28,10 @@ def train(model, loss, optimizer, loader, args, xp, reg):
             with set_smoothing_enabled(args.smooth_svm):
                 loss_value, kl = loss(scores, y, x)
         else:
-            loss_value, kl = loss(scores, y, x)
+            if args.decay_lower_bound:
+                loss_value, kl = loss(scores, y, x, idx)
+            else:
+                loss_value, kl = loss(scores, y, x)
 
         if 'cgd' in args.opt or 'segd' in args.opt:
             if args.debug:

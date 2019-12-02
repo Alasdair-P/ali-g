@@ -98,7 +98,6 @@ class Distillation_Loss(nn.Module):
             loss = loss_ce.mean() + loss_dist.mul(self.lambda_t).mean()
         return loss, loss_dist.mean()
 
-
 class Distillation_Loss_2(nn.Module):
 
     def __init__(self, args):
@@ -141,7 +140,7 @@ class Distillation_Loss_2(nn.Module):
 
         self.lambda_t = args.lambda_t
         self.tau = args.tau
-        self.lower_bound = torch.zeros(arg.train_size).fill_(args.B)
+        self.lower_bound = torch.zeros(args.train_size).fill_(args.B)
         self.decay_lower_bound = args.decay_lower_bound
 
         self.loss = nn.CrossEntropyLoss()
@@ -167,6 +166,6 @@ class Distillation_Loss_2(nn.Module):
             loss = (loss_dist - lower_bound).mean()
             max_loss = loss_dist.clamp(min=lower_bound).mean()
 
-        return loss, loss_dist.mean(), max_loss
+        return loss, loss_dist.mean()
 '''
 '''
