@@ -82,8 +82,7 @@ class SEGD(optim.Optimizer):
     def w_update(self, p, group):
         step_size = group['step_size']
         eta = group['eta']
-        return - eta * (1 - step_size) * self.state[p]['g_t'] - eta * step_size * self.state[p]['g_e'] # step size = v
-        # return - eta * step_size * self.state[p]['g_t'] - eta * (1 - step_size) * self.state[p]['g_e'] # step size = u
+        return - eta * step_size * self.state[p]['g_t'] - eta * (1 - step_size) * self.state[p]['g_e'] # step size = u
 
     @torch.autograd.no_grad()
     def update_parameters(self):
@@ -117,6 +116,13 @@ class SEGD(optim.Optimizer):
 
     @torch.autograd.no_grad()
     def apply_momentum_standard(self, p, group, momentum):
+        buffer = self.state[p]['momentum_buffer']
+        buffer.mul_(momentum).add_(self.w_update(p, group))
+        p.data.add_(momentum, buffer)
+
+    @torch.autograd.no_grad()
+    def apply_momentum_polyak(self, p, group, momentum):
+        p.data.add_(-self.w_update(p, group))
         buffer = self.state[p]['momentum_buffer']
         buffer.mul_(momentum).add_(self.w_update(p, group))
         p.data.add_(momentum, buffer)
