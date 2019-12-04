@@ -1,0 +1,31 @@
+- {batch_size: 1024, dataset: cifar100, eta: 0.01, model: resnet, opt: segd2, weight_decay: 0.0, momentum: 0.9, run: momentum09}
+- {batch_size: 1024, dataset: cifar100, eta: 0.1, model: resnet, opt: segd2, weight_decay: 0.0, momentum: 0.9, run: momentum09}
+- {batch_size: 1024, dataset: cifar100, eta: 1, model: resnet, opt: segd2, weight_decay: 0.0, momentum: 0.9, run: momentum09}
+- {batch_size: 1024, dataset: cifar100, eta: 10, model: resnet, opt: segd2, weight_decay: 0.0, momentum: 0.9, run: momentum09}
+
+- {batch_size: 256, dataset: cifar100, eta: 0.01, model: resnet, opt: segd2, weight_decay: 0.0, momentum: 0.9, run: momentum09}
+- {batch_size: 256, dataset: cifar100, eta: 0.1, model: resnet, opt: segd2, weight_decay: 0.0, momentum: 0.9, run: momentum09}
+- {batch_size: 256, dataset: cifar100, eta: 1, model: resnet, opt: segd2, weight_decay: 0.0, momentum: 0.9, run: momentum09}
+- {batch_size: 256, dataset: cifar100, eta: 10, model: resnet, opt: segd2, weight_decay: 0.0, momentum: 0.9, run: momentum09}
+
+- {batch_size: 64, dataset: cifar100, eta: 0.01, model: resnet, opt: segd2, weight_decay: 0.0, momentum: 0.9, run: momentum09}
+- {batch_size: 64, dataset: cifar100, eta: 0.1, model: resnet, opt: segd2, weight_decay: 0.0, momentum: 0.9, run: momentum09}
+- {batch_size: 64, dataset: cifar100, eta: 1, model: resnet, opt: segd2, weight_decay: 0.0, momentum: 0.9, run: momentum09}
+- {batch_size: 64, dataset: cifar100, eta: 10, model: resnet, opt: segd2, weight_decay: 0.0, momentum: 0.9, run: momentum09}
+
+- {batch_size: 1024, dataset: cifar100, eta: 0.01, model: resnet, opt: segd2, weight_decay: 0.0, momentum: 0.0}
+- {batch_size: 1024, dataset: cifar100, eta: 0.1, model: resnet, opt: segd2, weight_decay: 0.0, momentum: 0.0}
+- {batch_size: 1024, dataset: cifar100, eta: 1, model: resnet, opt: segd2, weight_decay: 0.0, momentum: 0.0}
+- {batch_size: 1024, dataset: cifar100, eta: 10, model: resnet, opt: segd2, weight_decay: 0.0, momentum: 0.0}
+
+- {batch_size: 256, dataset: cifar100, eta: 0.01, model: resnet, opt: segd2, weight_decay: 0.0, momentum: 0.0}
+- {batch_size: 256, dataset: cifar100, eta: 0.1, model: resnet, opt: segd2, weight_decay: 0.0, momentum: 0.0}
+- {batch_size: 256, dataset: cifar100, eta: 1, model: resnet, opt: segd2, weight_decay: 0.0, momentum: 0.0}
+- {batch_size: 256, dataset: cifar100, eta: 10, model: resnet, opt: segd2, weight_decay: 0.0, momentum: 0.0}
+
+- {batch_size: 64, dataset: cifar100, eta: 0.01, model: resnet, opt: segd2, weight_decay: 0.0, momentum: 0.0}
+- {batch_size: 64, dataset: cifar100, eta: 0.1, model: resnet, opt: segd2, weight_decay: 0.0, momentum: 0.0}
+- {batch_size: 64, dataset: cifar100, eta: 1, model: resnet, opt: segd2, weight_decay: 0.0, momentum: 0.0}
+- {batch_size: 64, dataset: cifar100, eta: 10, model: resnet, opt: segd2, weight_decay: 0.0, momentum: 0.0}
+
+ 

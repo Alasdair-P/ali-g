@@ -2,7 +2,7 @@ import torch
 import torch.optim as optim
 from torch.optim.optimizer import required
 
-class SEGD(optim.Optimizer):
+class SEGD_2(optim.Optimizer):
     def __init__(self, params, model, obj, eta=None, momentum=0, projection_fn=None, weight_decay=0, eps=1e-6, adjusted_momentum=False):
         if eta is not None and eta <= 0.0:
             raise ValueError("Invalid eta: {}".format(eta))
@@ -11,7 +11,7 @@ class SEGD(optim.Optimizer):
 
         params_list = list(params)
         defaults = dict(eta=eta, momentum=momentum, step_size=None, weight_decay=weight_decay)
-        super(SEGD, self).__init__(params_list, defaults)
+        super(SEGD_2, self).__init__(params_list, defaults)
 
         self.model = model
         self.obj = obj
@@ -19,8 +19,8 @@ class SEGD(optim.Optimizer):
         self.projection = projection_fn
         self.eta_2 = eta
         self.eps = eps
-        self.update = self.segd_1
-        # self.update = self.segd_2
+        # self.update = self.segd_1
+        self.update = self.segd_2
 
         for group in self.param_groups:
             if group['momentum']:
