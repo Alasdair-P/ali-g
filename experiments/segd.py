@@ -68,7 +68,7 @@ class SEGD(optim.Optimizer):
                 for p in group['params']:
                     g_t = self.state[p]['g_t']
                     g_e = self.state[p]['g_e']
-                    numerator += eta * (g_t).norm()**2
+                    numerator += eta * (g_t).norm()**2 - 2 * eta * g_t.mul(g_e).sum()
                     denominator += eta * (g_t - g_e).norm()**2
 
         # calcuates v

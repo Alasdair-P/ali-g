@@ -63,7 +63,7 @@ class ALIG_SEGD(optim.Optimizer):
 
                     # calculate u
                     grad_sqrd_norm += eta * (g_t).norm()**2
-                    numerator += eta * (g_e).norm()**2
+                    numerator += eta * (g_e).norm()**2 - 2 * eta * g_e.mul(g_t).sum()
                     denominator += eta * (g_t - g_e).norm()**2
 
         step_size_unclipped_alig = loss_t / (grad_sqrd_norm + self.eps)

@@ -94,7 +94,7 @@ class SEGD_2(optim.Optimizer):
         g_e = self.state[p]['g_e']
         g_tTg_e = (g_e * g_t).sum()
         g_tTg_t = (g_t * g_t).sum()
-        return - eta * (1 - step_size + step_size * (g_tTg_e/g_tTg_t)) * g_t # step size in term of v
+        return - eta * (1 - step_size + step_size * (g_tTg_e/(g_tTg_t + self.eps))) * g_t # step size in term of v
 
     @torch.autograd.no_grad()
     def update_parameters(self):

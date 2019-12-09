@@ -5,16 +5,16 @@ from scheduling import launch
 def create_jobs():
     template = "python main.py --no_tqdm "
     # template = "python main.py --no_tqdm --no_visdom "
-    wrn_opts = " --depth 40 --width 4 --port 9007"
-    dn_opts = " --depth 40 --growth 40 --port 9007"
+    wrn_opts = " --depth 40 --width 4 --port 9025"
+    dn_opts = " --depth 40 --growth 40 --port 9025"
     # resnet_opts = " --depth 20 --epochs 200 --momentum 0.9 --teacher /data0/binary-networks-data/cifar100/cifar100_resnet32/model.pkl --batch_size 128 --run teacher32 --loss kl"
     resnet_opts = " --depth 20 --epochs 200 --port 9026"
 
-    # with open("reproduce/hparams/cifar.yaml", "r") as f:
+    with open("reproduce/hparams/alig_only.yaml", "r") as f:
     # with open("reproduce/hparams/cross_val_cgd_0_1_large_batch.yaml", "r") as f:
     # with open("reproduce/hparams/distill.yaml", "r") as f:
     # with open("reproduce/hparams/cifar_segd.yaml", "r") as f:
-    with open("reproduce/hparams/cifar_segd2_1.yaml", "r") as f:
+    # with open("reproduce/hparams/cifar_segd2_1.yaml", "r") as f:
         hparams = yaml.safe_load(f)
 
     jobs = []
