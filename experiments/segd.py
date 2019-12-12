@@ -20,17 +20,13 @@ class SEGD(optim.Optimizer):
         self.eta_2 = eta
         self.eps = eps
         self.update = self.segd_1
-        # self.update = self.segd_2
 
         for group in self.param_groups:
             if group['momentum']:
                 for p in group['params']:
                     self.state[p]['momentum_buffer'] = torch.zeros_like(p.data, requires_grad=False)
 
-        if self.adjusted_momentum:
-            self.apply_momentum = self.apply_momentum_adjusted
-        else:
-            self.apply_momentum = self.apply_momentum_standard
+        self.apply_momentum = self.apply_momentum_nesterov
 
         if self.projection is not None:
             self.projection()
@@ -41,7 +37,7 @@ class SEGD(optim.Optimizer):
         for group in self.param_groups:
             for p in group['params']:
                 p.copy_(self.state[p]['w_t'] - group['eta'] * self.state[p]['g_t'])
-                self.state[p]['w_e'] = p.data.detach().clone()
+                # self.state[p]['w_e'] = p.data.detach().clone()
 
         with torch.enable_grad():
             self.model.zero_grad()
@@ -59,8 +55,9 @@ class SEGD(optim.Optimizer):
         loss_t = float(closure())
         loss_e = self.loss_w_e
 
-        numerator = 0
-        denominator = 0
+        g_t_norm = 0
+        g_e_norm = 0
+        g_t_minus_g_e_norm = 0
 
         for group in self.param_groups:
             eta = group['eta']
@@ -68,33 +65,22 @@ class SEGD(optim.Optimizer):
                 for p in group['params']:
                     g_t = self.state[p]['g_t']
                     g_e = self.state[p]['g_e']
-                    numerator += eta * (g_t).norm()**2 - 2 * eta * g_t.mul(g_e).sum()
-                    denominator += eta * (g_t - g_e).norm()**2
+                    g_t_norm += eta * (g_t).norm()**2
+                    g_t_minus_g_e_norm += eta * (g_t - g_e).norm()**2
+                    g_e_norm += eta * (g_e).norm()**2
+        # SEGD
+        segd_step_size_unclipped = (g_t_norm - loss_t + loss_e) / (g_t_minus_g_e_norm + self.eps) # calcuates v
+        self.step_size_unclipped = float(segd_step_size_unclipped)
+        self.step_size = float(segd_step_size_unclipped.clamp(min=0,max=1))
+        g = self.step_size
 
-        # calcuates v
-        step_size_unclipped = (numerator - loss_t + loss_e) / (denominator + self.eps)
-        # update in terms of u so 1-v 
-        self.step_size_unclipped = 1 - float(step_size_unclipped)
-        self.step_size = 1 - float(step_size_unclipped.clamp(min=0,max=1))
+        # ALIG
+        alig_step_size_unclipped = loss_t / ((1 - g) * g_t_norm + g * g_e_norm + (g**2 - g) * g_t_minus_g_e_norm + self.eps)
+        self.step_size_unclipped_alig = float(alig_step_size_unclipped)
+        self.step_size_alig = float(alig_step_size_unclipped.clamp(min=0,max=1))
 
         for group in self.param_groups:
             group["step_size"] = self.step_size
-
-    @torch.autograd.no_grad()
-    def segd_1(self, p, group):
-        step_size = group['step_size']
-        eta = group['eta']
-        return - eta * step_size * self.state[p]['g_t'] - eta * (1 - step_size) * self.state[p]['g_e'] # step size in terms of u
-
-    @torch.autograd.no_grad()
-    def segd_2(self, p, group):
-        step_size = 1 - group['step_size'] # convert back to v
-        eta = group['eta']
-        g_t = self.state[p]['g_t']
-        g_e = self.state[p]['g_e']
-        g_tTg_e = (g_e * g_t).sum()
-        g_tTg_t = (g_t * g_t).sum()
-        return - eta * (1 - step_size + step_size * (g_tTg_e/g_tTg_t)) * g_t # step size in term of v
 
     @torch.autograd.no_grad()
     def update_parameters(self):
@@ -127,7 +113,7 @@ class SEGD(optim.Optimizer):
             self.projection()
 
     @torch.autograd.no_grad()
-    def apply_momentum_standard(self, p, group, momentum):
+    def apply_momentum_nesterov(self, p, group, momentum):
         buffer = self.state[p]['momentum_buffer']
         buffer.mul_(momentum).add_(self.update(p, group))
         p.data.add_(momentum, buffer)
@@ -137,4 +123,14 @@ class SEGD(optim.Optimizer):
         p.data.add_(-self.w_update(p, group))
         buffer = self.state[p]['momentum_buffer']
         buffer.mul_(momentum).add_(self.update(p, group))
-        p.data.add_(momentum, buffer)
+        p.data.add_(buffer)
+
+    @torch.autograd.no_grad()
+    def segd_1(self, p, group):
+        # update in terms of v
+        alig_scaling = self.step_size_alig
+        step_size = group['step_size']
+        eta = group['eta'] * self.step_size_alig
+        segd_update = - eta * step_size * self.state[p]['g_e'] - eta * (1 - step_size) * self.state[p]['g_t']
+        return alig_scaling * segd_update
+

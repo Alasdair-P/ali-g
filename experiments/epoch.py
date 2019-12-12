@@ -48,12 +48,12 @@ def train(model, loss, optimizer, loader, args, xp, reg):
         xp.train.lower_bound.update(args.B, weighting=batch_size)
         xp.train.step_size.update(optimizer.step_size, weighting=batch_size)
         xp.train.step_size_u.update(optimizer.step_size_unclipped, weighting=batch_size)
-        xp.train.sgd_step.update(optimizer.sgd_step, weighting=batch_size)
-        xp.train.segd_step.update(optimizer.segd_step, weighting=batch_size)
-        xp.train.alig_step.update(optimizer.alig_step, weighting=batch_size)
+
+        xp.train.alig_step.update(optimizer.step_size_alig, weighting=batch_size)
+        xp.train.alig_step_unclipped.update(optimizer.step_size_unclipped_alig, weighting=batch_size)
+        xp.train.grad_norm.update(torch.sqrt(sum(p.grad.norm() ** 2 for p in model.parameters())), weighting=batch_size)
 
     xp.train.weight_norm.update(torch.sqrt(sum(p.norm() ** 2 for p in model.parameters())))
-    xp.train.grad_norm.update(torch.sqrt(sum(p.grad.norm() ** 2 for p in model.parameters())))
     xp.train.reg.update(0.5 * args.weight_decay * xp.train.weight_norm.value ** 2)
     xp.train.obj.update(xp.train.reg.value + xp.train.loss.value)
     xp.train.timer.update()
@@ -73,7 +73,6 @@ def train(model, loss, optimizer, loader, args, xp, reg):
 
     for metric in xp.train.metrics():
         metric.log(time=xp.epoch.value)
-
 
 @torch.autograd.no_grad()
 def test(model, optimizer, loader, args, xp, epoch):

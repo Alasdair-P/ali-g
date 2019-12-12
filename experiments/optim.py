@@ -7,7 +7,6 @@ from alig.th import AliG
 # from alig.th.projection import l2_projection
 from cgd import CGD
 from segd import SEGD
-from segd_2 import SEGD_2
 from alig_w_segd import ALIG_SEGD
 
 @torch.autograd.no_grad()
@@ -44,9 +43,6 @@ def get_optimizer(args, model, loss, parameters):
     elif args.opt == 'segd':
         optimizer = SEGD(parameters, model, loss, eta=args.eta, momentum=args.momentum,
                          projection_fn=lambda: l2_projection(parameters, args.max_norm), weight_decay=args.weight_decay)
-    elif args.opt == 'segd2':
-        optimizer = SEGD_2(parameters, model, loss, eta=args.eta, momentum=args.momentum,
-                         projection_fn=lambda: l2_projection(parameters, args.max_norm), weight_decay=args.weight_decay)
     elif args.opt == 'alig_segd':
         optimizer = ALIG_SEGD(parameters, model, loss, eta=args.eta, momentum=args.momentum,
                          projection_fn=lambda: l2_projection(parameters, args.max_norm), weight_decay=args.weight_decay)
@@ -67,6 +63,7 @@ def get_optimizer(args, model, loss, parameters):
     optimizer.sgd_step = 0
     optimizer.segd_step = 0
     optimizer.alig_step = 0
+    optimizer.alig_step_unclipped = 0
 
     if args.load_opt:
         state = torch.load(args.load_opt)['optimizer']
