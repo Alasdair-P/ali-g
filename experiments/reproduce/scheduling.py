@@ -18,7 +18,7 @@ def run_command(command, on_gpu, noprint):
                 break
     elif waitGPU is not None:
         ngpu = int(os.environ['NGPU']) if 'NGPU' in os.environ else 1
-        waitGPU.wait(nproc=0, interval=10, ngpu=ngpu, gpu_ids=[0, 3])
+        waitGPU.wait(nproc=0, interval=10, ngpu=ngpu, gpu_ids=[0,1,2,3])
         # if 'CUDA_VISIBLE_DEVICES' in os.environ:
             # # waitGPU.wait(nproc=0, interval=10, ngpu=ngpu, gpu_ids=[int(os.environ['CUDA_VISIBLE_DEVICES'])])
             # waitGPU.wait(nproc=0, interval=10, ngpu=ngpu, gpu_ids=[0, 1, 2, 3])
