@@ -16,9 +16,6 @@ from reg import Reg
 
 def main(args):
 
-    if args.epochs == 300:
-        return
-
     set_cuda(args)
     set_seed(args)
 

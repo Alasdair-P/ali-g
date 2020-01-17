@@ -49,10 +49,11 @@ def setup_xp(args, model, optimizer):
     xp.train.weight_norm = mlogger.metric.Simple(plotter=plotter, plot_title="Weight-Norm")
     xp.train.grad_norm = mlogger.metric.Average(plotter=plotter, plot_title="Grad-Norm")
 
-    xp.train.segd_step_2 = mlogger.metric.Average(plotter=plotter, plot_title="Step-Type", plot_legend="segd_2")
-    xp.train.segd_step = mlogger.metric.Average(plotter=plotter, plot_title="Step-Type", plot_legend="segd")
-    xp.train.alig_2 = mlogger.metric.Average(plotter=plotter, plot_title="Step-Type", plot_legend="alig_2")
-    xp.train.alig_1 = mlogger.metric.Average(plotter=plotter, plot_title="Step-Type", plot_legend="alig_1")
+    xp.train.alpha0 = mlogger.metric.Average(plotter=plotter, plot_title="Step-Type", plot_legend="alpha0")
+    xp.train.alpha1 = mlogger.metric.Average(plotter=plotter, plot_title="Step-Type", plot_legend="alpha1")
+    xp.train.alpha2 = mlogger.metric.Average(plotter=plotter, plot_title="Step-Type", plot_legend="alpha2")
+    xp.train.alpha3 = mlogger.metric.Average(plotter=plotter, plot_title="Step-Type", plot_legend="alpha3")
+    xp.train.alpha4 = mlogger.metric.Average(plotter=plotter, plot_title="Step-Type", plot_legend="alpha4")
 
     xp.train.step_size = mlogger.metric.Average(plotter=plotter, plot_title="Step-Size", plot_legend="clipped")
     xp.train.step_size_u = mlogger.metric.Average(plotter=plotter, plot_title="Step-Size", plot_legend="unclipped")
@@ -68,21 +69,11 @@ def setup_xp(args, model, optimizer):
     xp.test.acc = mlogger.metric.Average(plotter=plotter, plot_title="Accuracy", plot_legend="test")
     xp.test.timer = mlogger.metric.Timer(plotter=plotter, plot_title="Time", plot_legend='test')
 
-    """
-    # SEGD specific diagonistics
-    xp.segd = mlogger.Container()
-    xp.segd.g_t = mlogger.metric.Average(plotter=plotter, plot_title="segd", plot_legend="g_t")
-    xp.segd.g_e = mlogger.metric.Average(plotter=plotter, plot_title="segd", plot_legend="g_e")
-    xp.segd.l_t = mlogger.metric.Average(plotter=plotter, plot_title="segd", plot_legend="l_t")
-    xp.segd.l_e = mlogger.metric.Average(plotter=plotter, plot_title="segd", plot_legend="l_e")
-    xp.segd.g_t_minus_g_e = mlogger.metric.Average(plotter=plotter, plot_title="segd", plot_legend="g_t_minus_g_e")
-    """
-
 
     if args.visdom:
         plotter.set_win_opts("Step-Size", {'ytype': 'log'})
         plotter.set_win_opts("Objective", {'ytype': 'log'})
-        plotter.set_win_opts("Step-Type", {'ytype': 'log'})
+        # plotter.set_win_opts("Step-Type", {'ytype': 'log'})
 
     if args.log:
         # log at each epoch

@@ -27,7 +27,7 @@ def train(model, loss, optimizer, loader, args, xp, reg):
         else:
             loss_value, kl = loss(scores, y, x)
 
-        if 'cgd' in args.opt or 'segd' in args.opt:
+        if 'cgd' in args.opt or 'segd' in args.opt or 'sbd' in args.opt:
             if args.debug:
                 loss_value.backward(create_graph=True)
             else:
@@ -50,11 +50,11 @@ def train(model, loss, optimizer, loader, args, xp, reg):
         xp.train.step_size_u.update(optimizer.step_size_unclipped, weighting=batch_size)
         xp.train.grad_norm.update(torch.sqrt(sum(p.grad.norm() ** 2 for p in model.parameters())), weighting=batch_size)
         xp.train.step_size.update(optimizer.step_size, weighting=batch_size)
-        if args.opt == 'segd3':
-            xp.train.alig_1.update(optimizer.step_0, weighting=batch_size)
-            xp.train.alig_2.update(optimizer.step_1, weighting=batch_size)
-            xp.train.segd_step.update(optimizer.step_2, weighting=batch_size)
-            xp.train.segd_step_2.update(optimizer.step_3, weighting=batch_size)
+        xp.train.alpha0.update(optimizer.step_0, weighting=batch_size)
+        xp.train.alpha1.update(optimizer.step_1, weighting=batch_size)
+        xp.train.alpha2.update(optimizer.step_2, weighting=batch_size)
+        xp.train.alpha3.update(optimizer.step_3, weighting=batch_size)
+        xp.train.alpha4.update(optimizer.step_4, weighting=batch_size)
 
     xp.train.weight_norm.update(torch.sqrt(sum(p.norm() ** 2 for p in model.parameters())))
     xp.train.reg.update(0.5 * args.weight_decay * xp.train.weight_norm.value ** 2)

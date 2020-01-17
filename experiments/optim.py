@@ -7,6 +7,7 @@ from alig.th import AliG
 # from alig.th.projection import l2_projection
 from cgd import CGD
 from segd import SEGD
+from sbd import SBD
 from segd3 import SEGD3
 from alig_w_segd import ALIG_SEGD
 
@@ -50,6 +51,9 @@ def get_optimizer(args, model, loss, parameters):
     elif args.opt == 'segd3':
         optimizer = SEGD3(parameters, model, loss, eta=args.eta, momentum=args.momentum,
                          projection_fn=lambda: l2_projection(parameters, args.max_norm), weight_decay=args.weight_decay)
+    elif args.opt == 'sbd':
+        optimizer = SBD(parameters, model, loss, eta=args.eta, momentum=args.momentum,
+                         projection_fn=lambda: l2_projection(parameters, args.max_norm), weight_decay=args.weight_decay)
     # elif args.opt == 'bpgrad':
         # optimizer = BPGrad(parameters, eta=args.eta, momentum=args.momentum, weight_decay=args.weight_decay)
     # elif args.opt == 'l4adam':
@@ -68,6 +72,7 @@ def get_optimizer(args, model, loss, parameters):
     optimizer.step_1 = 0
     optimizer.step_2 = 0
     optimizer.step_3 = 0
+    optimizer.step_4 = 0
 
     if args.load_opt:
         state = torch.load(args.load_opt)['optimizer']
