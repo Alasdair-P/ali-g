@@ -8,6 +8,9 @@ from alig.th import AliG
 from cgd import CGD
 from segd import SEGD
 from sbd import SBD
+from sbd import SBD
+from sbdf import SBDF
+from sbd_backward import SBDB
 from segd3 import SEGD3
 from alig_w_segd import ALIG_SEGD
 
@@ -53,6 +56,12 @@ def get_optimizer(args, model, loss, parameters):
                          projection_fn=lambda: l2_projection(parameters, args.max_norm), weight_decay=args.weight_decay)
     elif args.opt == 'sbd':
         optimizer = SBD(parameters, model, loss, eta=args.eta, momentum=args.momentum,
+                         projection_fn=lambda: l2_projection(parameters, args.max_norm), weight_decay=args.weight_decay)
+    elif args.opt == 'sbdf':
+        optimizer = SBDF(parameters, model, loss, eta_2=args.eta_2 or args.eta, zero_plane=args.zero_plane, eta=args.eta, n=args.n, momentum=args.momentum,
+                         projection_fn=lambda: l2_projection(parameters, args.max_norm), weight_decay=args.weight_decay)
+    elif args.opt == 'sbdb':
+        optimizer = SBDB(parameters, model, loss, eta=args.eta, n=args.n, momentum=args.momentum,
                          projection_fn=lambda: l2_projection(parameters, args.max_norm), weight_decay=args.weight_decay)
     # elif args.opt == 'bpgrad':
         # optimizer = BPGrad(parameters, eta=args.eta, momentum=args.momentum, weight_decay=args.weight_decay)

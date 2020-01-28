@@ -4,8 +4,8 @@ import numpy as np
 import torch.optim as optim
 from torch.optim.optimizer import required
 
-class SBD(optim.Optimizer):
-    def __init__(self, params, model, obj, eta=None, momentum=0, projection_fn=None, weight_decay=0, eps=1e-8, adjusted_momentum=False, betas=(0.0, 0.99), amsgrad=False):
+class SBDF(optim.Optimizer):
+    def __init__(self, params, model, obj, eta_2, zero_plane, eta=None, n=1, momentum=0, projection_fn=None, weight_decay=0, eps=1e-8, adjusted_momentum=False, betas=(0.0, 0.99), amsgrad=False):
         if eta is not None and eta <= 0.0:
             raise ValueError("Invalid eta: {}".format(eta))
         if momentum < 0.0:
@@ -13,45 +13,32 @@ class SBD(optim.Optimizer):
 
         params_list = list(params)
         defaults = dict(eta=eta, momentum=momentum, step_size=None, weight_decay=weight_decay, betas=betas, amsgrad=amsgrad, eps=eps)
-        super(SBD, self).__init__(params_list, defaults)
+        super(SBDF, self).__init__(params_list, defaults)
 
         self.model = model
         self.obj = obj
         self.adjusted_momentum = adjusted_momentum
         self.projection = projection_fn
 
-        self.print = True
         self.print = False
+        self.print = True
 
-        self.A_functions = [self.sgd_gradient, self.segd_gradient, self.adam_gradient]
-        self.b_functions = [self.sgd_b, self.segd_b, self.sgd_b]
-        self.zero_plane = True
-        self.eps = eps
-        '''
-        Notes:
-        ~ segd requires sgd.
-        ~ segd always second in list with sgd at first place.
-        ~ zero plane is not included in self.A_functions, instead the self.zero_plane = True is set.
-        ~ self.sgd_b should be used for any method where the gradient is assumed to caluclated at the current point.
-        '''
-        self.n = len(self.A_functions)
+        self.n = n
+        self.loop_range = self.n
+        self.zero_plane = zero_plane
         if self.zero_plane:
             self.n += 1
+        self.eps = eps
+        self.eta_2 = eta_2
 
         for group in self.param_groups:
             for p in group['params']:
                 state = self.state[p]
                 if group['momentum']:
                     state['momentum_buffer'] = torch.zeros_like(p.data, requires_grad=False)
-                if self.adam_gradient in self.A_functions:
-                    state['step'] = 0
-                    state['exp_avg'] = torch.zeros_like(p.data)
-                    state['exp_avg_sq'] = torch.zeros_like(p.data)
-                    if amsgrad:
-                        state['max_exp_avg_sq'] = torch.zeros_like(p.data)
-                if self.svrg_gradient in self.A_functions:
-                    state['ref_point'] = p.data.clone().detach()
-                    state['ref_grad'] = p.data.clone().detach()
+        if self.print:
+            print('self.eta_2',self.eta_2)
+            print('group[momentum]',group['momentum'])
 
         self.apply_momentum = self.apply_momentum_nesterov
 
@@ -63,14 +50,18 @@ class SBD(optim.Optimizer):
     @torch.autograd.no_grad()
     def step(self, loss, x, y):
 
-        self.x, self.y, self.loss_w_t = x, y, float(loss())
+        self.x, self.y = x, y
+
+        self.losses = []
+        self.losses.append(float(loss()))
         for group in self.param_groups:
             for p in group['params']:
-                self.state[p]['w'] = p.data.detach().clone()
                 self.state[p]['grads'] = []
+                self.state[p]['grads'].append(p.grad.data.detach().clone())
+                self.state[p]['w'] = []
+                self.state[p]['w'].append(p.data.detach().clone())
 
-        for func in self.A_functions:
-            func()
+        self.n_steps_forward()
 
         self.construct_A_and_b()
 
@@ -84,34 +75,34 @@ class SBD(optim.Optimizer):
             self.projection()
 
     @torch.autograd.no_grad()
-    def sgd_gradient(self):
-        for group in self.param_groups:
-            for p in group['params']:
-                self.state[p]['grads'].append(p.grad.data.detach().clone())
-
-    @torch.autograd.no_grad()
-    def sgd_b(self):
-        return self.loss_w_t
-
-    @torch.autograd.no_grad()
-    def segd_gradient(self):
-
-        for group in self.param_groups:
-            for p in group['params']:
-                p.copy_(self.state[p]['w'] - group['eta'] * self.state[p]['grads'][0])
-                # self.state[p]['w_e'] = p.data.detach().clone()
+    def n_steps_forward(self):
 
         self.save_bn_stats()
-        with torch.enable_grad():
-            self.model.zero_grad()
-            loss, _ = self.obj(self.model(self.x), self.y, self.x)
-            loss.backward()
-            self.loss_w_e = float(loss)
-        self.load_bn_stats()
+        for i in range(self.loop_range-1):
+            for group in self.param_groups:
+                for p in group['params']:
+                    state = self.state[p]
+                    p.data.add_(-self.eta_2, state['grads'][i])
+                    # if group["momentum"]:
+                    if False:
+                        if (i == 0):
+                            state['fast_momentum_buffer'] = state['momentum_buffer'].clone()
+                        buffer = state['fast_momentum_buffer']
+                        momentum = group["momentum"]
+                        buffer.mul_(momentum).add_(-self.eta_2, state['grads'][i])
+                        p.data.add_(momentum, buffer)
 
-        for group in self.param_groups:
-            for p in group['params']:
-                self.state[p]['grads'].append(p.grad.data.detach().clone())
+            with torch.enable_grad():
+                self.model.zero_grad()
+                loss, _ = self.obj(self.model(self.x), self.y, self.x)
+                loss.backward()
+            self.losses.append(float(loss))
+
+            for group in self.param_groups:
+                for p in group['params']:
+                    self.state[p]['grads'].append(p.grad.data.detach().clone())
+                    self.state[p]['w'].append(p.data.detach().clone())
+        self.load_bn_stats()
 
     @torch.autograd.no_grad()
     def save_bn_stats(self):
@@ -136,66 +127,6 @@ class SBD(optim.Optimizer):
                 module.num_batches_tracked.data.copy_(stats['num_batches_tracked'])
 
     @torch.autograd.no_grad()
-    def segd_b(self):
-        return self.loss_w_e + self.A[0,1]
-
-    @torch.autograd.no_grad()
-    def svrg_gradient(self):
-
-        for group in self.param_groups:
-            for p in group['params']:
-                p.copy_(self.state[p]['ref_point'])
-                # self.state[p]['w_e'] = p.data.detach().clone()
-
-        with torch.enable_grad():
-            self.model.zero_grad()
-            loss, _ = self.obj(self.model(x), y, x)
-            loss.backward()
-
-        for group in self.param_groups:
-            for p in group['params']:
-                self.state[p]['grads'].append(p.grad.data.detach().clone())
-
-    @torch.autograd.no_grad()
-    def adam_gradient(self):
-        for group in self.param_groups:
-            for p in group['params']:
-                if p.grad is None:
-                    continue
-                grad = p.grad.data
-                if grad.is_sparse:
-                    raise RuntimeError('Adam does not support sparse gradients, please consider SparseAdam instead')
-                amsgrad = group['amsgrad']
-
-                state = self.state[p]
-
-                exp_avg, exp_avg_sq = state['exp_avg'], state['exp_avg_sq']
-                if amsgrad:
-                    max_exp_avg_sq = state['max_exp_avg_sq']
-                beta1, beta2 = group['betas']
-
-                state['step'] += 1
-                bias_correction1 = 1 - beta1 ** state['step']
-                bias_correction2 = 1 - beta2 ** state['step']
-
-                if group['weight_decay'] != 0:
-                    grad.add_(group['weight_decay'], p.data)
-
-                # Decay the first and second moment running average coefficient
-                exp_avg.mul_(beta1).add_(1 - beta1, grad)
-                exp_avg_sq.mul_(beta2).addcmul_(1 - beta2, grad, grad)
-                if amsgrad:
-                    # Maintains the maximum of all 2nd moment running avg. till now
-                    torch.max(max_exp_avg_sq, exp_avg_sq, out=max_exp_avg_sq)
-                    # Use the max. for normalizing running avg. of gradient
-                    denom = (max_exp_avg_sq.sqrt() / math.sqrt(bias_correction2)).add_(group['eps'])
-                else:
-                    denom = (exp_avg_sq.sqrt() / math.sqrt(bias_correction2)).add_(group['eps'])
-
-                adam_grad = exp_avg / bias_correction1 / denom / 1
-                self.state[p]['grads'].append(adam_grad)
-
-    @torch.autograd.no_grad()
     def construct_A_and_b(self):
         """
         construst A matrix and b vector here the zero index is the standard gradient
@@ -208,21 +139,20 @@ class SBD(optim.Optimizer):
         self.A[-1,-1] = 0
         self.b[-1] = 1
 
-        loop_range = self.n
-        if self.zero_plane:
-            loop_range = self.n - 1
+        loop_range = len(self.losses)
+        for i in range(loop_range):
+            self.b[i] += self.losses[i]
 
         for group in self.param_groups:
             eta = group['eta']
             for p in group['params']:
                 for i in range(loop_range):
+                    g_i = self.state[p]['grads'][i]
+                    w_s = self.state[p]['w']
+                    self.b[i] -= g_i.mul(w_s[i]-w_s[0]).sum()
                     for j in range(loop_range):
-                        g_i = self.state[p]['grads'][i]
                         g_j = self.state[p]['grads'][j]
                         self.A[i, j] += eta * (g_i * g_j).sum()
-
-        for i, func in enumerate(self.b_functions):
-            self.b[i] = func()
 
         # self.alig_step = (self.b[0]/self.A[0,0]).clamp(min=0, max=1)
         # self.segd_step = ((self.A[0,0] - self.b[0] + self.b[1] - self.A[0,1]) / (self.A[0,0] - 2 * self.A[0,1] + self.A[1,1])).clamp(min=0, max=1) # calcuates v
@@ -326,14 +256,13 @@ class SBD(optim.Optimizer):
     def update_parameters(self):
         # update parameters of model
         for group in self.param_groups:
-            momentum = group["momentum"]
             if group['eta'] > 0.0:
                 for p in group['params']:
-                    p.data.copy_(self.state[p]['w'])
+                    p.copy_(self.state[p]['w'][0])
                     p.data.add_(self.update(p, group))
                     # Nesterov momentum
-                    if momentum:
-                        self.apply_momentum(p, group, momentum)
+                    if group["momentum"]:
+                        self.apply_momentum(p, group)
 
     @torch.autograd.no_grad()
     def update(self, p, group):
@@ -343,8 +272,9 @@ class SBD(optim.Optimizer):
         return - group['eta'] * update
 
     @torch.autograd.no_grad()
-    def apply_momentum_nesterov(self, p, group, momentum):
+    def apply_momentum_nesterov(self, p, group):
         buffer = self.state[p]['momentum_buffer']
+        momentum = group["momentum"]
         buffer.mul_(momentum).add_(self.update(p, group))
         p.data.add_(momentum, buffer)
 

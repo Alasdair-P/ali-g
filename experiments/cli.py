@@ -5,7 +5,6 @@ import copy
 
 from cuda import set_cuda
 
-
 def parse_command():
     parser = argparse.ArgumentParser()
 
@@ -19,7 +18,6 @@ def parse_command():
     filter_args(args)
 
     return args
-
 
 def _add_dataset_parser(parser):
     d_parser = parser.add_argument_group(title='Dataset parameters')
@@ -67,6 +65,8 @@ def _add_optimization_parser(parser):
                           help="batch size")
     o_parser.add_argument('--eta', type=float, default=0.1,
                           help="initial / maximal learning rate")
+    o_parser.add_argument('--eta_2', type=float, default=None,
+                          help="initial / maximal learning rate")
     o_parser.add_argument('--momentum', type=float, default=0.9,
                           help="momentum value for SGD")
     o_parser.add_argument('--opt', type=str, required=True,
@@ -85,6 +85,10 @@ def _add_optimization_parser(parser):
                           help="finite difference")
     o_parser.add_argument('--max_epochs', type=int, default=0,
                           help="max epochs before decaying lower bound")
+    o_parser.add_argument('--n', type=int, default=1,
+                          help="size of bundle")
+    o_parser.add_argument('--no_zero_plane', dest='zero_plane', action='store_false',
+                          help="to not include alig zero plane in bundle")
 
 def _add_loss_parser(parser):
     l_parser = parser.add_argument_group(title='Loss parameters')
