@@ -8,9 +8,10 @@ from alig.th import AliG
 from cgd import CGD
 from segd import SEGD
 from sbd import SBD
-from sbd import SBD
+from sbd2 import SBD2
 from sbdf import SBDF
-from sbd_backward import SBDB
+from sbdf2 import SBDF2
+# from sbd_backward import SBDB
 from segd3 import SEGD3
 from alig_w_segd import ALIG_SEGD
 
@@ -60,15 +61,17 @@ def get_optimizer(args, model, loss, parameters):
     elif args.opt == 'sbdf':
         optimizer = SBDF(parameters, model, loss, eta_2=args.eta_2 or args.eta, zero_plane=args.zero_plane, eta=args.eta, n=args.n, momentum=args.momentum,
                          projection_fn=lambda: l2_projection(parameters, args.max_norm), weight_decay=args.weight_decay)
+    elif args.opt == 'sbdf2':
+        optimizer = SBDF2(parameters, model, loss, eta_2=args.eta_2 or args.eta, eta=args.eta, k=args.k, momentum=args.momentum,
+                          projection_fn=lambda: l2_projection(parameters, args.max_norm), momentum_forward=args.momentum_forward,
+                          sgd_forward=args.sgd_forward, same_batch=args.same_batch, weight_decay=args.weight_decay, _print=args.debug)
+
     elif args.opt == 'sbdb':
         optimizer = SBDB(parameters, model, loss, eta=args.eta, n=args.n, momentum=args.momentum,
                          projection_fn=lambda: l2_projection(parameters, args.max_norm), weight_decay=args.weight_decay)
-    # elif args.opt == 'bpgrad':
-        # optimizer = BPGrad(parameters, eta=args.eta, momentum=args.momentum, weight_decay=args.weight_decay)
-    # elif args.opt == 'l4adam':
-        # optimizer = L4Adam(parameters, weight_decay=args.weight_decay)
-    # elif args.opt == 'l4mom':
-        # optimizer = L4Mom(parameters, weight_decay=args.weight_decay)
+    elif args.opt == 'sbd2':
+        optimizer = SBD2(parameters, model, loss, args.n, eta=args.eta, zero_plane=args.zero_plane, momentum=args.momentum,
+                         projection_fn=lambda: l2_projection(parameters, args.max_norm), weight_decay=args.weight_decay)
     else:
         raise ValueError(args.opt)
 

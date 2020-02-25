@@ -85,10 +85,16 @@ def _add_optimization_parser(parser):
                           help="finite difference")
     o_parser.add_argument('--max_epochs', type=int, default=0,
                           help="max epochs before decaying lower bound")
-    o_parser.add_argument('--n', type=int, default=1,
+    o_parser.add_argument('--k', type=int, default=1,
                           help="size of bundle")
     o_parser.add_argument('--no_zero_plane', dest='zero_plane', action='store_false',
                           help="to not include alig zero plane in bundle")
+    o_parser.add_argument('--solve_forward', dest='sgd_forward', action='store_false',
+                          help="how to constuct bundle")
+    o_parser.add_argument('--momentum_forward', dest='momentum_forward', action='store_true',
+                          help="use momentum to construct bundle")
+    o_parser.add_argument('--same_batch', dest='same_batch', action='store_true',
+                          help="use same batch to construct bundle")
 
 def _add_loss_parser(parser):
     l_parser = parser.add_argument_group(title='Loss parameters')
@@ -131,6 +137,8 @@ def _add_misc_parser(parser):
                           help="data root directory for experiments")
     m_parser.add_argument('--no_log', dest='log', action='store_false',
                           help='do not log results')
+    m_parser.add_argument('--tensorboard', '--tb', dest="tensorboard", type=str, default='/data0/tb_logs/',
+                          help="destiation for tensorboard logs to be saved too")
     m_parser.add_argument('--debug', dest='debug', action='store_true',
                           help='debug mode')
     m_parser.add_argument('--parallel_gpu', dest='parallel_gpu', action='store_true',
@@ -168,8 +176,13 @@ def set_xp_name(args):
         else:
             os.makedirs(args.xp_name)
 
+    if args.tensorboard:
+        run_name = "{model}{data}-{opt}--eta-{eta}--l2-{l2}--b-{b}--run-{run}".format(model=args.model, data=data, opt=args.opt, eta=args.eta, l2=args.max_norm or args.weight_decay, b=args.batch_size, run=args.run_no)
+        print('run name', run_name)
+        args.tensorboard = os.path.join(args.tensorboard, run_name)
+
     if args.load_model:
-        args.load_model = os.path.join(args.xp_dir, args.load_model)
+       args.load_model = os.path.join(args.xp_dir, args.load_model)
 
 def set_num_classes(args):
     if args.dataset == 'spiral':

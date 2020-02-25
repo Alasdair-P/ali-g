@@ -50,8 +50,8 @@ def create_loaders(dataset_train, dataset_val, dataset_test,
           .format(len(dataset_train), len(dataset_val), len(dataset_test)))
     print('Batch size: \t {}'.format(batch_size))
 
-    # shuffling = False
-    shuffling = True
+    shuffling = False
+    # shuffling = True
     print(' \t shuffling = {} \t'.format(shuffling))
 
     # dataset_train_index = IndexedDataset(dataset_train)

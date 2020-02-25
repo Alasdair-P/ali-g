@@ -4,12 +4,13 @@ from tqdm import tqdm
 # from dfw.losses import set_smoothing_enabled
 from utils import accuracy, regularization
 
-def train(model, loss, optimizer, loader, args, xp, reg):
+def train(model, loss, optimizer, loader, args, xp, reg, i):
 
     model.train()
 
     for metric in xp.train.metrics():
         metric.reset()
+
 
     for x, y in tqdm(loader, disable=not args.tqdm, desc='Train Epoch',
                      leave=False, total=len(loader)):
@@ -37,8 +38,11 @@ def train(model, loss, optimizer, loader, args, xp, reg):
             loss_value.backward()
             optimizer.step(lambda: float(loss_value))
 
-        if reg:
-            reg.iter_update()
+        if 'sbdf2' in args.opt and not optimizer.k == 0:
+            continue
+
+        # if reg:
+            # reg.iter_update()
 
         # monitoring
         batch_size = x.size(0)

@@ -29,12 +29,12 @@ def main(args):
     i = 0
     for i in range(args.epochs):
         xp.epoch.update(i)
-        reg.epoch_update()
+        # reg.epoch_update()
 
-        if i == args.hq_epoch and reg:
-            reg.hard_quantize(optimizer)
+        # if i == args.hq_epoch and reg:
+            # reg.hard_quantize(optimizer)
 
-        train(model, loss, optimizer, loader_train, args, xp, reg)
+        train(model, loss, optimizer, loader_train, args, xp, reg, i)
         test(model, optimizer, loader_val, args, xp, i)
 
         decay_stuff(xp, model, args, optimizer, loss, i)

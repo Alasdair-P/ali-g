@@ -4,44 +4,38 @@ import numpy as np
 import torch.optim as optim
 from torch.optim.optimizer import required
 
-class SBDF(optim.Optimizer):
-    def __init__(self, params, model, obj, eta_2, zero_plane, eta=None, n=1, momentum=0, projection_fn=None, weight_decay=0, eps=1e-8, adjusted_momentum=False, betas=(0.0, 0.99), amsgrad=False):
+class SBD2(optim.Optimizer):
+    def __init__(self, params, model, obj, k, eta=None, zero_plane=True, momentum=0, projection_fn=None, weight_decay=0, eps=1e-8):
         if eta is not None and eta <= 0.0:
             raise ValueError("Invalid eta: {}".format(eta))
         if momentum < 0.0:
             raise ValueError("Invalid momentum value: {}".format(momentum))
+        if weight_decay > 0.0:
+            raise ValueError("Weight decay not implimented")
 
         params_list = list(params)
-        defaults = dict(eta=eta, momentum=momentum, step_size=None, weight_decay=weight_decay, betas=betas, amsgrad=amsgrad, eps=eps)
-        super(SBDF, self).__init__(params_list, defaults)
+        defaults = dict(eta=eta, momentum=momentum, step_size=None, weight_decay=weight_decay, eps=eps)
+        super(SBD2, self).__init__(params_list, defaults)
 
         self.model = model
         self.obj = obj
-        self.adjusted_momentum = adjusted_momentum
         self.projection = projection_fn
 
         self.print = True
         self.print = False
 
-        self.n = n
-        self.loop_range = self.n
+        self.K = k
         self.zero_plane = zero_plane
-        if self.zero_plane:
-            self.n += 1
         self.eps = eps
-        self.eta_2 = eta_2
+        self.apply_momentum_forward = False
+
 
         for group in self.param_groups:
             for p in group['params']:
-                state = self.state[p]
                 if group['momentum']:
-                    state['momentum_buffer'] = torch.zeros_like(p.data, requires_grad=False)
-        if self.print:
-            print('self.eta_2',self.eta_2)
-            print('group[momentum]',group['momentum'])
+                    self.state[p]['momentum_buffer'] = torch.zeros_like(p.data, requires_grad=False)
 
-        self.apply_momentum = self.apply_momentum_nesterov
-
+        self.reset_bundle()
         self.bn_stats = {}
 
         if self.projection is not None:
@@ -49,63 +43,53 @@ class SBDF(optim.Optimizer):
 
     @torch.autograd.no_grad()
     def step(self, loss, x, y):
-
+        self.save_bn_stats()
         self.x, self.y = x, y
 
-        self.losses = []
-        self.losses.append(float(loss()))
-        for group in self.param_groups:
-            for p in group['params']:
-                self.state[p]['grads'] = []
-                self.state[p]['grads'].append(p.grad.data.detach().clone())
-                self.state[p]['w'] = []
-                self.state[p]['w'].append(p.data.detach().clone())
+        for i in range(self.K):
 
-        self.n_steps_forward()
+            self.update_bundle(loss)
 
-        self.construct_A_and_b()
+            self.construct_A_and_b()
 
-        self.generate_combs()
+            self.generate_combs()
 
-        self.loop_over_combs()
+            self.loop_over_combs()
 
-        self.update_parameters()
+            self.update_parameters((i+1==self.K))
 
+        self.update_diagnostics()
         if self.projection is not None:
             self.projection()
 
+        self.reset_bundle()
+        self.load_bn_stats()
+
     @torch.autograd.no_grad()
-    def n_steps_forward(self):
+    def reset_bundle(self):
+        self.losses = []
+        for group in self.param_groups:
+            for p in group['params']:
+                self.state[p]['grads'] = []
+                self.state[p]['w'] = []
+                if self.apply_momentum_forward:
+                    self.state[p]['fast_momentum_buffer'] = self.state[p]['momentum_buffer'].clone()
 
-        self.save_bn_stats()
-        for i in range(self.loop_range-1):
-            for group in self.param_groups:
-                for p in group['params']:
-                    state = self.state[p]
-                    p.data.add_(-self.eta_2, state['grads'][i])
-                    # if group["momentum"]:
-                    '''
-                    if False:
-                        if (i == 0):
-                            state['fast_momentum_buffer'] = state['momentum_buffer'].clone()
-                        buffer = state['fast_momentum_buffer']
-                        momentum = group["momentum"]
-                        buffer.mul_(momentum).add_(-self.eta_2, state['grads'][i])
-                        p.data.add_(momentum, buffer)
-                    '''
-
+    @torch.autograd.no_grad()
+    def update_bundle(self, loss):
+        if len(self.losses) == 0:
+            self.losses.append(float(loss()))
+        else:
             with torch.enable_grad():
                 self.model.zero_grad()
                 loss, _ = self.obj(self.model(self.x), self.y, self.x)
                 loss.backward()
+                self.losses.append(float(loss))
 
-            self.losses.append(float(loss))
-            for group in self.param_groups:
-                for p in group['params']:
-                    self.state[p]['grads'].append(p.grad.data.detach().clone())
-                    self.state[p]['w'].append(p.data.detach().clone())
-
-        self.load_bn_stats()
+        for group in self.param_groups:
+            for p in group['params']:
+                self.state[p]['grads'].append(p.grad.data.detach().clone())
+                self.state[p]['w'].append(p.data.detach().clone())
 
     @torch.autograd.no_grad()
     def save_bn_stats(self):
@@ -131,10 +115,11 @@ class SBDF(optim.Optimizer):
 
     @torch.autograd.no_grad()
     def construct_A_and_b(self):
-        """
-        construst A matrix and b vector here the zero index is the standard gradient
-        the one index is the extra gradient and the 2 index is the ground plane
-        """
+        self.n = len(self.losses)
+        loop_range = len(self.losses)
+        if self.zero_plane:
+            self.n += 1
+
         self.A = torch.ones(self.n + 1, self.n + 1, device='cuda')
         self.b = torch.zeros(self.n + 1, device='cuda')
         self.A[0:-1,0:-1] = 0
@@ -142,7 +127,6 @@ class SBDF(optim.Optimizer):
         self.A[-1,-1] = 0
         self.b[-1] = 1
 
-        loop_range = len(self.losses)
         for i in range(loop_range):
             self.b[i] += self.losses[i]
 
@@ -156,9 +140,6 @@ class SBDF(optim.Optimizer):
                     for j in range(loop_range):
                         g_j = self.state[p]['grads'][j]
                         self.A[i, j] += eta * (g_i * g_j).sum()
-
-        # self.alig_step = (self.b[0]/self.A[0,0]).clamp(min=0, max=1)
-        # self.segd_step = ((self.A[0,0] - self.b[0] + self.b[1] - self.A[0,1]) / (self.A[0,0] - 2 * self.A[0,1] + self.A[1,1])).clamp(min=0, max=1) # calcuates v
 
         if self.print:
             print('A')
@@ -184,7 +165,7 @@ class SBDF(optim.Optimizer):
     @torch.autograd.no_grad()
     def loop_over_combs(self):
         self.best_alphas = torch.zeros(self.n, device='cuda')
-        self.max_dual_value = -1e9
+        self.max_dual_value = -1e12
         for i in range(self.num_combs):
             active_idxs = self.combinations[:,i]
             A, b = self.sub_A_and_b(active_idxs)
@@ -199,6 +180,7 @@ class SBDF(optim.Optimizer):
                 this_dual_value = self.dual(alpha)
 
                 if self.print:
+                    print('--------------------------------------')
                     print('A')
                     print(A)
                     print('b')
@@ -207,12 +189,11 @@ class SBDF(optim.Optimizer):
                     print(this_alpha)
                     print('dual')
                     print(this_dual_value)
+                    print('--------------------------------------')
 
                 if this_dual_value > self.max_dual_value:
                     self.max_dual_value = this_dual_value
                     self.best_alpha = alpha
-
-        self.update_diagnostics()
 
     @torch.autograd.no_grad()
     def update_diagnostics(self):
@@ -234,10 +215,6 @@ class SBDF(optim.Optimizer):
             print(self.max_dual_value)
             print('alpha')
             print(self.best_alpha)
-            # print('alig')
-            # print(self.alig_step)
-            # print('segd')
-            # print(self.segd_step)
             input('press any key')
 
     @torch.autograd.no_grad()
@@ -256,7 +233,7 @@ class SBDF(optim.Optimizer):
         return - 0.5 * alpha.mul(A.mv(alpha)).sum() + b.mul(alpha).sum()
 
     @torch.autograd.no_grad()
-    def update_parameters(self):
+    def update_parameters(self, apply_momentum):
         # update parameters of model
         for group in self.param_groups:
             if group['eta'] > 0.0:
@@ -265,7 +242,11 @@ class SBDF(optim.Optimizer):
                     p.data.add_(self.update(p, group))
                     # Nesterov momentum
                     if group["momentum"]:
-                        self.apply_momentum(p, group)
+                        if apply_momentum:
+                            self.apply_momentum_nesterov(p, group, self.state[p]['momentum_buffer'])
+                        else:
+                            if self.apply_momentum_forward:
+                                self.apply_momentum_nesterov(p, group, self.state[p]['fast_momentum_buffer'])
 
     @torch.autograd.no_grad()
     def update(self, p, group):
@@ -275,10 +256,7 @@ class SBDF(optim.Optimizer):
         return - group['eta'] * update
 
     @torch.autograd.no_grad()
-    def apply_momentum_nesterov(self, p, group):
-        buffer = self.state[p]['momentum_buffer']
+    def apply_momentum_nesterov(self, p, group, buffer):
         momentum = group["momentum"]
         buffer.mul_(momentum).add_(self.update(p, group))
         p.data.add_(momentum, buffer)
-
-
