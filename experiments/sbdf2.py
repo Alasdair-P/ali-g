@@ -215,7 +215,7 @@ class SBDF2(optim.Optimizer):
     @torch.autograd.no_grad()
     def update_diagnostics(self):
         alpha = self.best_alpha
-        self.step_size = self.alig_step.clamp(min=0,max=1)
+        self.step_size = self.alig_step.clamp(min=0,max=self.eta_2)
 
         self.step_0 = alpha[0]
         if len(alpha) > 1:
