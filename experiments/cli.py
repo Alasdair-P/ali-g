@@ -137,7 +137,7 @@ def _add_misc_parser(parser):
                           help="data root directory for experiments")
     m_parser.add_argument('--no_log', dest='log', action='store_false',
                           help='do not log results')
-    m_parser.add_argument('--tensorboard', '--tb', dest="tensorboard", type=str, default='/data0/tb_logs/',
+    m_parser.add_argument('--tensorboard', '--tb', dest="tensorboard", type=str, default=None,
                           help="destiation for tensorboard logs to be saved too")
     m_parser.add_argument('--debug', dest='debug', action='store_true',
                           help='debug mode')
