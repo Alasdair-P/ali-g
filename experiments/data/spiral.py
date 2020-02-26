@@ -1,11 +1,10 @@
 import torch
 import numpy as np
-from scipy.stats import multivariate_normal as mnorm
+# from scipy.stats import multivariate_normal as mnorm
 import torch.nn as nn
-import matplotlib.pyplot as plt
-plt.switch_backend('agg')
+# import matplotlib.pyplot as plt
 from torch.autograd import Variable
-import imageio
+# import imageio
 import torch.utils.data as data
 import visdom
 
@@ -67,7 +66,7 @@ def plot_decsion_boundary(model, args):
         visualize_features(model, args)
 
 def visualize_features(model, args):
-
+    """
     env_name = args.xp_name.split('/')[-1]
     visdom_opts={'server': 'http://helios.robots.ox.ac.uk',
                  'port'  : args.port,
@@ -133,6 +132,7 @@ def visualize_features(model, args):
     vis.image(im,
                 win='decision boundary',
                 opts=dict(caption='decision boundary', title='decision boundary'))
+    """
 
 if __name__=="__main__":
     import imageio
