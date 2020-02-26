@@ -155,7 +155,7 @@ def set_xp_name(args):
     if args.dataset == 'spiral':
         args.model = 'mlp_d_' + str(args.depth) + '_w_' + str(args.width)
     if args.debug:
-        args.log = args.visdom = False
+        args.log = args.visdom = args.tensorboard =False
         args.xp_name = '../debug'
         if not os.path.exists(args.xp_name):
             os.makedirs(args.xp_name)
@@ -177,6 +177,8 @@ def set_xp_name(args):
             os.makedirs(args.xp_name)
 
     if args.tensorboard:
+        l2 = args.max_norm if args.opt == 'alig' else args.weight_decay
+        data = args.dataset.replace("cifar", "")
         run_name = "{model}{data}-{opt}--eta-{eta}--l2-{l2}--b-{b}--run-{run}".format(model=args.model, data=data, opt=args.opt, eta=args.eta, l2=args.max_norm or args.weight_decay, b=args.batch_size, run=args.run_no)
         print('run name', run_name)
         args.tensorboard = os.path.join(args.tensorboard, run_name)

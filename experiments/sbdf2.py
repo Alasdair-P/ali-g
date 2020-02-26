@@ -156,7 +156,9 @@ class SBDF2(optim.Optimizer):
                         g_j = self.state[p]['grads'][j]
                         self.A[i, j] += eta * (g_i * g_j).sum()
 
+
         if self.print:
+            self.alig_step = (self.b[0]/(self.A[0,0]+self.eps))
             print('A')
             print(self.A)
             print('b')
@@ -213,10 +215,11 @@ class SBDF2(optim.Optimizer):
     @torch.autograd.no_grad()
     def update_diagnostics(self):
         alpha = self.best_alpha
-        self.step_size = alpha[0]
+        self.step_size = self.alig_step.clamp(min=0,max=1)
+
         self.step_0 = alpha[0]
         if len(alpha) > 1:
-            self.step_size_unclipped = alpha[1]
+            self.step_size_unclipped = self.alig_step
             self.step_1 = alpha[1]
         if len(alpha) > 2:
             self.step_2 = alpha[2]
@@ -231,6 +234,8 @@ class SBDF2(optim.Optimizer):
             print(self.max_dual_value)
             print('best alpha')
             print(self.best_alpha)
+            print('alig step')
+            print(self.alig_step)
             print('------------------------')
             input('press any key')
 
@@ -307,5 +312,3 @@ class SBDF2(optim.Optimizer):
                 module.running_mean.data.copy_(stats['running_mean'])
                 module.running_var.data.copy_(stats['running_var'])
                 module.num_batches_tracked.data.copy_(stats['num_batches_tracked'])
-
-

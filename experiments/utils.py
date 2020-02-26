@@ -32,7 +32,7 @@ def setup_xp(args, model, optimizer):
     if args.visdom:
         visdom_plotter = mlogger.VisdomPlotter({'env': env_name, 'server': args.server, 'port': args.port})
     else:
-        visdomvisdom_plotter = None
+        visdom_plotter = None
 
     if args.tensorboard:
         print('args.tensorboard:', args.tensorboard)
