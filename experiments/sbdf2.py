@@ -157,8 +157,8 @@ class SBDF2(optim.Optimizer):
                         self.A[i, j] += eta * (g_i * g_j).sum()
 
 
+        self.alig_step = (self.b[0]/(self.A[0,0]+self.eps))
         if self.print:
-            self.alig_step = (self.b[0]/(self.A[0,0]+self.eps))
             print('A')
             print(self.A)
             print('b')
@@ -216,7 +216,6 @@ class SBDF2(optim.Optimizer):
     def update_diagnostics(self):
         alpha = self.best_alpha
         self.step_size = self.alig_step.clamp(min=0,max=self.eta_2)
-
         self.step_0 = alpha[0]
         if len(alpha) > 1:
             self.step_size_unclipped = self.alig_step
