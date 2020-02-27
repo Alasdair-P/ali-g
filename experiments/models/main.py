@@ -2,7 +2,7 @@ import os
 import torch
 import torch.nn as nn
 from collections import OrderedDict
-import torchvision.models as models
+# import torchvision.models as models
 from models.resnet import ResNet_cifar
 from models.wide_resnet import WideResNet
 from models.densenet import DenseNet3
