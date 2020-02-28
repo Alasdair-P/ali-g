@@ -34,7 +34,7 @@ def main(args):
 
     load_best_model(model, '{}/best_model.pkl'.format(args.xp_name))
     test(model, optimizer, loader_test, args, xp)
-    write_result(args, xp)s
+    write_results(args, xp)
 
 
 if __name__ == '__main__':
