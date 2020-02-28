@@ -1,6 +1,6 @@
 #!/bin/bash
 
-#SBATCH --partition=devel
+#SBATCH --partition=small
 
 # set the number of nodes
 #SBATCH --nodes=1                                                                                                          

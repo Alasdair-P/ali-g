@@ -10,8 +10,7 @@ def create_jobs():
 
     # with open("reproduce/hparams/cifar.yaml", "r") as f:
     # with open("reproduce/hparams/alig.yaml", "r") as f:
-    # with open("reproduce/hparams/sbd3.yaml", "r") as f:
-    with open("reproduce/hparams/test.yaml", "r") as f:
+    with open("reproduce/hparams/sbd5.yaml", "r") as f:
         hparams = yaml.safe_load(f)
 
     jobs = []
