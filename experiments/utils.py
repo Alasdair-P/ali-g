@@ -94,13 +94,13 @@ def save_state(model, optimizer, filename):
                 'optimizer': optimizer.state_dict()}, filename)
 
 
-    def write_results(args, xp):
+def write_results(args, xp):
     with open('results.txt', 'a') as results:
         results.write('{xp_name} Train Acc {tracc:.2f} Val Acc {vacc:.2f} Test Acc {teacc:.2f}\n'
-          .format(xp_name=args.xp_name
-                  tracc=xp.train.acc.value,
-                  vacc=xp.max_val.value,
-                  teacc=xp.test.acc.value))
+                .format(xp_name=args.xp_name,
+                        tracc=xp.train.acc.value,
+                        vacc=xp.max_val.value,
+                        teacc=xp.test.acc.value))
 
 @torch.autograd.no_grad()
 def accuracy(out, targets, topk=1):
