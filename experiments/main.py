@@ -5,13 +5,11 @@ import mlogger
 
 from cli import parse_command
 from loss import get_loss
-from utils import setup_xp, set_seed, save_state
+from utils import setup_xp, set_seed, save_state, write_results
 from data import get_data_loaders
-from data.spiral import plot_decsion_boundary
-from models.main import get_model, load_best_model
-from optim import get_optimizer, decay_stuff
+from models import get_model, load_best_model
+from optim import get_optimizer, decay_optimizer
 from epoch import train, test
-from reg import Reg
 
 
 def main(args):
@@ -22,29 +20,21 @@ def main(args):
     loader_train, loader_val, loader_test = get_data_loaders(args)
     loss = get_loss(args)
     model = get_model(args)
-    optimizer = get_optimizer(args, model, loss, parameters=model.parameters())
+    optimizer = get_optimizer(args, parameters=model.parameters())
     xp = setup_xp(args, model, optimizer)
-    reg = Reg(args, model)
 
-    i = 0
     for i in range(args.epochs):
         xp.epoch.update(i)
-        # reg.epoch_update()
 
-        # if i == args.hq_epoch and reg:
-            # reg.hard_quantize(optimizer)
+        train(model, loss, optimizer, loader_train, args, xp)
+        test(model, optimizer, loader_val, args, xp)
 
-        train(model, loss, optimizer, loader_train, args, xp, reg, i)
-        test(model, optimizer, loader_val, args, xp, i)
+        if (i + 1) in args.T:
+            decay_optimizer(optimizer, args.decay_factor)
 
-        decay_stuff(xp, model, args, optimizer, loss, i)
-
-    # reg.calc_dist_to_binary()
     load_best_model(model, '{}/best_model.pkl'.format(args.xp_name))
-    test(model, optimizer, loader_val, args, xp, i)
-    test(model, optimizer, loader_test, args, xp, i)
-    # reg.calc_dist_to_binary()
-    plot_decsion_boundary(model, args)
+    test(model, optimizer, loader_test, args, xp)
+    write_result(args, xp)s
 
 
 if __name__ == '__main__':

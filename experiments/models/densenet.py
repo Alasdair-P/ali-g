@@ -39,10 +39,10 @@ import torch.nn.functional as F
 
 
 class BasicBlock(nn.Module):
-    def __init__(self, nonlinearity, in_planes, out_planes, dropRate=0.0):
+    def __init__(self, in_planes, out_planes, dropRate=0.0):
         super(BasicBlock, self).__init__()
         self.bn1 = nn.BatchNorm2d(in_planes)
-        self.relu = nonlinearity()
+        self.relu = nn.ReLU(inplace=True)
         self.conv1 = nn.Conv2d(in_planes, out_planes, kernel_size=3, stride=1,
                                padding=1, bias=False)
         self.droprate = dropRate
@@ -55,11 +55,11 @@ class BasicBlock(nn.Module):
 
 
 class BottleneckBlock(nn.Module):
-    def __init__(self, nonlinearity, in_planes, out_planes, dropRate=0.0):
+    def __init__(self, in_planes, out_planes, dropRate=0.0):
         super(BottleneckBlock, self).__init__()
         inter_planes = out_planes * 4
         self.bn1 = nn.BatchNorm2d(in_planes)
-        self.relu = nonlinearity()
+        self.relu = nn.ReLU(inplace=True)
         self.conv1 = nn.Conv2d(in_planes, inter_planes, kernel_size=1,
                                stride=1, padding=0, bias=False)
         self.bn2 = nn.BatchNorm2d(inter_planes)
@@ -80,10 +80,10 @@ class BottleneckBlock(nn.Module):
 
 
 class TransitionBlock(nn.Module):
-    def __init__(self, nonlinearity, in_planes, out_planes, dropRate=0.0):
+    def __init__(self, in_planes, out_planes, dropRate=0.0):
         super(TransitionBlock, self).__init__()
         self.bn1 = nn.BatchNorm2d(in_planes)
-        self.relu = nonlinearity()
+        self.relu = nn.ReLU(inplace=True)
         self.conv1 = nn.Conv2d(in_planes, out_planes, kernel_size=1, stride=1,
                                padding=0, bias=False)
         self.droprate = dropRate
@@ -97,15 +97,15 @@ class TransitionBlock(nn.Module):
 
 
 class DenseBlock(nn.Module):
-    def __init__(self, nb_layers, nonlinearity, in_planes, growth_rate, block, dropRate=0.0):
+    def __init__(self, nb_layers, in_planes, growth_rate, block, dropRate=0.0):
         super(DenseBlock, self).__init__()
-        self.layer = self._make_layer(block, nonlinearity, in_planes, growth_rate,
+        self.layer = self._make_layer(block, in_planes, growth_rate,
                                       nb_layers, dropRate)
 
-    def _make_layer(self, block, nonlinearity, in_planes, growth_rate, nb_layers, dropRate):
+    def _make_layer(self, block, in_planes, growth_rate, nb_layers, dropRate):
         layers = []
         for i in range(nb_layers):
-            layers.append(block(nonlinearity, in_planes + i * growth_rate,
+            layers.append(block(in_planes + i * growth_rate,
                                 growth_rate, dropRate))
         return nn.Sequential(*layers)
 
@@ -114,13 +114,13 @@ class DenseBlock(nn.Module):
 
 
 class DenseNet3(nn.Module):
-    def __init__(self, depth, num_classes, growth_rate=12, reduction=0.5,
-                 bottleneck=True, dropRate=0.0, nonlinearity=nn.ReLU):
+    def __init__(self, depth, num_classes, growth_rate=12,
+                 reduction=0.5, bottleneck=True, dropRate=0.0):
         super(DenseNet3, self).__init__()
         in_planes = 2 * growth_rate
         n = (depth - 4) / 3
 
-        if bottleneck is True:
+        if bottleneck:
             n = n / 2
             block = BottleneckBlock
         else:
@@ -130,25 +130,25 @@ class DenseNet3(nn.Module):
         self.conv1 = nn.Conv2d(3, in_planes, kernel_size=3, stride=1,
                                padding=1, bias=False)
         # 1st block
-        self.block1 = DenseBlock(n, nonlinearity, in_planes, growth_rate, block, dropRate)
+        self.block1 = DenseBlock(n, in_planes, growth_rate, block, dropRate)
         in_planes = int(in_planes + n * growth_rate)
-        self.trans1 = TransitionBlock(nonlinearity, in_planes,
+        self.trans1 = TransitionBlock(in_planes,
                                       int(math.floor(in_planes * reduction)),
                                       dropRate=dropRate)
         in_planes = int(math.floor(in_planes * reduction))
         # 2nd block
-        self.block2 = DenseBlock(n, nonlinearity, in_planes, growth_rate, block, dropRate)
+        self.block2 = DenseBlock(n, in_planes, growth_rate, block, dropRate)
         in_planes = int(in_planes + n * growth_rate)
-        self.trans2 = TransitionBlock(nonlinearity, in_planes,
+        self.trans2 = TransitionBlock(in_planes,
                                       int(math.floor(in_planes * reduction)),
                                       dropRate=dropRate)
         in_planes = int(math.floor(in_planes * reduction))
         # 3rd block
-        self.block3 = DenseBlock(n, nonlinearity, in_planes, growth_rate, block, dropRate)
+        self.block3 = DenseBlock(n, in_planes, growth_rate, block, dropRate)
         in_planes = int(in_planes + n * growth_rate)
         # global average pooling and classifier
         self.bn1 = nn.BatchNorm2d(in_planes)
-        self.relu = nonlinearity()
+        self.relu = nn.ReLU(inplace=True)
         self.fc = nn.Linear(in_planes, num_classes, bias=False)
         self.in_planes = in_planes
 

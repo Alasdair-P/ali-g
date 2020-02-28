@@ -1,0 +1,8 @@
+- {model: wrn, dataset: cifar100, batch_size: 128, opt: sbd, eta: 1.0, max_norm: 150, k: 3}
+- {model: wrn, dataset: cifar100, batch_size: 128, opt: sbd, eta: 1.0, max_norm: 175, k: 3}
+- {model: wrn, dataset: cifar100, batch_size: 128, opt: sbd, eta: 1.0, max_norm: 200, k: 3}
+- {model: wrn, dataset: cifar100, batch_size: 128, opt: sbd, eta: 1.0, max_norm: 225, k: 3}
+- {model: wrn, dataset: cifar100, batch_size: 128, opt: sbd, eta: 0.1, max_norm: 50, k: 3}
+- {model: wrn, dataset: cifar100, batch_size: 128, opt: sbd, eta: 0.1, max_norm: 75, k: 3}
+- {model: wrn, dataset: cifar100, batch_size: 128, opt: sbd, eta: 0.1, max_norm: 100, k: 3}
+- {model: wrn, dataset: cifar100, batch_size: 128, opt: sbd, eta: 0.1, max_norm: 125, k: 3}

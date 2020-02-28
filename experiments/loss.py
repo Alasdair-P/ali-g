@@ -1,15 +1,17 @@
-import torch.nn as nn
-import torch.nn.functional as F
-from models.main import get_model, load_best_model
 import torch
+import torch.nn as nn
+# from dfw.losses import MultiClassHingeLoss, set_smoothing_enabled
+
 
 def get_loss(args):
-    if args.teacher:
-        loss_fn = Distillation_Loss(args)
-    elif args.loss == 'ce':
-        loss_fn = CE_Loss()
+    if args.opt == 'dfw':
+        loss_fn = MultiClassHingeLoss()
+        if 'cifar' in args.dataset:
+            args.smooth_svm = True
+    elif args.dataset == 'imagenet':
+        return EntrLoss(n_classes=args.n_classes)
     else:
-        raise ValueError
+        loss_fn = nn.CrossEntropyLoss()
 
     print('L2 regularization: \t {}'.format(args.weight_decay))
     print('\nLoss function:')
@@ -20,140 +22,51 @@ def get_loss(args):
 
     return loss_fn
 
-class CE_Loss(nn.Module):
+class EntrLoss(nn.Module):
+    """Implementation from https://github.com/locuslab/lml/blob/master/smooth-topk/src/losses/entr.py.
 
-    def __init__(self):
-        super(CE_Loss, self).__init__()
-        print('creating cross entropy loss')
-        self.loss = nn.CrossEntropyLoss()
+    The MIT License
 
-    def forward(self, scores, y, x):
-        return self.loss(scores, y), 0
+    Copyright 2019 Intel AI, CMU, Bosch AI
 
-class Distillation_Loss(nn.Module):
+    Permission is hereby granted, free of charge, to any person obtaining a copy
+    of this software and associated documentation files (the "Software"), to deal
+    in the Software without restriction, including without limitation the rights
+    to use, copy, modify, merge, publish, distribute, sublicense, and/or sell
+    copies of the Software, and to permit persons to whom the Software is
+    furnished to do so, subject to the following conditions:
 
-    def __init__(self, args):
-        super(Distillation_Loss, self).__init__()
+    The above copyright notice and this permission notice shall be included in
+    all copies or substantial portions of the Software.
 
-        # print('Creating distillation loss')
+    THE SOFTWARE IS PROVIDED "AS IS", WITHOUT WARRANTY OF ANY KIND, EXPRESS OR
+    IMPLIED, INCLUDING BUT NOT LIMITED TO THE WARRANTIES OF MERCHANTABILITY,
+    FITNESS FOR A PARTICULAR PURPOSE AND NONINFRINGEMENT. IN NO EVENT SHALL THE
+    AUTHORS OR COPYRIGHT HOLDERS BE LIABLE FOR ANY CLAIM, DAMAGES OR OTHER
+    LIABILITY, WHETHER IN AN ACTION OF CONTRACT, TORT OR OTHERWISE, ARISING FROM,
+    OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN
+    THE SOFTWARE.
+    """
+    def __init__(self, n_classes, k=5, tau=1.0):
+        super(EntrLoss, self).__init__()
+        self.n_classes = n_classes
+        self.k = k
+        self.tau = tau
 
-        load_model = args.load_model
-        # print(args.load_model, load_model)
-        # input('press any key')
-        model_arch = args.model
-        depth = args.depth
+    def forward(self, x, y):
+        n_batch = x.shape[0]
 
-        args.load_model = args.teacher
-        if 'spiral' in args.teacher:
-            args.depth = 5
-            args.width = 50
-        elif '20' in args.teacher:
-            args.depth = 20
-        elif '32' in args.teacher:
-            args.depth = 32
-        elif '44' in args.teacher:
-            args.depth = 44
-        elif '56' in args.teacher:
-            args.depth = 56
-        elif '110' in args.teacher:
-            args.depth = 110
-        else:
-            print('unknown teacher architecture')
-            raise NotImplementedError
+        x = x/self.tau
+        x_sorted, I = x.sort(dim=1, descending=True)
+        x_sorted_last = x_sorted[:,self.k:]
+        I_last = I[:,self.k:]
 
-        self.teacher_model = get_model(args)
-        self.teacher_model.eval()
+        fy = x.gather(1, y.unsqueeze(1))
+        J = (I_last != y.unsqueeze(1)).type_as(x)
 
-        print(args.load_model, load_model)
-        # print(args.load_model, load_model)
-        args.load_model = load_model
-        # print(args.load_model, load_model)
-        # input('press any key')
-        args.model = model_arch
-        args.depth = depth
+        # Could potentially be improved numerically by using
+        # \log\sum\exp{x_} = c + \log\sum\exp{x_-c}
+        safe_z = torch.clamp(x_sorted_last-fy, max=80)
+        losses = torch.log(1.+torch.sum(safe_z.exp()*J, dim=1))
 
-        self.lambda_t = args.lambda_t
-        self.tau = args.tau
-        self.lower_bound = args.B
-
-        self.loss = nn.CrossEntropyLoss()
-
-        self.kl = False
-        if args.loss == 'kl':
-            self.kl = True
-
-    def forward(self, scores, y, x):
-        with torch.no_grad():
-            scores_teacher = self.teacher_model(x).detach()
-        loss_ce = self.loss(scores, y)
-        loss_dist = -(F.softmax(scores_teacher.div(self.tau),dim=1).mul( F.log_softmax(scores.div(self.tau),dim=1) - F.log_softmax(scores_teacher.div(self.tau),dim=1) )).sum(dim=1)
-        if self.kl:
-            loss = loss_dist.clamp(min=self.lower_bound).mean()
-        else:
-            # loss = loss_ce.mul(1-self.lambda_t) + loss_dist.mul(self.lambda_t)
-            loss = loss_ce.mean() + loss_dist.mul(self.lambda_t).mean()
-        return loss, loss_dist.mean()
-
-class Distillation_Loss_2(nn.Module):
-
-    def __init__(self, args):
-        super(Distillation_Loss_2, self).__init__()
-
-        # print('Creating distillation loss')
-
-        load_model = args.load_model
-        # print(args.load_model, load_model)
-        # input('press any key')
-        model_arch = args.model
-        depth = args.depth
-
-        args.load_model = args.teacher
-        if 'spiral' in args.teacher:
-            args.depth = 5
-            args.width = 50
-        elif '20' in args.teacher:
-            args.depth = 20
-        elif '32' in args.teacher:
-            args.depth = 32
-        elif '44' in args.teacher:
-            args.depth = 44
-        elif '56' in args.teacher:
-            args.depth = 56
-        elif '110' in args.teacher:
-            args.depth = 110
-        else:
-            print('unknown teacher architecture')
-            raise NotImplementedError
-
-        self.teacher_model = get_model(args)
-        self.teacher_model.eval()
-
-        print(args.load_model, load_model)
-        # print(args.load_model, load_model)
-        args.load_model = load_model
-        # print(args.load_model, load_model)
-        # input('press any key')
-        args.model = model_arch
-        args.depth = depth
-
-        self.lambda_t = args.lambda_t
-        self.tau = args.tau
-        self.lower_bound = args.B
-
-        self.loss = nn.CrossEntropyLoss()
-
-        self.kl = False
-        if args.loss == 'kl':
-            self.kl = True
-
-    def forward(self, scores, y, x):
-        with torch.no_grad():
-            scores_teacher = self.teacher_model(x).detach()
-        loss_ce = self.loss(scores, y)
-        loss_dist = -(F.softmax(scores_teacher.div(self.tau),dim=1).mul( F.log_softmax(scores.div(self.tau),dim=1) - F.log_softmax(scores_teacher.div(self.tau),dim=1) )).sum(dim=1)
-        if self.kl:
-            loss = loss_dist.clamp(min=self.lower_bound).mean()
-        else:
-            # loss = loss_ce.mul(1-self.lambda_t) + loss_dist.mul(self.lambda_t)
-            loss = loss_ce.mean() + loss_dist.mul(self.lambda_t).mean()
-        return loss, loss_dist.mean()
+        return losses.mean()

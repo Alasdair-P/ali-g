@@ -1,0 +1,15 @@
+#- {model: wrn, dataset: cifar100, batch_size: 128, opt: alig, eta: 0.1, max_norm: 75}
+#- {model: wrn, dataset: cifar100, batch_size: 128, opt: alig, eta: 0.1, max_norm: 85}
+#- {model: wrn, dataset: cifar100, batch_size: 128, opt: alig, eta: 0.1, max_norm: 90}
+#- {model: wrn, dataset: cifar100, batch_size: 128, opt: alig, eta: 0.1, max_norm: 100}
+#- {model: wrn, dataset: cifar100, batch_size: 128, opt: alig, eta: 0.1, max_norm: 125}
+#- {model: wrn, dataset: cifar100, batch_size: 128, opt: alig, eta: 0.1, max_norm: 150}
+#- {model: wrn, dataset: cifar100, batch_size: 128, opt: alig, eta: 1.0, max_norm: 200}
+#- {model: wrn, dataset: cifar100, batch_size: 128, opt: alig, eta: 1.0, max_norm: 225}
+#- {model: wrn, dataset: cifar100, batch_size: 128, opt: alig, eta: 1.0, max_norm: 275}
+#- {model: wrn, dataset: cifar100, batch_size: 128, opt: alig, eta: 1.0, max_norm: 300}
+#- {model: wrn, dataset: cifar100, batch_size: 128, opt: alig, eta: 1.0, max_norm: 250}
+#- {model: wrn, dataset: cifar100, batch_size: 128, opt: alig, eta: 1.0, max_norm: 300}
+- {model: wrn, dataset: cifar100, batch_size: 128, opt: alig, eta: 1.0, max_norm: 270}
+- {model: wrn, dataset: cifar100, batch_size: 128, opt: alig, eta: 1.0, max_norm: 265}
+- {model: wrn, dataset: cifar100, batch_size: 128, opt: alig, eta: 1.0, max_norm: 260}

@@ -5,17 +5,7 @@ import torchvision.datasets as datasets
 import torchvision.transforms as transforms
 
 from .utils import random_subsets, Subset
-from data.spiral import generate_spiral_data
 
-class IndexedDataset(data.Dataset):
-    def __init__(self, dataset):
-        self._dataset = dataset
-
-    def __getitem__(self, idx):
-        return idx, self._dataset[idx]
-
-    def __len__(self):
-        return self._dataset.__len__()
 
 def create_loaders(dataset_train, dataset_val, dataset_test,
                    train_size, val_size, test_size, batch_size, test_batch_size,
@@ -50,18 +40,9 @@ def create_loaders(dataset_train, dataset_val, dataset_test,
           .format(len(dataset_train), len(dataset_val), len(dataset_test)))
     print('Batch size: \t {}'.format(batch_size))
 
-    shuffling = False
-    # shuffling = True
-    print(' \t shuffling = {} \t'.format(shuffling))
-
-    # dataset_train_index = IndexedDataset(dataset_train)
-    # train_loader = data.DataLoader(dataset_train_index,
-                                   # batch_size=batch_size,
-                                   # shuffle=shuffling, **kwargs)
-
     train_loader = data.DataLoader(dataset_train,
                                    batch_size=batch_size,
-                                   shuffle=shuffling, **kwargs)
+                                   shuffle=True, **kwargs)
 
     val_loader = data.DataLoader(dataset_val,
                                  batch_size=test_batch_size,
@@ -76,28 +57,6 @@ def create_loaders(dataset_train, dataset_val, dataset_test,
     test_loader.tag = 'test'
 
     return train_loader, val_loader, test_loader
-
-
-def loaders_spiral(dataset, batch_size=64, cuda=0,
-                  train_size=100, val_size=100, test_size=100,
-                  test_batch_size=200, augment=False, noise=0, **kwargs):
-
-    assert dataset == 'spiral'
-    gen = generate_spiral_data
-
-    x_train, y_train = gen(train_size, noise)
-    x_val, y_val = gen(val_size, noise)
-    x_test, y_test = gen(test_size, noise)
-
-    dataset_train = data.TensorDataset(x_train, y_train)
-    dataset_val = data.TensorDataset(x_val, y_val)
-    dataset_test = data.TensorDataset(x_test, y_test)
-
-    return create_loaders(dataset_train, dataset_val,
-                          dataset_test, train_size, val_size, test_size,
-                          batch_size=batch_size,
-                          test_batch_size=test_batch_size,
-                          cuda=cuda, num_workers=1, split=False)
 
 
 def loaders_mnist(dataset, batch_size=64, cuda=0,
@@ -167,7 +126,7 @@ def loaders_cifar(dataset, batch_size, cuda,
 
     return create_loaders(dataset_train, dataset_val,
                           dataset_test, train_size, val_size, test_size,
-                          batch_size, test_batch_size, cuda, num_workers=4)
+                          batch_size, test_batch_size, cuda, num_workers=2)
 
 
 def loaders_svhn(dataset, batch_size, cuda,
@@ -219,21 +178,19 @@ def loaders_svhn(dataset, batch_size, cuda,
                           dataset_test, train_size, val_size, test_size,
                           batch_size, test_batch_size, cuda, num_workers=4, split=split)
 
-
 def loaders_imagenet(dataset, batch_size, cuda,
-                     train_size=1231166, augment=True, val_size=50000,
-                     test_size=50000, test_batch_size=256, topk=None, noise=False,
-                     multiple_crops=False, data_root=None, **kwargs):
-
+                                          train_size=1231166, augment=True, val_size=50000,
+                                          test_size=50000, test_batch_size=256, topk=None, noise=False,
+                                          multiple_crops=False, data_root=None, **kwargs):
     assert dataset == 'imagenet'
-
-    root = '{}/{}'.format(os.environ['VISION_DATA'], dataset)
-
-    # Data loading code
+    data_root = data_root if data_root is not None else os.environ['VISION_DATA_SSD']
+    root = '{}/ILSVRC2012-prepr-split/images'.format(data_root)
     mean = [0.485, 0.456, 0.406]
     std = [0.229, 0.224, 0.225]
+    traindir = os.path.join(root, 'train')
+    valdir = os.path.join(root, 'val')
+    testdir = os.path.join(root, 'test')
     normalize = transforms.Normalize(mean=mean, std=std)
-
     if multiple_crops:
         print('Using multiple crops')
         transform_test = transforms.Compose([
@@ -249,48 +206,6 @@ def loaders_imagenet(dataset, batch_size, cuda,
     if augment:
         transform_train = transforms.Compose([
             transforms.RandomCrop(224),
-            transforms.RandomHorizontalFlip(),
-            transforms.ToTensor(),
-            normalize])
-    else:
-        transform_train = transform_test
-
-    dataset_train = datasets.ImageNet(root=root, split='train', download=True, transform=transform_train)
-    dataset_val = datasets.ImageNet(root=root, split='train', download=True, transform=transform_test)
-    dataset_test = datasets.ImageNet(root=root, split='val', download=True, transform=transform_test)
-
-    return create_loaders(dataset_train, dataset_val,
-                          dataset_test, train_size, val_size, test_size,
-                          batch_size, test_batch_size, cuda, num_workers=8, split=True)
-
-
-def loaders_tiny_imagenet(dataset, batch_size, cuda,
-                     train_size=100000, augment=True, val_size=10000,
-                     test_size=10000, test_batch_size=128, topk=None, noise=False,
-                     multiple_crops=False, data_root=None, **kwargs):
-    assert dataset == 'tiny_imagenet'
-    data_root = data_root if data_root is not None else os.environ['VISION_DATA']
-    root = '{}/tiny-imagenet-200'.format(data_root)
-    mean = [0.4802, 0.4481, 0.3975]
-    std = [0.2302, 0.2265, 0.2262]
-    traindir = os.path.join(root, 'train')
-    valdir = os.path.join(root, 'val')
-    testdir = os.path.join(root, 'test')
-    normalize = transforms.Normalize(mean=mean, std=std)
-    if multiple_crops:
-        print('Using multiple crops')
-        transform_test = transforms.Compose([
-            transforms.Pad((4,4)),
-            transforms.TenCrop(64),
-            lambda x: [normalize(transforms.functional.to_tensor(img)) for img in x]])
-    else:
-        transform_test = transforms.Compose([
-            transforms.ToTensor(),
-            normalize])
-    if augment:
-        transform_train = transforms.Compose([
-            transforms.Pad((4,4)),
-            transforms.RandomCrop(64),
             transforms.RandomHorizontalFlip(),
             transforms.ToTensor(),
             normalize])

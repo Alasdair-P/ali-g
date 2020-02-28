@@ -1,1 +1,1 @@
-- {batch_size: 64, dataset: cifar10, eta: 0.01, max_norm: 75, model: wrn, momentum: 0.9, opt: cgd, active_func: softplus}
+- {model: wrn, dataset: cifar100, batch_size: 128, opt: sbd, eta: 1.0, max_norm: 125, k: 3}

@@ -5,7 +5,6 @@ import torch
 import mlogger
 import random
 import numpy as np
-from torch.utils.tensorboard import SummaryWriter
 
 
 def regularization(model, l2):
@@ -30,58 +29,50 @@ def setup_xp(args, model, optimizer):
 
     env_name = args.xp_name.split('/')[-1]
     if args.visdom:
-        visdom_plotter = mlogger.VisdomPlotter({'env': env_name, 'server': args.server, 'port': args.port})
+        plotter = mlogger.VisdomPlotter({'env': env_name, 'server': args.server, 'port': args.port})
     else:
-        visdom_plotter = None
-
-    if args.tensorboard:
-        print('args.tensorboard:', args.tensorboard)
-        summary_writer = SummaryWriter(log_dir=args.tensorboard)
-    else:
-        summary_writer = None
-        # summary_writer=summary_writer
+        plotter = None
 
     xp = mlogger.Container()
 
-    xp.config = mlogger.Config(visdom_plotter=visdom_plotter, summary_writer=summary_writer)
+    xp.config = mlogger.Config(plotter=plotter, **vars(args))
 
     xp.epoch = mlogger.metric.Simple()
 
     xp.train = mlogger.Container()
-    xp.train.acc = mlogger.metric.Average(visdom_plotter=visdom_plotter, summary_writer=summary_writer, plot_title="Accuracy", plot_legend="training")
-    xp.train.loss = mlogger.metric.Average(visdom_plotter=visdom_plotter, summary_writer=summary_writer, plot_title="Objective", plot_legend="loss")
-    xp.train.lower_bound = mlogger.metric.Average(visdom_plotter=visdom_plotter, summary_writer=summary_writer, plot_title="Objective", plot_legend="lb")
-    xp.train.kl = mlogger.metric.Average(visdom_plotter=visdom_plotter, summary_writer=summary_writer, plot_title="Objective", plot_legend="kl")
-    xp.train.obj = mlogger.metric.Simple(visdom_plotter=visdom_plotter, summary_writer=summary_writer, plot_title="Objective", plot_legend="objective")
-    xp.train.reg = mlogger.metric.Simple(visdom_plotter=visdom_plotter, summary_writer=summary_writer, plot_title="Objective", plot_legend="regularization")
-    xp.train.weight_norm = mlogger.metric.Simple(visdom_plotter=visdom_plotter, summary_writer=summary_writer, plot_title="Weight-Norm")
-    xp.train.grad_norm = mlogger.metric.Average(visdom_plotter=visdom_plotter, summary_writer=summary_writer, plot_title="Grad-Norm")
-
-    xp.train.alpha0 = mlogger.metric.Average(visdom_plotter=visdom_plotter, summary_writer=summary_writer, plot_title="Step-Type", plot_legend="alpha0")
-    xp.train.alpha1 = mlogger.metric.Average(visdom_plotter=visdom_plotter, summary_writer=summary_writer, plot_title="Step-Type", plot_legend="alpha1")
-    xp.train.alpha2 = mlogger.metric.Average(visdom_plotter=visdom_plotter, summary_writer=summary_writer, plot_title="Step-Type", plot_legend="alpha2")
-    xp.train.alpha3 = mlogger.metric.Average(visdom_plotter=visdom_plotter, summary_writer=summary_writer, plot_title="Step-Type", plot_legend="alpha3")
-    xp.train.alpha4 = mlogger.metric.Average(visdom_plotter=visdom_plotter, summary_writer=summary_writer, plot_title="Step-Type", plot_legend="alpha4")
-
-    xp.train.step_size = mlogger.metric.Average(visdom_plotter=visdom_plotter, summary_writer=summary_writer, plot_title="Step-Size", plot_legend="clipped")
-    xp.train.step_size_u = mlogger.metric.Average(visdom_plotter=visdom_plotter, summary_writer=summary_writer, plot_title="Step-Size", plot_legend="unclipped")
-    xp.train.timer = mlogger.metric.Timer(visdom_plotter=visdom_plotter, summary_writer=summary_writer, plot_title="Time", plot_legend='training')
+    xp.train.acc = mlogger.metric.Average(plotter=plotter, plot_title="Accuracy", plot_legend="training")
+    xp.train.loss = mlogger.metric.Average(plotter=plotter, plot_title="Objective", plot_legend="loss")
+    xp.train.obj = mlogger.metric.Simple(plotter=plotter, plot_title="Objective", plot_legend="objective")
+    xp.train.reg = mlogger.metric.Simple(plotter=plotter, plot_title="Objective", plot_legend="regularization")
+    xp.train.weight_norm = mlogger.metric.Simple(plotter=plotter, plot_title="Weight-Norm")
+    xp.train.step_size = mlogger.metric.Average(plotter=plotter, plot_title="Step-Size", plot_legend="clipped")
+    xp.train.step_size_u = mlogger.metric.Average(plotter=plotter, plot_title="Step-Size", plot_legend="unclipped")
+    xp.train.timer = mlogger.metric.Timer(plotter=plotter, plot_title="Time", plot_legend='training')
 
     xp.val = mlogger.Container()
-    xp.val.acc = mlogger.metric.Average(visdom_plotter=visdom_plotter, summary_writer=summary_writer, plot_title="Accuracy", plot_legend="validation")
-    xp.val.timer = mlogger.metric.Timer(visdom_plotter=visdom_plotter, summary_writer=summary_writer, plot_title="Time", plot_legend='validation')
+    xp.val.acc = mlogger.metric.Average(plotter=plotter, plot_title="Accuracy", plot_legend="validation")
+    xp.val.timer = mlogger.metric.Timer(plotter=plotter, plot_title="Time", plot_legend='validation')
 
-    xp.max_val = mlogger.metric.Maximum(visdom_plotter=visdom_plotter, summary_writer=summary_writer, plot_title="Accuracy", plot_legend='best-validation')
+    xp.max_val = mlogger.metric.Maximum(plotter=plotter, plot_title="Accuracy", plot_legend='best-validation')
 
     xp.test = mlogger.Container()
-    xp.test.acc = mlogger.metric.Average(visdom_plotter=visdom_plotter, summary_writer=summary_writer, plot_title="Accuracy", plot_legend="test")
-    xp.test.timer = mlogger.metric.Timer(visdom_plotter=visdom_plotter,  summary_writer=summary_writer, plot_title="Time", plot_legend='test')
+    xp.test.acc = mlogger.metric.Average(plotter=plotter, plot_title="Accuracy", plot_legend="test")
+    xp.test.timer = mlogger.metric.Timer(plotter=plotter, plot_title="Time", plot_legend='test')
 
+    xp.train.alpha0 = mlogger.metric.Average(plotter=plotter, plot_title="Step-Type", plot_legend="alpha0")
+    xp.train.alpha1 = mlogger.metric.Average(plotter=plotter, plot_title="Step-Type", plot_legend="alpha1")
+    xp.train.alpha2 = mlogger.metric.Average(plotter=plotter, plot_title="Step-Type", plot_legend="alpha2")
+    xp.train.alpha3 = mlogger.metric.Average(plotter=plotter, plot_title="Step-Type", plot_legend="alpha3")
+    xp.train.alpha4 = mlogger.metric.Average(plotter=plotter, plot_title="Step-Type", plot_legend="alpha4")
+
+    if args.dataset == "imagenet":
+        xp.train.acc5 = mlogger.metric.Average(plotter=plotter, plot_title="Accuracy@5", plot_legend="training")
+        xp.val.acc5 = mlogger.metric.Average(plotter=plotter, plot_title="Accuracy@5", plot_legend="validation")
+        xp.test.acc5 = mlogger.metric.Average(plotter=plotter, plot_title="Accuracy@5", plot_legend="test")
 
     if args.visdom:
-        visdom_plotter.set_win_opts("Step-Size", {'ytype': 'log'})
-        visdom_plotter.set_win_opts("Objective", {'ytype': 'log'})
-        # visdom_plotter.set_win_opts("Step-Type", {'ytype': 'log'})
+        plotter.set_win_opts("Step-Size", {'ytype': 'log'})
+        plotter.set_win_opts("Objective", {'ytype': 'log'})
 
     if args.log:
         # log at each epoch
@@ -90,7 +81,7 @@ def setup_xp(args, model, optimizer):
 
         # log after final evaluation on test set
         xp.test.acc.hook_on_update(lambda: xp.save_to('{}/results.json'.format(args.xp_name)))
-        xp.test.acc.hook_on_update(lambda: save_state(model, optimizer, '{}/best_model.pkl'.format(args.xp_name)))
+        xp.test.acc.hook_on_update(lambda: save_state(model, optimizer, '{}/model.pkl'.format(args.xp_name)))
 
         # save results and model for best validation performance
         xp.max_val.hook_on_new_max(lambda: save_state(model, optimizer, '{}/best_model.pkl'.format(args.xp_name)))
@@ -102,6 +93,14 @@ def save_state(model, optimizer, filename):
     torch.save({'model': model.state_dict(),
                 'optimizer': optimizer.state_dict()}, filename)
 
+
+def write_results(args, xp)
+    with open('results.txt', 'a') as results:
+        results.write('{xp_name} Train Acc {tracc:.2f} Val Acc {vacc:.2f} Test Acc {teacc:.2f}\n'
+          .format(xp_name=args.xp_name
+                  tracc=xp.train.acc.value,
+                  vacc=xp.max_val.value,
+                  teacc=xp.test.acc.value))
 
 @torch.autograd.no_grad()
 def accuracy(out, targets, topk=1):
