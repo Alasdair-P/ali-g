@@ -109,6 +109,8 @@ def _add_misc_parser(parser):
                           help='do not log results')
     m_parser.add_argument('--debug', dest='debug', action='store_true',
                           help='debug mode')
+    m_parser.add_argument('--jade', dest='jade', action='store_true',
+                          help='flag for running jobs on jade')
     m_parser.add_argument('--parallel_gpu', dest='parallel_gpu', action='store_true',
                           help="parallel gpu computation")
     m_parser.add_argument('--no_tqdm', dest='tqdm', action='store_false',
@@ -124,6 +126,8 @@ def set_xp_name(args):
         args.epochs = 2
 
     if args.xp_name is None:
+        if args.jade:
+            args.log_dir = '/jmain01/home/JAD035/pkm01/shared/models/' 
         xp_name = args.log_dir
         xp_name += 'results/{data}/'.format(data=args.dataset)
         xp_name += "{model}{data}-{opt}--eta-{eta}--l2-{l2}--b-{b}--k-{k}"

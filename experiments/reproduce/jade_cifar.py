@@ -3,7 +3,7 @@ import time
 
 
 def create_jobs():
-    template = "python main.py --no_visdom --no_tqdm "
+    template = "python main.py --no_visdom --no_tqdm --jade "
     wrn_opts = " --depth 40 --width 4 --epochs 200"
     dn_opts = " --depth 40 --growth 40 --epochs 300"
 
@@ -24,11 +24,6 @@ def create_jobs():
             raise ValueError("Model {} not recognized".format(hparam["model"]))
         jobs.append(command)
     return jobs
-
-
-
-jobs = ["python main.py --batch_size 128 --dataset cifar100 --eta 1.0 --max_norm 175 --model wrn --momentum 0.9 --opt sbdf2 --epochs 400 --depth 40 --width 4 --port 9026 --run n-equals-2-solve-forward-no-momentum --k 2 --solve_forward --no_visdom --no_tqdm --xp_dir /jmain01/home/JAD035/pkm01/shared/models/alasdair"]
-
 
 
 def run_command(command, noprint=True):
