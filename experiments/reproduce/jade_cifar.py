@@ -1,5 +1,6 @@
 import os
 import time
+import yaml
 
 
 def create_jobs():
@@ -9,8 +10,8 @@ def create_jobs():
 
     # with open("reproduce/hparams/cifar.yaml", "r") as f:
     # with open("reproduce/hparams/alig.yaml", "r") as f:
-    with open("reproduce/hparams/test.yaml", "r") as f:
     # with open("reproduce/hparams/sbd3.yaml", "r") as f:
+    with open("reproduce/hparams/test.yaml", "r") as f:
         hparams = yaml.safe_load(f)
 
     jobs = []
@@ -38,6 +39,7 @@ def launch(jobs, interval):
         time.sleep(interval)
 
 if __name__ == "__main__":
+    jobs = create_jobs()
     for job in jobs:
         print(job)
     print("Total of {} jobs to launch".format(len(jobs)))
