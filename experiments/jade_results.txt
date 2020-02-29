@@ -1,0 +1,8 @@
+/jmain01/home/JAD035/pkm01/shared/models/results/cifar100/wrn100-sbd--eta-1.0--l2-150.0--b-128--k-5--momentum-0.9 Train Acc 99.98 Val Acc 74.94 Test Acc 74.51
+/jmain01/home/JAD035/pkm01/shared/models/results/cifar100/wrn100-sbd--eta-1.0--l2-200.0--b-128--k-5--momentum-0.9 Train Acc 99.97 Val Acc 73.24 Test Acc 73.08
+/jmain01/home/JAD035/pkm01/shared/models/results/cifar100/wrn100-sbd--eta-1.0--l2-175.0--b-128--k-5--momentum-0.9 Train Acc 99.98 Val Acc 73.66 Test Acc 72.95
+/jmain01/home/JAD035/pkm01/shared/models/results/cifar100/wrn100-sbd--eta-1.0--l2-225.0--b-128--k-5--momentum-0.9 Train Acc 99.98 Val Acc 72.84 Test Acc 72.13
+/jmain01/home/JAD035/pkm01/shared/models/results/cifar100/wrn100-sbd--eta-0.1--l2-50.0--b-128--k-5--momentum-0.9 Train Acc 99.95 Val Acc 76.64 Test Acc 76.12
+/jmain01/home/JAD035/pkm01/shared/models/results/cifar100/wrn100-sbd--eta-0.1--l2-100.0--b-128--k-5--momentum-0.9 Train Acc 99.97 Val Acc 72.44 Test Acc 72.46
+/jmain01/home/JAD035/pkm01/shared/models/results/cifar100/wrn100-sbd--eta-0.1--l2-75.0--b-128--k-5--momentum-0.9 Train Acc 99.98 Val Acc 73.60 Test Acc 73.57
+/jmain01/home/JAD035/pkm01/shared/models/results/cifar100/wrn100-sbd--eta-0.1--l2-125.0--b-128--k-5--momentum-0.9 Train Acc 99.97 Val Acc 72.52 Test Acc 72.41
