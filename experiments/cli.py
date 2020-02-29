@@ -130,12 +130,12 @@ def set_xp_name(args):
             args.log_dir = '/jmain01/home/JAD035/pkm01/shared/models/' 
         xp_name = args.log_dir
         xp_name += 'results/{data}/'.format(data=args.dataset)
-        xp_name += "{model}{data}-{opt}--eta-{eta}--l2-{l2}--b-{b}--k-{k}"
+        xp_name += "{model}{data}-{opt}--k-{k}--eta-{eta}--l2-{l2}--b-{b}"
         l2 = args.max_norm if (args.opt == 'alig') or (args.opt == 'sbd') else args.weight_decay
         data = args.dataset.replace("cifar", "")
         xp_name += "--momentum-{}".format(args.momentum)
         args.k = 2 if args.opt == 'alig' else args.k
-        args.xp_name = xp_name.format(model=args.model, data=data, opt=args.opt, eta=args.eta, l2=l2, b=args.batch_size, k=args.k)
+        args.xp_name = xp_name.format(model=args.model, data=data, opt=args.opt, k=args.k,  eta=args.eta, l2=l2, b=args.batch_size)
         if args.debug:
             args.xp_name += "--debug"
 
