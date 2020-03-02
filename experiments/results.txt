@@ -14,3 +14,43 @@
 /data0/clean/results/cifar100/wrn100-sbd--k-4--eta-0.1--l2-75.0--b-128--momentum-0.9 Train Acc 99.96 Val Acc 74.74 Test Acc 74.32
 /data0/clean/results/cifar100/wrn100-sbd--k-4--eta-0.1--l2-100.0--b-128--momentum-0.9 Train Acc 99.98 Val Acc 73.04 Test Acc 72.89
 /data0/clean/results/cifar100/wrn100-sbd--k-4--eta-0.1--l2-125.0--b-128--momentum-0.9 Train Acc 99.99 Val Acc 73.20 Test Acc 72.33
+/data0/clean/results/cifar100/wrn100-sbd--k-3--eta-1.0--l2-250.0--b-128--momentum-0.9 Train Acc 99.98 Val Acc 73.82 Test Acc 73.30
+/data0/clean/results/cifar100/wrn100-sbd--k-3--eta-1.0--l2-275.0--b-128--momentum-0.9 Train Acc 99.99 Val Acc 73.30 Test Acc 72.39
+/data0/clean/results/cifar100/wrn100-sbd--k-4--eta-1.0--l2-100.0--b-128--momentum-0.9 Train Acc 71.34 Val Acc 64.72 Test Acc 64.20
+/data0/clean/results/cifar100/wrn100-sbd--k-4--eta-1.0--l2-125.0--b-128--momentum-0.9 Train Acc 78.39 Val Acc 66.84 Test Acc 66.06
+/data0/clean/results/cifar100/wrn100-sbd--k-3--eta-0.1--l2-25.0--b-128--momentum-0.9 Train Acc 50.83 Val Acc 43.40 Test Acc 43.04
+/data0/clean/results/cifar100/wrn100-sbd--k-3--eta-0.1--l2-150.0--b-128--momentum-0.9 Train Acc 99.97 Val Acc 73.28 Test Acc 72.62
+/data0/clean/results/cifar100/wrn100-sbd--k-4--eta-0.1--l2-25.0--b-128--momentum-0.9 Train Acc 58.97 Val Acc 53.34 Test Acc 53.22
+/data0/clean/results/cifar100/wrn100-sbd--k-4--eta-0.1--l2-150.0--b-128--momentum-0.9 Train Acc 99.97 Val Acc 72.54 Test Acc 72.21
+----------------------------------------------------------------------------------------------------------------------------------
+/data0/clean/results/cifar100/wrn100-sbd--k-5--eta-1.0--l2-100.0--b-128-sgd--momentum-0.9 Train Acc 76.10 Val Acc 66.42 Test Acc 66.04
+/data0/clean/results/cifar100/wrn100-sbd--k-5--eta-1.0--l2-150.0--b-128-sgd--momentum-0.9 Train Acc 99.92 Val Acc 73.96 Test Acc 73.84
+/data0/clean/results/cifar100/wrn100-sbd--k-5--eta-1.0--l2-125.0--b-128-sgd--momentum-0.9 Train Acc 99.88 Val Acc 76.32 Test Acc 75.49
+/data0/clean/results/cifar100/wrn100-sbd--k-5--eta-1.0--l2-175.0--b-128-sgd--momentum-0.9 Train Acc 99.95 Val Acc 73.44 Test Acc 72.71
+/data0/clean/results/cifar100/wrn100-sbd--k-5--eta-1.0--l2-200.0--b-128-sgd--momentum-0.9 Train Acc 99.96 Val Acc 72.56 Test Acc 72.63
+/data0/clean/results/cifar100/wrn100-sbd--k-5--eta-1.0--l2-225.0--b-128-sgd--momentum-0.9 Train Acc 99.96 Val Acc 72.44 Test Acc 71.85
+/data0/clean/results/cifar100/wrn100-sbd--k-5--eta-0.1--l2-75.0--b-128-sgd--momentum-0.9 Train Acc 99.97 Val Acc 73.58 Test Acc 73.96
+/data0/clean/results/cifar100/wrn100-sbd--k-5--eta-0.1--l2-50.0--b-128-sgd--momentum-0.9 Train Acc 99.88 Val Acc 76.06 Test Acc 75.38
+/data0/clean/results/cifar100/wrn100-sbd--k-5--eta-0.1--l2-125.0--b-128-sgd--momentum-0.9 Train Acc 99.98 Val Acc 71.62 Test Acc 72.20
+/data0/clean/results/cifar100/wrn100-sbd--k-5--eta-0.1--l2-100.0--b-128-sgd--momentum-0.9 Train Acc 99.93 Val Acc 73.78 Test Acc 72.60
+----------------------------------------------------------------------------------------------------------------------------------
+/data0/clean/results/cifar100/wrn100-alig--k-2--eta-0.1--l2-300.0--b-128-sgd--momentum-0.9 Train Acc 99.95 Val Acc 71.82 Test Acc 72.55
+/data0/clean/results/cifar100/wrn100-sbd--k-4--eta-0.1--l2-300.0--b-128-sgd--momentum-0.9 Train Acc 99.93 Val Acc 71.70 Test Acc 71.66
+/data0/clean/results/cifar100/wrn100-sbd--k-5--eta-0.1--l2-300.0--b-128-sgd--momentum-0.9 Train Acc 99.89 Val Acc 71.96 Test Acc 71.25
+/data0/clean/results/cifar100/wrn100-sbd--k-3--eta-0.1--l2-300.0--b-128-sgd--momentum-0.9 Train Acc 99.95 Val Acc 72.26 Test Acc 71.62
+/data0/clean/results/cifar100/wrn100-alig--k-2--eta-1.0--l2-500.0--b-128-sgd--momentum-0.9 Train Acc 99.94 Val Acc 72.40 Test Acc 71.89
+/data0/clean/results/cifar100/wrn100-sbd--k-3--eta-1.0--l2-500.0--b-128-sgd--momentum-0.9 Train Acc 99.96 Val Acc 72.06 Test Acc 72.31
+/data0/clean/results/cifar100/wrn100-sbd--k-4--eta-1.0--l2-500.0--b-128-sgd--momentum-0.9 Train Acc 99.94 Val Acc 71.48 Test Acc 71.50
+/data0/clean/results/cifar100/wrn100-sbd--k-5--eta-1.0--l2-500.0--b-128-sgd--momentum-0.9 Train Acc 99.92 Val Acc 71.72 Test Acc 71.71
+----------------------------------------------------------------------------------------------------------------------------------
+/data0/clean/results/cifar100/wrn100-sbd--k-5--eta-0.1--l2-200.0--b-128-sgd--momentum-0.9 Train Acc 99.96 Val Acc 71.42 Test Acc 71.24
+/data0/clean/results/cifar100/wrn100-sbd--k-5--eta-1.0--l2-275.0--b-128-sgd--momentum-0.9 Train Acc 99.94 Val Acc 72.44 Test Acc 71.85
+/data0/clean/results/cifar100/wrn100-sbd--k-5--eta-0.1--l2-175.0--b-128-sgd--momentum-0.9 Train Acc 99.98 Val Acc 71.52 Test Acc 71.72
+/data0/clean/results/cifar100/wrn100-sbd--k-5--eta-1.0--l2-250.0--b-128-sgd--momentum-0.9 Train Acc 99.98 Val Acc 72.46 Test Acc 72.00
+/data0/clean/results/cifar100/wrn100-sbd--k-5--eta-0.1--l2-45.0--b-128-sgd--momentum-0.9 Train Acc 99.38 Val Acc 76.46 Test Acc 76.45
+/data0/clean/results/cifar100/wrn100-sbd--k-5--eta-1.0--l2-120.0--b-128-sgd--momentum-0.9 Train Acc 99.83 Val Acc 76.46 Test Acc 75.82
+/data0/clean/results/cifar100/wrn100-sbd--k-5--eta-0.1--l2-40.0--b-128-sgd--momentum-0.9 Train Acc 78.68 Val Acc 67.88 Test Acc 66.27
+/data0/clean/results/cifar100/wrn100-sbd--k-5--eta-1.0--l2-115.0--b-128-sgd--momentum-0.9 Train Acc 80.70 Val Acc 66.42 Test Acc 65.83
+/data0/clean/results/cifar100/wrn100-sbd--k-5--eta-0.1--l2-150.0--b-128-sgd--momentum-0.9 Train Acc 99.99 Val Acc 72.04 Test Acc 71.65
+/data0/clean/results/cifar100/wrn100-alig--k-2--eta-0.1--l2-100.0--b-128-svm-loss--momentum-0.9 Train Acc 53.05 Val Acc 43.70 Test Acc 44.39
+/data0/clean/results/cifar100/wrn100-alig--k-2--eta-0.1--l2-150.0--b-128-svm-loss--momentum-0.9 Train Acc 57.98 Val Acc 46.34 Test Acc 46.05

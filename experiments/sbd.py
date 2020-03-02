@@ -9,7 +9,7 @@ except ImportError:
     raise ImportError("numpy is not installed!")
 
 class SBD(torch.optim.Optimizer):
-    def __init__(self, params, eta=None, k=1, momentum=0, projection_fn=None, zero_plane=True, momentum_forward=False, sgd_forward=False, weight_decay=0, eps=1e-8, debug=False):
+    def __init__(self, params, eta=None, k=1, momentum=0, projection_fn=None, zero_plane=True, momentum_forward=False, sgd_forward=True, weight_decay=0, eps=1e-8, debug=False):
         if eta is not None and eta <= 0.0:
             raise ValueError("Invalid eta: {}".format(eta))
         if momentum < 0.0:

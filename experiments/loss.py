@@ -1,10 +1,10 @@
 import torch
 import torch.nn as nn
-# from dfw.losses import MultiClassHingeLoss, set_smoothing_enabled
+from dfw.losses import MultiClassHingeLoss, set_smoothing_enabled
 
 
 def get_loss(args):
-    if args.opt == 'dfw':
+    if args.opt == 'dfw' or args.loss == 'svm':
         loss_fn = MultiClassHingeLoss()
         if 'cifar' in args.dataset:
             args.smooth_svm = True
