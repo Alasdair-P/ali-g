@@ -9,7 +9,7 @@ except ImportError:
     raise ImportError("numpy is not installed!")
 
 class SBD(torch.optim.Optimizer):
-    def __init__(self, params, eta=None, k=1, momentum=0, projection_fn=None, zero_plane=True, momentum_forward=False, sgd_forward=True, weight_decay=0, eps=1e-8, debug=False):
+    def __init__(self, params, eta=None, k=1, momentum=0, projection_fn=None, zero_plane=True, momentum_forward=False, sgd_forward=False, weight_decay=0, eps=1e-8, debug=False):
         if eta is not None and eta <= 0.0:
             raise ValueError("Invalid eta: {}".format(eta))
         if momentum < 0.0:
@@ -167,10 +167,13 @@ class SBD(torch.optim.Optimizer):
                 alpha[active_idxs] = this_alpha
                 this_dual_value = self.dual(alpha)
 
+                if this_dual_value > self.max_dual_value:
+                    self.max_dual_value = this_dual_value
+                    self.best_alpha = alpha
+
                 if self.print:
                     print('--------------------------------------')
-                    print('A')
-                    print(A)
+                    print('A\n',A)
                     print('b')
                     print(b)
                     print('solution to linear system')
@@ -178,10 +181,6 @@ class SBD(torch.optim.Optimizer):
                     print('dual')
                     print(this_dual_value)
                     print('--------------------------------------')
-
-                if this_dual_value > self.max_dual_value:
-                    self.max_dual_value = this_dual_value
-                    self.best_alpha = alpha
 
     @torch.autograd.no_grad()
     def update_diagnostics(self):
@@ -260,5 +259,3 @@ class SBD(torch.optim.Optimizer):
         momentum = group["momentum"]
         buffer.mul_(momentum).add_(self.update(p, group))
         p.data.add_(momentum, buffer)
-
-

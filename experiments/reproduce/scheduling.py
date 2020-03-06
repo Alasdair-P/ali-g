@@ -16,8 +16,16 @@ def run_command(command, on_gpu, noprint):
             if os.getloadavg()[0] < 4:
                 break
     elif waitGPU is not None:
+        # if 'CUDA_VISIBLE_DEVICES' in os.environ:
+            # try:
+                # ngpu = int(os.environ['NGPU']) if 'NGPU' in os.environ else 1
+                # waitGPU.wait(nproc=0, interval=10, ngpu=ngpu, gpu_ids=[int(os.environ['CUDA_VISIBLE_DEVICES'])])
+            # except:
+                # print("Failed to run `waitGPU.wait` --> no automatic scheduling on GPU")
+        # else:
         try:
-            waitGPU.wait(nproc=0, interval=1, ngpu=1, gpu_ids=[0, 1, 2, 3])
+            waitGPU.wait(nproc=0, interval=1, ngpu=1, gpu_ids=[1, 2])
+            print('GPUS IDS SET TO 1&2 ONLY')
         except:
             print("Failed to run `waitGPU.wait` --> no automatic scheduling on GPU")
     command = " ".join(command.split())

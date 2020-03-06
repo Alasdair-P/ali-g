@@ -1,4 +1,35 @@
 #- {model: wrn, dataset: cifar100, batch_size: 128, opt: alig, eta: 0.1, max_norm: 100, loss: svm, tag: svm-loss}
 #- {model: wrn, dataset: cifar100, batch_size: 128, opt: alig, eta: 0.1, max_norm: 150, loss: svm, tag: svm-loss}
-- {model: wrn, dataset: cifar100, batch_size: 128, opt: sbd, eta: 0.1, max_norm: 100, loss: svm, tag: svm-loss, k: 5}
-- {model: wrn, dataset: cifar100, batch_size: 128, opt: sbd, eta: 0.1, max_norm: 150, loss: svm, tag: svm-loss, k: 5}
+#- {model: wrn, dataset: cifar100, batch_size: 128, opt: sbd, eta: 0.1, max_norm: 100, loss: svm, tag: svm-loss, k: 5}
+#- {model: wrn, dataset: cifar100, batch_size: 128, opt: sbd, eta: 0.1, max_norm: 150, loss: svm, tag: svm-loss, k: 5}
+#- {model: wrn, dataset: cifar100, batch_size: 128, opt: alig, eta: 1.0, max_norm: 500, loss: svm, tag: svm-loss}
+#- {model: wrn, dataset: cifar100, batch_size: 128, opt: sbd, eta: 1.0, max_norm: 500, loss: svm, tag: svm-loss, k: 5}
+#- {model: wrn, dataset: cifar100, batch_size: 128, opt: alig, eta: 0.1, max_norm: 500, loss: svm, tag: svm-loss-300}
+#- {model: wrn, dataset: cifar100, batch_size: 128, opt: sbd, eta: 1.0, max_norm: 500, loss: svm, tag: svm-loss-300, k: 5}
+#- {model: wrn, dataset: cifar100, batch_size: 128, opt: alig, eta: 0.2, max_norm: 500, loss: svm, tag: svm-loss-300}
+#- {model: wrn, dataset: cifar100, batch_size: 128, opt: sbd, eta: 1.0, max_norm: 250, loss: svm, tag: svm-loss-300, k: 5}
+#- {model: wrn, dataset: cifar100, batch_size: 128, opt: sbd, eta: 0.4, max_norm: 500, loss: svm, tag: svm-loss-300, k: 5}
+#- {model: wrn, dataset: cifar100, batch_size: 128, opt: alig, eta: 0.8, max_norm: 500, loss: svm, tag: svm-loss-300}
+#- {model: wrn, dataset: cifar100, batch_size: 128, opt: alig, eta: 0.4, max_norm: 150, loss: svm, tag: svm-loss-400}
+#- {model: wrn, dataset: cifar100, batch_size: 128, opt: sbd, eta: 1.0, max_norm: 150, loss: svm, tag: svm-loss-400, k: 5}
+#- {model: wrn, dataset: cifar100, batch_size: 128, opt: alig, eta: 0.4, max_norm: 250, loss: svm, tag: svm-loss-400}
+#- {model: wrn, dataset: cifar100, batch_size: 128, opt: alig, eta: 0.4, max_norm: 200, loss: svm, tag: svm-loss-400}
+#- {model: wrn, dataset: cifar100, batch_size: 128, opt: alig, eta: 0.2, max_norm: 150, loss: svm, tag: svm-loss-400}
+#- {model: wrn, dataset: cifar100, batch_size: 128, opt: sbd, eta: 1.0, max_norm: 100, loss: svm, tag: svm-loss-400, k: 5}
+#- {model: wrn, dataset: cifar100, batch_size: 128, opt: sbd, eta: 1.0, max_norm: 100, loss: svm, tag: svm-loss-400, k: 5}
+- {model: wrn, dataset: cifar100, batch_size: 128, opt: sbd, eta: 1.0, max_norm: 200, loss: svm, tag: svm-loss-400, k: 5}
+- {model: wrn, dataset: cifar100, batch_size: 128, opt: sbd, eta: 0.1, max_norm: 100, loss: svm, tag: svm-loss-400, k: 5}
+- {model: wrn, dataset: cifar100, batch_size: 128, opt: sbd, eta: 0.1, max_norm: 150, loss: svm, tag: svm-loss-400, k: 5}
+- {model: wrn, dataset: cifar100, batch_size: 128, opt: sbd, eta: 0.1, max_norm: 200, loss: svm, tag: svm-loss-400, k: 5}
+- {model: wrn, dataset: cifar100, batch_size: 128, opt: sbd, eta: 0.3, max_norm: 100, loss: svm, tag: svm-loss-400, k: 5}
+- {model: wrn, dataset: cifar100, batch_size: 128, opt: sbd, eta: 0.3, max_norm: 150, loss: svm, tag: svm-loss-400, k: 5}
+- {model: wrn, dataset: cifar100, batch_size: 128, opt: sbd, eta: 0.3, max_norm: 200, loss: svm, tag: svm-loss-400, k: 5}
+- {model: wrn, dataset: cifar100, batch_size: 128, opt: alig, eta: 0.1, max_norm: 100, loss: svm, tag: svm-loss-400}
+- {model: wrn, dataset: cifar100, batch_size: 128, opt: alig, eta: 0.1, max_norm: 150, loss: svm, tag: svm-loss-400}
+- {model: wrn, dataset: cifar100, batch_size: 128, opt: alig, eta: 0.1, max_norm: 200, loss: svm, tag: svm-loss-400}
+- {model: wrn, dataset: cifar100, batch_size: 128, opt: alig, eta: 0.3, max_norm: 100, loss: svm, tag: svm-loss-400}
+- {model: wrn, dataset: cifar100, batch_size: 128, opt: alig, eta: 0.3, max_norm: 150, loss: svm, tag: svm-loss-400}
+- {model: wrn, dataset: cifar100, batch_size: 128, opt: alig, eta: 0.3, max_norm: 200, loss: svm, tag: svm-loss-400}
+- {model: wrn, dataset: cifar100, batch_size: 128, opt: alig, eta: 1.0, max_norm: 100, loss: svm, tag: svm-loss-400}
+- {model: wrn, dataset: cifar100, batch_size: 128, opt: alig, eta: 1.0, max_norm: 150, loss: svm, tag: svm-loss-400}
+- {model: wrn, dataset: cifar100, batch_size: 128, opt: alig, eta: 1.0, max_norm: 200, loss: svm, tag: svm-loss-400}
