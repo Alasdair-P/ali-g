@@ -9,7 +9,7 @@ from utils import setup_xp, set_seed, save_state, write_results
 from data import get_data_loaders
 from models import get_model, load_best_model
 from optim import get_optimizer, decay_optimizer
-from epoch import train, test
+from epoch import train, test, test_rank
 
 
 def main(args):
@@ -20,14 +20,18 @@ def main(args):
     loader_train, loader_val, loader_test = get_data_loaders(args)
     loss = get_loss(args)
     model = get_model(args)
-    optimizer = get_optimizer(args, parameters=model.parameters())
+    optimizer = get_optimizer(args, model, loss, parameters=model.parameters())
     xp = setup_xp(args, model, optimizer)
 
     for i in range(args.epochs):
         xp.epoch.update(i)
 
         train(model, loss, optimizer, loader_train, args, xp)
-        test(model, optimizer, loader_val, args, xp)
+
+        if args.loss == 'map':
+            test_rank(model, loss, optimizer, loader_val, args, xp)
+        else:
+            test(model, optimizer, loader_val, args, xp)
 
         if (i + 1) in args.T:
             decay_optimizer(optimizer, args.decay_factor)

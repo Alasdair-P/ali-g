@@ -5,10 +5,11 @@ import torch.optim
 # from l4pytorch import L4Mom, L4Adam
 from alig.th import AliG, Yogi, AdamW
 from sbd import SBD
+from sbd2 import SBD2
 from alig.th.projection import l2_projection
 
 
-def get_optimizer(args, parameters):
+def get_optimizer(args, model, loss, parameters):
     parameters = list(parameters)
     if args.opt == 'sgd':
         optimizer = torch.optim.SGD(parameters, lr=args.eta, weight_decay=args.weight_decay,
@@ -38,7 +39,10 @@ def get_optimizer(args, parameters):
         optimizer = L4Mom(parameters, weight_decay=args.weight_decay)
     elif args.opt == 'sbd':
         optimizer = SBD(parameters, eta=args.eta, k=args.k, momentum=args.momentum,
-                         projection_fn=lambda: l2_projection(parameters, args.max_norm), debug= args.debug)
+                         projection_fn=lambda: l2_projection(parameters, args.max_norm), debug=args.debug)
+    elif args.opt == 'sbd-sb':
+        optimizer = SBD2(parameters, model, loss, eta=args.eta, k=args.k, momentum=args.momentum,
+                         projection_fn=lambda: l2_projection(parameters, args.max_norm), debug=args.debug)
     else:
         raise ValueError(args.opt)
 

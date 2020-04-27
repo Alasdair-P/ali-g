@@ -1,6 +1,5 @@
 from data.loaders import loaders_cifar, loaders_mnist, loaders_svhn, loaders_imagenet
 
-
 def get_data_loaders(args):
 
     print('Dataset: \t {}'.format(args.dataset.upper()))

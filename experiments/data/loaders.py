@@ -3,13 +3,13 @@ import os
 import torch.utils.data as data
 import torchvision.datasets as datasets
 import torchvision.transforms as transforms
+from .balancedsampler import BalancedBatchSampler
 
 from .utils import random_subsets, Subset
 
-
 def create_loaders(dataset_train, dataset_val, dataset_test,
                    train_size, val_size, test_size, batch_size, test_batch_size,
-                   cuda, num_workers, split=True):
+                   cuda, n_classes, num_workers, split=True, eq_class=False):
 
     kwargs = {'num_workers': num_workers, 'pin_memory': True} if cuda else {}
 
@@ -40,9 +40,17 @@ def create_loaders(dataset_train, dataset_val, dataset_test,
           .format(len(dataset_train), len(dataset_val), len(dataset_test)))
     print('Batch size: \t {}'.format(batch_size))
 
-    train_loader = data.DataLoader(dataset_train,
-                                   batch_size=batch_size,
-                                   shuffle=True, **kwargs)
+    if eq_class:
+        assert batch_size % n_classes == 0
+        balanced_batch_sampler = BalancedBatchSampler(dataset_train,
+                                                      n_classes, batch_size//n_classes)
+        train_loader = data.DataLoader(dataset_train,
+                                       batch_sampler=balanced_batch_sampler,
+                                       **kwargs)
+    else:
+        train_loader = data.DataLoader(dataset_train,
+                                       batch_size=batch_size,
+                                       shuffle=True, **kwargs)
 
     val_loader = data.DataLoader(dataset_val,
                                  batch_size=test_batch_size,
@@ -57,7 +65,6 @@ def create_loaders(dataset_train, dataset_val, dataset_test,
     test_loader.tag = 'test'
 
     return train_loader, val_loader, test_loader
-
 
 def loaders_mnist(dataset, batch_size=64, cuda=0,
                   train_size=50000, val_size=10000, test_size=10000,
@@ -84,8 +91,7 @@ def loaders_mnist(dataset, batch_size=64, cuda=0,
                           test_batch_size=test_batch_size,
                           cuda=cuda, num_workers=0)
 
-
-def loaders_cifar(dataset, batch_size, cuda,
+def loaders_cifar(dataset, batch_size, cuda, n_classes, eq_class,
                   train_size=45000, augment=True, val_size=5000, test_size=10000,
                   test_batch_size=128, **kwargs):
 
@@ -126,8 +132,7 @@ def loaders_cifar(dataset, batch_size, cuda,
 
     return create_loaders(dataset_train, dataset_val,
                           dataset_test, train_size, val_size, test_size,
-                          batch_size, test_batch_size, cuda, num_workers=2)
-
+                          batch_size, test_batch_size, cuda, n_classes, num_workers=2, eq_class=eq_class)
 
 def loaders_svhn(dataset, batch_size, cuda,
                  train_size=None, augment=False, val_size=6000, test_size=26032,
@@ -176,7 +181,7 @@ def loaders_svhn(dataset, batch_size, cuda,
 
     return create_loaders(dataset_train, dataset_val,
                           dataset_test, train_size, val_size, test_size,
-                          batch_size, test_batch_size, cuda, num_workers=4, split=split)
+                          batch_size, test_batch_size, cuda, n_classes, num_workers=4, split=split)
 
 def loaders_imagenet(dataset, batch_size, cuda,
                                           train_size=1231166, augment=True, val_size=50000,
@@ -216,5 +221,5 @@ def loaders_imagenet(dataset, batch_size, cuda,
     dataset_test = datasets.ImageFolder(testdir, transform_test)
     return create_loaders(dataset_train, dataset_val,
                           dataset_test, train_size, val_size, test_size,
-                          batch_size, test_batch_size, cuda, num_workers=8, split=False)
+                          batch_size, test_batch_size, cuda, n_classes, num_workers=8, split=False)
 

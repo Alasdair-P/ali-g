@@ -4,7 +4,6 @@ from tqdm import tqdm
 # from dfw.losses import set_smoothing_enabled
 from utils import accuracy, regularization
 
-
 def train(model, loss, optimizer, loader, args, xp):
 
     model.train()
@@ -18,6 +17,8 @@ def train(model, loss, optimizer, loader, args, xp):
 
         # forward pass
         scores = model(x)
+        # print('scores',scores, scores.mean(dim=1), scores.std(dim=1), scores.argmax(dim=1))
+        # input("---------")
 
         # compute the loss function, possibly using smoothing
         # with set_smoothing_enabled(args.smooth_svm):
@@ -28,7 +29,10 @@ def train(model, loss, optimizer, loader, args, xp):
         loss_value.backward()
 
         # optimization step
-        optimizer.step(lambda: float(loss_value))
+        if 'sbd-sb' in args.opt:
+            optimizer.step(lambda: float(loss_value), x, y)
+        else:
+            optimizer.step(lambda: float(loss_value))
 
         if 'sbd' in args.opt and not optimizer.k == 0:
             continue
@@ -67,6 +71,51 @@ def train(model, loss, optimizer, loader, args, xp):
     for metric in xp.train.metrics():
         metric.log(time=xp.epoch.value)
 
+@torch.autograd.no_grad()
+def test_rank(model, loss, optimizer, loader, args, xp):
+    model.eval()
+    R = torch.tensor([]).float().cuda()
+    R_star = torch.tensor([]).long().cuda()
+
+    if loader.tag == 'val':
+        xp_group = xp.val
+    else:
+        xp_group = xp.test
+
+    for metric in xp_group.metrics():
+        metric.reset()
+
+    for x, y in tqdm(loader, disable=not args.tqdm,
+                     desc='{} Epoch'.format(loader.tag.title()),
+                     leave=False, total=len(loader)):
+        (x, y) = (x.cuda(), y.cuda()) if args.cuda else (x, y)
+        scores = model(x)
+        R_star = torch.cat((R_star,y),0)
+        R = torch.cat((R,scores),0)
+
+        # print('R', R, R.size(), 'R_star', R_star, R_star.size())
+
+    # print('R', R, R.size(), 'R_star', R_star, R_star.size())
+    # input('press any key')
+    xp_group.acc.update(loss(R, R_star))
+    # xp_group.acc.update(accuracy(R, R_star), weighting=x.size(0))
+    xp_group.timer.update()
+
+    print('Epoch: [{0}] ({tag})\t'
+          '({timer:.2f}s) \t'
+          'Obj ----\t'
+          'Loss ----\t'
+          'Acc {acc:.2f}% \t'
+          .format(int(xp.epoch.value),
+                  tag=loader.tag.title(),
+                  timer=xp_group.timer.value,
+                  acc=xp_group.acc.value))
+
+    if loader.tag == 'val':
+        xp.max_val.update(xp.val.acc.value).log(time=xp.epoch.value)
+
+    for metric in xp_group.metrics():
+        metric.log(time=xp.epoch.value)
 
 @torch.autograd.no_grad()
 def test(model, optimizer, loader, args, xp):

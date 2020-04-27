@@ -4,9 +4,8 @@ from scheduling import launch
 
 def create_jobs():
     template = "python main.py "
-    wrn_opts = " --depth 40 --width 4 --epochs 400"
+    wrn_opts = " --depth 40 --width 4 "
     dn_opts = " --depth 40 --growth 40 --epochs 300"
-    print('---------------------EPOCHS=400------------------------------')
 
     # with open("reproduce/hparams/cifar.yaml", "r") as f:
     # with open("reproduce/hparams/alig.yaml", "r") as f:

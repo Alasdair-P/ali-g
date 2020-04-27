@@ -32,6 +32,8 @@ def _add_dataset_parser(parser):
                           help="test data size")
     d_parser.add_argument('--no_data_augmentation', dest='augment',
                           action='store_false', help='no data augmentation')
+    d_parser.add_argument('--equal_classes', dest='eq_class',
+                          action='store_true', help='force all batches to have equal class weighting')
     d_parser.set_defaults(augment=True)
 
 
@@ -82,10 +84,12 @@ def _add_loss_parser(parser):
                           help="l2-regularization")
     l_parser.add_argument('--max_norm', type=float, default=None,
                           help="maximal l2-norm for constrained optimizers")
-    l_parser.add_argument('--loss', type=str, default='ce', choices=("svm", "ce"),
-                          help="loss function to use ('svm' or 'ce')")
+    l_parser.add_argument('--loss', type=str, default='ce', choices=("svm", "ce", "map", "norm_ce"),
+                          help="loss function to use ('svm' or 'ce' or 'map')")
     l_parser.add_argument('--smooth_svm', dest="smooth_svm", action="store_true",
                           help="smooth SVM")
+    l_parser.add_argument('--rankloss', type=int, default=0,
+                          help="index of true class to learn, note 1 indexed")
     l_parser.set_defaults(smooth_svm=False)
 
 
