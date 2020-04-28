@@ -4,7 +4,6 @@
 
 # set the number of nodes
 #SBATCH --nodes=1                                                                                                          
-
 # set max wallclock time
 #SBATCH --time=72:00:00
 
@@ -12,7 +11,10 @@
 #SBATCH --job-name=test
 
 # set number of GPUs
-#SBATCH --array=0-1
+#SBATCH --gres=gpu:1
+
+# set number of GPUs
+#SBATCH --array=0
 
 # send mail to this address
 #SBATCH --mail-user="alasdair.paren@gmail.com"

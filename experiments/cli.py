@@ -141,6 +141,7 @@ def set_xp_name(args):
         data = args.dataset.replace("cifar", "")
         xp_name += "--momentum-{}".format(args.momentum)
         args.k = 2 if args.opt == 'alig' else args.k
+        args.k = 1 if args.opt == 'sgd' else args.k
         args.xp_name = xp_name.format(model=args.model, data=data, opt=args.opt, k=args.k,  eta=args.eta, l2=l2, b=args.batch_size, tag=args.tag)
         if args.debug:
             args.xp_name += "--debug"
@@ -170,6 +171,10 @@ def set_num_classes(args):
     else:
         raise ValueError
 
+def misc_filter(args):
+    if args.loss == 'map':
+        args.eq_class = True
+
 
 def set_visdom(args):
     if not args.visdom:
@@ -185,6 +190,7 @@ def set_visdom(args):
 def filter_args(args):
     args.T = list(args.T)
     set_cuda(args)
+    misc_filter(args)
 
     set_xp_name(args)
     set_visdom(args)
