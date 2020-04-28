@@ -10,4 +10,3 @@ nvidia-smi
 echo "Using CUDA device" $CUDA_VISIBLE_DEVICES
 
 python reproduce/jade_cifar.py
-# python test.py
