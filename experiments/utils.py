@@ -53,7 +53,10 @@ def setup_xp(args, model, optimizer):
     xp.val.acc = mlogger.metric.Average(plotter=plotter, plot_title="Accuracy", plot_legend="validation")
     xp.val.timer = mlogger.metric.Timer(plotter=plotter, plot_title="Time", plot_legend='validation')
 
-    xp.max_val = mlogger.metric.Maximum(plotter=plotter, plot_title="Accuracy", plot_legend='best-validation')
+    if args.loss == 'map':
+        xp.max_val = mlogger.metric.Minimum(plotter=plotter, plot_title="Accuracy", plot_legend='best-validation')
+    else:
+        xp.max_val = mlogger.metric.Maximum(plotter=plotter, plot_title="Accuracy", plot_legend='best-validation')
 
     xp.test = mlogger.Container()
     xp.test.acc = mlogger.metric.Average(plotter=plotter, plot_title="Accuracy", plot_legend="test")
@@ -84,7 +87,11 @@ def setup_xp(args, model, optimizer):
         xp.test.acc.hook_on_update(lambda: save_state(model, optimizer, '{}/model.pkl'.format(args.xp_name)))
 
         # save results and model for best validation performance
-        xp.max_val.hook_on_new_max(lambda: save_state(model, optimizer, '{}/best_model.pkl'.format(args.xp_name)))
+        # xp.max_val.hook_on_new_max(lambda: save_state(model, optimizer, '{}/best_model.pkl'.format(args.xp_name)))
+        if args.loss == 'map':
+            xp.max_val.hook_on_new_min(lambda: save_state(model, optimizer, '{}/best_model.pkl'.format(args.xp_name)))
+        else:
+            xp.max_val.hook_on_new_max(lambda: save_state(model, optimizer, '{}/best_model.pkl'.format(args.xp_name)))
 
     return xp
 
