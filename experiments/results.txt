@@ -156,3 +156,19 @@
 /data0/clean/results/cifar10/wrn10-sbd--k-5--eta-1.0--l2-None--b-120-25-epoch-norm-ce-pretrain-equal-classes-sgd--momentum-0.9 Train Acc 74.64 Val Acc 0.05 Test Acc 89.83
 /data0/clean/results/cifar10/wrn10-sbd-sb--k-3--eta-1.0--l2-0--b-480-15-epoch-norm-ce-pretrain-equal-classes-sgd--momentum-0.9 Train Acc 58.76 Val Acc 0.06 Test Acc 88.79
 /data0/clean/results/cifar10/wrn10-sbd-sb--k-3--eta-5.0--l2-0--b-510-15-epoch-norm-ce-pretrain-equal-classes-sgd--momentum-0.9 Train Acc 32.86 Val Acc 0.05 Test Acc 89.25
+/data0/clean/results/cifar10/wrn10-alig--k-2--eta-5.0--l2-None--b-510-15-epoch-norm-ce-pretrain-equal-classes-sgd--momentum-0.9 Train Acc 39.60 Val Acc 0.05 Test Acc 45.56
+/data0/clean/results/cifar10/wrn10-sbd-sb--k-3--eta-0.1--l2-0--b-510-15-epoch-norm-ce-pretrain-equal-classes-sgd--momentum-0.9 Train Acc 82.35 Val Acc 0.05 Test Acc 79.27
+/data0/clean/results/cifar10/wrn10-sgd--k-1--eta-1.0--l2-0--b-128-epoch-0-norm-ce--momentum-0.9 Train Acc 0.00 Val Acc -inf Test Acc 10.05
+/data0/clean/results/cifar10/wrn10-sgd--k-1--eta-1e-07--l2-0--b-128-epoch-1-norm-ce--momentum-0.9 Train Acc 10.20 Val Acc 11.16 Test Acc 9.92
+--------------------------------------------------------------------------------------------------------------------------------------------------
+k=3 CIFAR100 WRN
+--------------------------------------------------------------------------------------------------------------------------------------------------
+/data0/clean/results/cifar100/wrn100-sbd--k-3--eta-0.1--l2-50.0--b-256---momentum-0.9 Train Acc 99.95 Val Acc 75.66 Test Acc 75.77
+/data0/clean/results/cifar100/wrn100-sbd--k-3--eta-0.1--l2-25.0--b-256---momentum-0.9 Train Acc 62.13 Val Acc 50.22 Test Acc 51.06
+/data0/clean/results/cifar100/wrn100-sbd--k-3--eta-1.0--l2-150.0--b-256---momentum-0.9 Train Acc 99.99 Val Acc 74.42 Test Acc 74.10
+/data0/clean/results/cifar100/wrn100-sbd--k-3--eta-1.0--l2-175.0--b-256---momentum-0.9 Train Acc 99.96 Val Acc 72.80 Test Acc 72.92
+/data0/clean/results/cifar100/wrn100-sbd--k-3--eta-0.1--l2-25.0--b-512---momentum-0.9 Train Acc 72.36 Val Acc 58.36 Test Acc 58.08
+/data0/clean/results/cifar100/wrn100-sbd--k-3--eta-0.1--l2-50.0--b-512---momentum-0.9 Train Acc 99.97 Val Acc 73.44 Test Acc 72.92
+/data0/clean/results/cifar100/wrn100-sbd--k-3--eta-1.0--l2-125.0--b-512---momentum-0.9 Train Acc 99.98 Val Acc 72.80 Test Acc 72.04
+/data0/clean/results/cifar100/wrn100-sbd--k-3--eta-1.0--l2-150.0--b-512---momentum-0.9 Train Acc 99.99 Val Acc 71.92 Test Acc 72.20
+/data0/clean/results/cifar100/dn100-sbd--k-3--eta-1.0--l2-75.0--b-64---momentum-0.9 Train Acc 37.30 Val Acc 31.92 Test Acc 32.23

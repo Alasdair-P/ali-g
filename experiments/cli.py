@@ -105,7 +105,7 @@ def _add_misc_parser(parser):
                           help="server for visdom")
     m_parser.add_argument('--log_dir', type=str, default='/data0/clean/',
                           help="server for visdom")
-    m_parser.add_argument('--port', type=int, default=9031,
+    m_parser.add_argument('--port', type=int, default=9029,
                           help="port for visdom")
     m_parser.add_argument('--xp_name', type=str, default=None,
                           help="name of experiment")
