@@ -182,12 +182,24 @@ class Rankloss(nn.Module):
 
         m = self.median(l_minus, r_minus)
         m = self.select(m, l_minus, r_minus)
-        opt_m = 1 + (self.s_plus>float(self.s_minus[m])).sum() # finds interlearing rank at postion m
+        opt_m = self.opt_j(l_plus, r_plus, m)
         self.opt[m].copy_(opt_m)
         if l_minus < m:
             self.calc_optimal_interleaving_rank(l_minus, m, l_plus, opt_m)
         if m+1 < r_minus:
             self.calc_optimal_interleaving_rank(m+1, r_minus, opt_m, r_plus)
+
+    @torch.autograd.no_grad()
+    def opt_j(self, l_plus, r_plus, j):
+        # range of i
+        k = torch.arange(l_plus, r_plus).cuda()
+        # array where each element is single term in sum
+        deltas = (j/(j+k.float())-(j-1)/(j+k.float()-1))/(self.P) - 2*(self.s_plus[k]-self.s_minus[j])/(self.P*self.N)
+        opt_vals = torch.cumsum(deltas.flip(0),0)
+        # computes array were nth value is sum form n to r_plus
+        opt = torch.argmax(opt_vals.flip(0))
+        # compute argmax
+        return k[opt]
 
     @torch.autograd.no_grad()
     def median(self, l_minus, r_minus):

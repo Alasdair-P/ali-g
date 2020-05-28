@@ -1,0 +1,55 @@
+#- {model: dn, dataset: cifar100, batch_size: 128, opt: sbd, eta: 0.1, max_norm: 70, k: 3}
+#- {model: dn, dataset: cifar100, batch_size: 128, opt: sbd, eta: 1.0, max_norm: 125, k: 3}
+#- {model: dn, dataset: cifar100, batch_size: 128, opt: sbd, eta: 1.0, max_norm: 150, k: 3}
+#- {model: dn, dataset: cifar100, batch_size: 128, opt: sbd, eta: 0.1, max_norm: 50, k: 5}
+#- {model: dn, dataset: cifar100, batch_size: 128, opt: sbd, eta: 0.1, max_norm: 75, k: 5}
+#- {model: dn, dataset: cifar100, batch_size: 128, opt: sbd, eta: 1.0, max_norm: 100, k: 5}
+#- {model: dn, dataset: cifar100, batch_size: 128, opt: sbd, eta: 1.0, max_norm: 125, k: 5}
+#- {model: dn, dataset: cifar10, batch_size: 128, opt: sbd, eta: 0.1, max_norm: 50, k: 3}
+#- {model: dn, dataset: cifar10, batch_size: 128, opt: sbd, eta: 0.1, max_norm: 75, k: 3}
+#- {model: dn, dataset: cifar10, batch_size: 128, opt: sbd, eta: 1.0, max_norm: 125, k: 3}
+#- {model: dn, dataset: cifar10, batch_size: 128, opt: sbd, eta: 1.0, max_norm: 150, k: 3}
+#- {model: dn, dataset: cifar10, batch_size: 128, opt: sbd, eta: 0.1, max_norm: 50, k: 5}
+#- {model: dn, dataset: cifar10, batch_size: 128, opt: sbd, eta: 0.1, max_norm: 75, k: 5}
+#- {model: dn, dataset: cifar10, batch_size: 128, opt: sbd, eta: 1.0, max_norm: 100, k: 5}
+#- {model: dn, dataset: cifar10, batch_size: 128, opt: sbd, eta: 1.0, max_norm: 125, k: 5}
+#- {model: dn, dataset: cifar10, batch_size: 128, opt: sbd, eta: 0.1, max_norm: 40, k: 3, tag: 3}
+#- {model: dn, dataset: cifar10, batch_size: 128, opt: sbd, eta: 1.0, max_norm: 115, k: 3, tag: 3}
+#- {model: dn, dataset: cifar10, batch_size: 128, opt: sbd, eta: 0.1, max_norm: 40, k: 5, tag: 3}
+#- {model: dn, dataset: cifar10, batch_size: 128, opt: sbd, eta: 1.0, max_norm: 115, k: 5, tag: 3}
+#- {model: dn, dataset: cifar100, batch_size: 128, opt: sbd, eta: 1.0, max_norm: 160, k: 3, tag: 3}
+#- {model: dn, dataset: cifar100, batch_size: 128, opt: sbd, eta: 0.1, max_norm: 65, k: 5, tag: 3}
+#- {model: dn, dataset: cifar100, batch_size: 128, opt: sbd, eta: 1.0, max_norm: 145, k: 5, tag: 3}
+#- {model: wrn, dataset: cifar10, batch_size: 128, opt: sbd, eta: 0.1, max_norm: 35, k: 3, tag: 3}
+#- {model: wrn, dataset: cifar10, batch_size: 128, opt: sbd, eta: 1.0, max_norm: 110, k: 3, tag: 3}
+#- {model: dn, dataset: cifar10, batch_size: 128, opt: sbd, eta: 0.1, max_norm: 35, k: 5, tag: 3}
+#- {model: dn, dataset: cifar10, batch_size: 128, opt: sbd, eta: 1.0, max_norm: 110, k: 5, tag: 3}
+#- {model: dn, dataset: cifar100, batch_size: 128, opt: sbd, eta: 0.1, max_norm: 60, k: 5, tag: 3}
+#- {model: dn, dataset: cifar100, batch_size: 128, opt: sbd, eta: 1.0, max_norm: 140, k: 5, tag: 3}
+#- {model: dn, dataset: cifar100, batch_size: 128, opt: sbd, eta: 1.0, max_norm: 190, k: 3, tag: 3}
+#- {model: dn, dataset: cifar100, batch_size: 128, opt: sbd, eta: 1.0, max_norm: 185, k: 3, tag: 3}
+#- {model: dn, dataset: cifar100, batch_size: 128, opt: sbd, eta: 0.1, max_norm: 55, k: 5, tag: 3}
+#- {model: dn, dataset: cifar100, batch_size: 128, opt: sbd, eta: 1.0, max_norm: 135, k: 5, tag: 3}
+#- {model: wrn, dataset: cifar10, batch_size: 128, opt: sbd, eta: 0.1, max_norm: 30, k: 3, tag: 3}
+#- {model: wrn, dataset: cifar10, batch_size: 128, opt: sbd, eta: 1.0, max_norm: 105, k: 3, tag: 3}
+#- {model: dn, dataset: cifar100, batch_size: 128, opt: sbd, eta: 1.0, max_norm: 200, k: 3, tag: 3}
+#- {model: dn, dataset: cifar10, batch_size: 128, opt: sbd, eta: 0.1, max_norm: 35, k: 3, tag: 3}
+#- {model: dn, dataset: cifar10, batch_size: 128, opt: sbd, eta: 1.0, max_norm: 110, k: 3, tag: 3}
+#- {model: dn, dataset: cifar10, batch_size: 128, opt: sbd, eta: 0.1, max_norm: 30, k: 5, tag: 3}
+#- {model: dn, dataset: cifar10, batch_size: 128, opt: sbd, eta: 1.0, max_norm: 105, k: 5, tag: 3}
+#- {model: dn, dataset: cifar100, batch_size: 128, opt: sbd, eta: 1.0, max_norm: 250, k: 3, tag: 3}
+#- {model: dn, dataset: cifar100, batch_size: 128, opt: sbd, eta: 1.0, max_norm: 225, k: 3, tag: 3}
+#- {model: dn, dataset: cifar10, batch_size: 128, opt: sbd, eta: 1.0, max_norm: 110, k: 3, tag: 4}
+#- {model: wrn, dataset: cifar100, batch_size: 128, opt: sbd, eta: 1.0, max_norm: 125, k: 5, tag: 4}
+#- {model: wrn, dataset: cifar100, batch_size: 128, opt: sbd, eta: 1.0, max_norm: 120, k: 5, tag: 4}
+#- {model: wrn, dataset: cifar10, batch_size: 128, opt: sbd, eta: 1.0, max_norm: 70, k: 5, tag: 4}
+#- {model: wrn, dataset: cifar10, batch_size: 128, opt: sbd, eta: 1.0, max_norm: 105, k: 3, tag: 4}
+#- {model: wrn, dataset: cifar100, batch_size: 128, opt: sbd, eta: 0.1, max_norm: 65, k: 3, tag: 5}
+#- {model: dn, dataset: cifar100, batch_size: 128, opt: sbd, eta: 1.0, max_norm: 220, k: 3, tag: 3}
+#- {model: dn, dataset: cifar10, batch_size: 128, opt: sbd, eta: 0.1, max_norm: 25, k: 5, tag: 3}
+#- {model: dn, dataset: cifar10, batch_size: 128, opt: sbd, eta: 1.0, max_norm: 80, k: 5, tag: 3}
+#- {model: dn, dataset: cifar100, batch_size: 128, opt: sbd, eta: 1.0, max_norm: 215, k: 3, tag: 3}
+- {model: dn, dataset: cifar100, batch_size: 128, opt: sbd, eta: 1.0, max_norm: 210, k: 3, tag: 3}
+- {model: dn, dataset: cifar100, batch_size: 128, opt: sbd, eta: 1.0, max_norm: 205, k: 3, tag: 3}
+- {model: dn, dataset: cifar10, batch_size: 128, opt: sbd, eta: 1.0, max_norm: 70, k: 5, tag: 3}
+- {model: dn, dataset: cifar10, batch_size: 128, opt: sbd, eta: 1.0, max_norm: 75, k: 5, tag: 3}

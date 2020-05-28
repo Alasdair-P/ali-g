@@ -1,0 +1,2 @@
+- {model: wrn, dataset: cifar10, batch_size: 500, opt: alig, eta: 0.1, epochs: 200, loss: map, tag: test, val_size: 2500}
+- {model: wrn, dataset: cifar10, batch_size: 500, opt: sbd-sb, k: 5, eta: 0.1, epochs: 50, loss: map, tag: test, val_size: 2500}

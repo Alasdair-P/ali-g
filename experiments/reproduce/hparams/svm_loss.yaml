@@ -1,0 +1,8 @@
+- {model: wrn, dataset: cifar100, batch_size: 128, opt: alig, eta: 0.1, max_norm: 50, loss: svm, tag: svm, epochs: 400}
+- {model: wrn, dataset: cifar100, batch_size: 128, opt: alig, eta: 0.3, max_norm: 50, loss: svm, tag: svm, epochs: 400}
+- {model: wrn, dataset: cifar100, batch_size: 128, opt: alig, eta: 1.0, max_norm: 50, loss: svm, tag: svm, epochs: 400}
+- {model: wrn, dataset: cifar100, batch_size: 128, opt: alig, eta: 3.0, max_norm: 50, loss: svm, tag: svm, epochs: 400}
+- {model: wrn, dataset: cifar100, batch_size: 128, opt: sbd, eta: 0.1, max_norm: 50, k: 5, loss: svm, tag: svm, epochs: 400}
+- {model: wrn, dataset: cifar100, batch_size: 128, opt: sbd, eta: 0.3, max_norm: 50, k: 5, loss: svm, tag: svm, epochs: 400}
+- {model: wrn, dataset: cifar100, batch_size: 128, opt: sbd, eta: 1.0, max_norm: 50, k: 5, loss: svm, tag: svm, epochs: 400}
+- {model: wrn, dataset: cifar100, batch_size: 128, opt: sbd, eta: 3.0, max_norm: 50, k: 5, loss: svm, tag: svm, epochs: 400}
