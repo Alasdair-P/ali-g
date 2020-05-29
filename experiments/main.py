@@ -37,7 +37,10 @@ def main(args):
             decay_optimizer(optimizer, args.decay_factor)
 
     load_best_model(model, '{}/best_model.pkl'.format(args.xp_name))
-    test(model, optimizer, loader_test, args, xp)
+    if args.loss == 'map':
+        test_rank(model, loss, optimizer, loader_test, args, xp)
+    else:
+        test(model, optimizer, loader_test, args, xp)
     write_results(args, xp)
 
 
