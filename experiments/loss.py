@@ -174,6 +174,7 @@ class Rankloss(nn.Module):
 
         if self.print:
             print('l_minus', l_minus,'r_minus', r_minus, 'l_plus', l_plus, 'r_plus', r_plus)
+            print('opt', self.opt)
 
         if l_plus == r_plus:
             self.opt[l_minus:r_minus] = l_plus
@@ -190,16 +191,21 @@ class Rankloss(nn.Module):
             self.calc_optimal_interleaving_rank(m+1, r_minus, opt_m, r_plus)
 
     @torch.autograd.no_grad()
-    def opt_j(self, l_plus, r_plus, j):
+    def opt_j(self, l_plus, r_plus, m):
         # range of i
-        k = torch.arange(l_plus, r_plus).cuda()
+        j = m + 1
+        k = torch.arange(r_plus, l_plus, device=self.s_plus.device)
+        l = torch.arange(r_plus, l_plus+1, device=self.s_plus.device)
         # array where each element is single term in sum
-        deltas = (j/(j+k.float())-(j-1)/(j+k.float()-1))/(self.P) - 2*(self.s_plus[k]-self.s_minus[j])/(self.P*self.N)
+        deltas = (j/(j+k.float())-(j-1)/(j+k.float()))/(self.P) - 2*(self.s_plus[(k-1)]-self.s_minus[m])/(self.P*self.N)
+        deltas = torch.cat((deltas,torch.zeros(1, device=self.s_plus.device)),0)
         opt_vals = torch.cumsum(deltas.flip(0),0)
         # computes array were nth value is sum form n to r_plus
-        opt = torch.argmax(opt_vals.flip(0))
+        idx = torch.argmax(opt_vals.flip(0))
         # compute argmax
-        return k[opt]
+        if self.print:
+            print('r_plus', r_plus, 'l_plus', l_plus, 'm', m, 'deltas', deltas, 'opt_vals', opt_vals, 'idx', idx, 'opt', l[idx], 'k', l)
+        return l[idx]
 
     @torch.autograd.no_grad()
     def median(self, l_minus, r_minus):
@@ -233,7 +239,7 @@ class Rankloss(nn.Module):
         scores = scores_2d.view(-1).float()
 
         with torch.no_grad():
-            true_ranking = class_lables.eq(this_class).bool()
+            true_ranking = (class_lables.eq(this_class)).bool()
             self.C = true_ranking.shape[0]
             self.P = true_ranking.sum()
             self.N = self.C - self.P
@@ -288,7 +294,7 @@ class Rankloss(nn.Module):
         return loss
 
     def forward(self, scores, class_lables):
-        scores = (scores-scores.mean(dim=1,keepdim=True)).div(scores.std(dim=1, keepdim=True))
+        # scores = (scores-scores.mean(dim=1,keepdim=True)).div(scores.std(dim=1, keepdim=True))
         loss = 0
         for i in range(self.n_classes):
             loss += self.calc_loss_for_cth_class(scores[:,i], class_lables, i)
@@ -296,20 +302,31 @@ class Rankloss(nn.Module):
 
 if __name__ == "__main__":
     rankloss = Rankloss(1)
-    # loss = rankloss(torch.tensor([0,1,2,3,4,5,6,7,8,9]), torch.tensor([0,1,0,1,0,1,0,1,0,1]).long())
+    # loss = rankloss(torch.tensor([0,1,2,3,4,5,6,7,8,9]).view(-1,1), torch.tensor([1,1,1,1,1,1,1,0,0,0]).long())
+    # print(loss)
+    # loss = rankloss(torch.tensor([0,1,2,3,4,5,6,7,8,9]).view(-1,1), torch.tensor([1,1,1,1,1,1,0,1,0,0]).long())
+    # print(loss)
+    # loss = rankloss(torch.tensor([0,1,2,3,4,5,6,7,8,9]).view(-1,1), torch.tensor([1,1,1,1,1,0,1,1,0,0]).long())
+    # print(loss)
+    # loss = rankloss(torch.tensor([0,1,2,3,4,5,6,7,8,9]).view(-1,1), torch.tensor([1,1,1,1,1,0,0,1,1,0]).long())
+    # print(loss)
+    loss = rankloss(torch.randn(10).view(-1,1), torch.tensor([1,1,1,1,1,0,0,1,1,0]).long())
+    print(loss)
+    # loss = rankloss(torch.tensor([0,1,2,3,4,5,6,7,8,9]).view(-1,1), torch.tensor([0,0,0,9,9,9,9,9,9,9]).long())
+    # print(loss)
+    # loss = rankloss(torch.tensor([0,1,2,3,4,5,6,7,8,9]).view(-1,1), torch.tensor([9,9,0,9,0,9,0,9,0,9]).long())
+    # print(loss)
+    # loss = rankloss(torch.tensor([0,2,4,6,8,10,12,14,16,18]).view(-1,1), torch.tensor([9,9,0,9,0,9,0,9,0,9]).long())
+    # print(loss)
 
-    loss = rankloss(torch.tensor([0,1,2,3,4,5,6,7,8,9]).view(-1,1), torch.tensor([9,9,9,9,9,9,9,0,0,0]).long())
-    print(loss)
-    loss = rankloss(torch.tensor([0,1,2,3,4,5,6,7,8,9]).view(-1,1), torch.tensor([0,0,0,9,9,9,9,9,9,9]).long())
-    print(loss)
-    loss = rankloss(torch.tensor([0,1,2,3,4,5,6,7,8,9]).view(-1,1), torch.tensor([9,9,0,9,0,9,0,9,0,9]).long())
-    print(loss)
-    loss = rankloss(torch.tensor([0,2,4,6,8,10,12,14,16,18]).view(-1,1), torch.tensor([9,9,0,9,0,9,0,9,0,9]).long())
-    print(loss)
+
     # loss = rankloss(torch.tensor([0,1,2,3,4,5,6,7,8,9]).view(-1,1)*1e-9, torch.tensor([9,9,0,9,0,9,0,9,0,9]).long())
+    # print(loss)
     # loss = rankloss(torch.tensor([-10,-9,-8,-7,-6,-5,-4,-3,-2,-1]).view(-1,1), torch.tensor([9,9,0,9,0,9,0,9,0,9]).long())
+    # print(loss)
     # loss = rankloss(torch.tensor([0,-1,-2,-3,-4,-5,-6,-7,-8,-9]).view(-1,1), torch.tensor([9,9,0,9,0,9,0,9,0,9]).long())
 
+    # print(loss)
     # loss = rankloss(torch.tensor([1.7461, 0.2016, 0.5150, 1.5473]).view(-1,1), torch.tensor([0,9,0,9]).long())
 
     # loss = rankloss(torch.randn(4).view(-1,1), torch.tensor([0,0,9,9]).long())
