@@ -7,7 +7,9 @@ def get_loss(args):
         if 'cifar' in args.dataset:
             args.smooth_svm = True
     elif args.loss == 'map':
-        loss_fn = Rankloss(n_classes=args.n_classes)
+        loss_fn = AP(n_classes=args.n_classes)
+    elif args.loss == 'ndcg':
+        loss_fn = NDCG(n_classes=args.n_classes)
     elif args.dataset == 'imagenet':
         return EntrLoss(n_classes=args.n_classes-1)
     elif args.loss == 'norm_ce':
@@ -154,12 +156,12 @@ class NormCE(nn.Module):
         scores = (scores-scores.mean(dim=1,keepdim=True)).div(scores.std(dim=1, keepdim=True))
         return self.loss(scores, y)
 
-class Rankloss(nn.Module):
+class AP(nn.Module):
     """Implementation of <Efficient Optimization for Rank-based Loss Functions>.
     """
 
     def __init__(self, n_classes):
-        super(Rankloss, self).__init__()
+        super(AP, self).__init__()
         self.print = True
         self.print = False
         self.count = 0
@@ -300,16 +302,184 @@ class Rankloss(nn.Module):
             loss += self.calc_loss_for_cth_class(scores[:,i], class_lables, i)
         return loss/self.n_classes
 
+class NDCG(nn.Module):
+    """Implementation of <Efficient Optimization for Rank-based Loss Functions>.
+    """
+
+    def __init__(self, n_classes):
+        super(NDCG, self).__init__()
+        self.print = True
+        self.print = False
+        self.count = 0
+        self.n_classes = n_classes
+
+    def calc_optimal_interleaving_rank(self, l_minus, r_minus, l_plus, r_plus):
+        self.count += 1
+        l_minus = int(l_minus)
+        l_plus = int(l_plus)
+        r_minus = int(r_minus)
+        r_plus = int(r_plus)
+
+        if self.print:
+            print('l_minus', l_minus,'r_minus', r_minus, 'l_plus', l_plus, 'r_plus', r_plus)
+            print('opt', self.opt)
+
+        if l_plus == r_plus:
+            self.opt[l_minus:r_minus] = l_plus
+            # print('opt', self.opt)
+            return
+
+        m = self.median(l_minus, r_minus)
+        m = self.select(m, l_minus, r_minus)
+        opt_m = self.opt_j(l_plus, r_plus, m)
+        self.opt[m].copy_(opt_m)
+        if l_minus < m:
+            self.calc_optimal_interleaving_rank(l_minus, m, l_plus, opt_m)
+        if m+1 < r_minus:
+            self.calc_optimal_interleaving_rank(m+1, r_minus, opt_m, r_plus)
+
+    """
+    # NDCG
+    @torch.autograd.no_grad()
+    def opt_j(self, l_plus, r_plus, m):
+        # range of i
+        j = m + 1
+        l = torch.arange(r_plus, l_plus+1, device=self.s_plus.device)
+        deltas = (self.D(l+j-1)-self.D(self.P+j))/self.C - 2*(self.s_plus[(k-1)]-self.s_minus[m])/(self.P*self.N)
+        idx = torch.argmax(deltas)
+        if self.print:
+            print('r_plus', r_plus, 'l_plus', l_plus, 'm', m, 'deltas', deltas,'idx', idx, 'opt', l[idx], 'l', l)
+        return l[idx]
+    """
+
+    @torch.autograd.no_grad()
+    def opt_j(self, l_plus, r_plus, m):
+        # range of i
+        j = m + 1
+        k = torch.arange(r_plus, l_plus, device=self.s_plus.device)
+        l = torch.arange(r_plus, l_plus+1, device=self.s_plus.device)
+        # array where each element is single term in sum
+        f =  - 2*(self.s_plus[(k-1)]-self.s_minus[m])/(self.P*self.N)
+        f = torch.cat((f,torch.zeros(1, device=self.s_plus.device)),0)
+        opt_vals = torch.cumsum(f.flip(0),0).flip(0)
+        opt_vals += (self.D(l+j-1)-self.D(self.P+j))/self.C
+        # computes array were nth value is sum form n to r_plus
+        idx = torch.argmax(opt_vals)
+        # compute argmax
+        if self.print:
+            print('r_plus', r_plus, 'l_plus', l_plus, 'm', m, 'f', f, 'opt_vals', opt_vals, 'idx', idx, 'opt', l[idx], 'k', l)
+        return l[idx]
+
+    @torch.autograd.no_grad()
+    def median(self, l_minus, r_minus):
+        _, m = torch.median(self.s_minus[l_minus:r_minus],0)
+        return m
+
+    def select(self, m, l_minus, r_minus):
+        a = self.s_minus[l_minus: r_minus]
+        less_than_m = a[(a<a[m])].view(-1)
+        more_than_m = a[(a>a[m])].view(-1)
+        equal_m = a[(a==a[m])].view(-1)
+        self.s_minus[l_minus: r_minus] = torch.cat((less_than_m,equal_m,more_than_m), 0)
+        return len(less_than_m)+l_minus
+
+    @torch.autograd.no_grad()
+    def D(self, i):
+        return 1/torch.log2(1+i.float())
+
+    # NDCG
+    @torch.autograd.no_grad()
+    def calc_cs(self):
+        r_plus = torch.zeros_like(self.s_plus)
+        num = torch.zeros_like(self.s_plus)
+        for i in range(self.P):
+            r_plus[i] = 1 + (self.opt <= (i+1)).long().sum()
+            num[i] = self.D(i + r_plus[i])
+        Delta_R_R_star = 1 - (num.sum())/self.C
+        c_plus = self.N + 2 - 2 * r_plus
+        c_minus = self.P + 2 - 2 * self.opt
+        c_plus_star = self.N + 2 - 2 * torch.ones_like(self.s_plus)
+        c_minus_star = self.P + 2 - 2 * torch.ones_like(self.s_minus) * (self.P+1)
+        return c_plus, c_minus, c_plus_star, c_minus_star, Delta_R_R_star
+
+    def calc_loss_for_cth_class(self, scores_2d, class_lables, this_class):
+        self.count = 0
+        scores = scores_2d.view(-1).float()
+
+        with torch.no_grad():
+            true_ranking = (class_lables.eq(this_class)).bool()
+            self.C = true_ranking.shape[0]
+            self.P = true_ranking.sum()
+            self.N = self.C - self.P
+            self.ind_plus = (torch.arange(scores.size(0), device=scores_2d.device)+1)[true_ranking]
+            self.C = self.D(torch.arange(self.P, device=scores_2d.device)+1).sum()
+
+        self.s_plus = scores[true_ranking]
+
+
+        if (self.P == 0) or (self.N == 0):
+            loss = self.s_plus.sum().mul(0)
+            return loss
+
+        with torch.no_grad():
+            _, idx = self.s_plus.sort(descending=True)
+
+        self.s_plus = self.s_plus[idx].float()
+        self.s_minus = scores[true_ranking.logical_not()]
+        self.opt = torch.zeros_like(self.s_minus)
+
+        self.calc_optimal_interleaving_rank(0, self.N, self.P+1, 1)
+
+
+        c_plus, c_minus, c_plus_star, c_minus_star, Delta_R_R_star = self.calc_cs()
+        sc_plus = self.s_plus.mul(c_plus.detach()).sum()
+        sc_minus = self.s_minus.mul(c_minus.detach()).sum()
+        F_R = sc_plus + sc_minus
+        sc_plus_star = self.s_plus.mul(c_plus_star.detach()).sum()
+        sc_minus_star = self.s_minus.mul(c_minus_star.detach()).sum()
+        F_R_star = sc_plus_star + sc_minus_star
+
+        loss =  Delta_R_R_star + (F_R - F_R_star)/(self.P * self.N)
+
+        # if loss < 0:
+        if self.print:
+            print('------------------------------------------')
+            print('scores',scores)
+            print('true_ranking', true_ranking)
+            print('self.C',self.C)
+            print('self.P',self.P)
+            print('self.N',self.N)
+            print('P*N',self.N*self.P)
+            print('self.s_plus',self.s_plus)
+            print('self.s_minus',self.s_minus)
+            print('self.opt',self.opt)
+            print('s_plus', self.s_plus, 's_minus', self.s_minus)
+            print('c_plus, c_minus, c_plus_star, c_minus_star', c_plus, c_minus, c_plus_star, c_minus_star)
+            print('sc_plus, sc_minus, sc_plus_star, sc_minus_star', sc_plus, sc_minus, sc_plus_star, sc_minus_star)
+            print('F_R', F_R, 'F_R_star', F_R_star)
+            print('loss', loss)
+            print('Delta_R_R_star', Delta_R_R_star)
+            print('------------------------------------------')
+            input('press any key')
+
+        return loss
+
+    def forward(self, scores, class_lables):
+        loss = 0
+        for i in range(self.n_classes):
+            loss += self.calc_loss_for_cth_class(scores[:,i], class_lables, i)
+        return loss/self.n_classes
+
 if __name__ == "__main__":
-    rankloss = Rankloss(1)
-    # loss = rankloss(torch.tensor([0,1,2,3,4,5,6,7,8,9]).view(-1,1), torch.tensor([1,1,1,1,1,1,1,0,0,0]).long())
-    # print(loss)
-    # loss = rankloss(torch.tensor([0,1,2,3,4,5,6,7,8,9]).view(-1,1), torch.tensor([1,1,1,1,1,1,0,1,0,0]).long())
-    # print(loss)
-    # loss = rankloss(torch.tensor([0,1,2,3,4,5,6,7,8,9]).view(-1,1), torch.tensor([1,1,1,1,1,0,1,1,0,0]).long())
-    # print(loss)
-    # loss = rankloss(torch.tensor([0,1,2,3,4,5,6,7,8,9]).view(-1,1), torch.tensor([1,1,1,1,1,0,0,1,1,0]).long())
-    # print(loss)
+    rankloss = NDCG(1)
+    loss = rankloss(torch.tensor([0,1,2,3,4,5,6,7,8,9]).view(-1,1), torch.tensor([1,1,1,1,1,1,1,0,0,0]).long())
+    print(loss)
+    loss = rankloss(torch.tensor([0,1,2,3,4,5,6,7,8,9]).view(-1,1), torch.tensor([1,1,1,1,1,1,0,1,0,0]).long())
+    print(loss)
+    loss = rankloss(torch.tensor([0,1,2,3,4,5,6,7,8,9]).view(-1,1), torch.tensor([1,1,1,1,1,0,1,1,0,0]).long())
+    print(loss)
+    loss = rankloss(torch.tensor([0,1,2,3,4,5,6,7,8,9]).view(-1,1), torch.tensor([1,1,1,1,1,0,0,1,1,0]).long())
+    print(loss)
     loss = rankloss(torch.randn(10).view(-1,1), torch.tensor([1,1,1,1,1,0,0,1,1,0]).long())
     print(loss)
     # loss = rankloss(torch.tensor([0,1,2,3,4,5,6,7,8,9]).view(-1,1), torch.tensor([0,0,0,9,9,9,9,9,9,9]).long())

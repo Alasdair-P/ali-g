@@ -111,7 +111,7 @@ def write_results(args, xp):
                             teacc=xp.test.acc.value))
     else:
         with open('results.txt', 'a') as results:
-            results.write('{xp_name} ,Train Acc, {tracc:.2f} ,Val Acc, {vacc:.2f} ,Test Acc, {teacc:.2f}\n'
+            results.write('{xp_name} ,Train Acc, {tracc:.4f} ,Val Acc, {vacc:.4f} ,Test Acc, {teacc:.4f}\n'
                     .format(xp_name=args.xp_name,
                             tracc=xp.train.acc.value,
                             vacc=xp.max_val.value,

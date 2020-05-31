@@ -84,8 +84,8 @@ def _add_loss_parser(parser):
                           help="l2-regularization")
     l_parser.add_argument('--max_norm', type=float, default=None,
                           help="maximal l2-norm for constrained optimizers")
-    l_parser.add_argument('--loss', type=str, default='ce', choices=("svm", "ce", "map", "norm_ce"),
-                          help="loss function to use ('svm' or 'ce' or 'map')")
+    l_parser.add_argument('--loss', type=str, default='ce', choices=("svm", "ce", "map", "norm_ce", "ndcg"),
+                          help="loss function to use ('svm' or 'ce' or 'map' or 'ndcg')")
     l_parser.add_argument('--smooth_svm', dest="smooth_svm", action="store_true",
                           help="smooth SVM")
     l_parser.add_argument('--rankloss', type=int, default=0,
@@ -172,7 +172,7 @@ def set_num_classes(args):
         raise ValueError
 
 def misc_filter(args):
-    if args.loss == 'map':
+    if args.loss == 'map' or args.loss == 'ndcg':
         args.eq_class = True
 
 
