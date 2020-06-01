@@ -28,7 +28,7 @@ def main(args):
 
         train(model, loss, optimizer, loader_train, args, xp)
 
-        if args.loss == 'map':
+        if args.loss == 'map' or args.loss  == 'ndcg':
             test_rank(model, loss, optimizer, loader_val, args, xp)
         else:
             test(model, optimizer, loader_val, args, xp)
@@ -37,7 +37,7 @@ def main(args):
             decay_optimizer(optimizer, args.decay_factor)
 
     load_best_model(model, '{}/best_model.pkl'.format(args.xp_name))
-    if args.loss == 'map':
+    if args.loss == 'map' or args.loss  == 'ndcg':
         test_rank(model, loss, optimizer, loader_test, args, xp)
     else:
         test(model, optimizer, loader_test, args, xp)

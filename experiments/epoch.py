@@ -105,7 +105,7 @@ def test_rank(model, loss, optimizer, loader, args, xp):
           '({timer:.2f}s) \t'
           'Obj ----\t'
           'Loss ----\t'
-          'Acc {acc:.2f}% \t'
+          'Acc {acc:.5f}% \t'
           .format(int(xp.epoch.value),
                   tag=loader.tag.title(),
                   timer=xp_group.timer.value,

@@ -298,3 +298,15 @@ k=3 CIFAR100 WRN
 /data0/clean/results/cifar10/wrn10-sbd--k-5--eta-1.0--l2-None--b-250-1--momentum-0.9 ,Train Acc, 98.84 ,Val Acc, 0.05 ,Test Acc, 0.06
 /data0/clean/results/cifar10/wrn10-alig--k-2--eta-1.0--l2-None--b-120-1--momentum-0.9 ,Train Acc, 98.0615 ,Val Acc, 0.0543 ,Test Acc, 0.0651
 /data0/clean/results/cifar10/wrn10-sbd--k-5--eta-1.0--l2-None--b-120-1--momentum-0.9 ,Train Acc, 98.6436 ,Val Acc, 0.0451 ,Test Acc, 0.0572
+/data0/clean/results/cifar10/wrn10-alig--k-2--eta-1.0--l2-None--b-500-ndcg--momentum-0.9 ,Train Acc, 60.6382 ,Val Acc, 64.2200 ,Test Acc, 63.3700
+/data0/clean/results/cifar10/wrn10-sbd--k-5--eta-1.0--l2-None--b-500-ndcg--momentum-0.9 ,Train Acc, 45.7044 ,Val Acc, 57.3000 ,Test Acc, 57.6300
+/data0/clean/results/cifar10/wrn10-alig--k-2--eta-1.0--l2-None--b-500-ndcg--momentum-0.9 ,Train Acc, 61.8337 ,Val Acc, 67.0200 ,Test Acc, 66.3900
+/data0/clean/results/cifar10/wrn10-alig--k-2--eta-0.1--l2-None--b-500-ndcg--momentum-0.9 ,Train Acc, 66.1056 ,Val Acc, 66.3000 ,Test Acc, 64.7900
+/data0/clean/results/cifar10/wrn10-sgd--k-1--eta-1.0--l2-0--b-500-ndcg_alig_01--momentum-0.9 ,Train Acc, 0.0000 ,Val Acc, -inf ,Test Acc, 64.7900
+/data0/clean/results/cifar10/wrn10-sgd--k-1--eta-1.0--l2-0--b-500-ndcg_alig_01--momentum-0.9 ,Train Acc, 0.0000 ,Val Acc, -inf ,Test Acc, 64.7900
+/data0/clean/results/cifar10/wrn10-sgd--k-1--eta-1.0--l2-0--b-500-ndcg_alig_01--momentum-0.9 ,Train Acc, 0.0000 ,Val Acc, -inf ,Test Acc, 0.0291
+/data0/clean/results/cifar10/wrn10-sgd--k-1--eta-1.0--l2-0--b-500-ndcg_alig_01--momentum-0.9 ,Train Acc, 0.0000 ,Val Acc, -inf ,Test Acc, 0.0291
+/data0/clean/results/cifar10/wrn10-sgd--k-1--eta-1.0--l2-0--b-500-ndcg_alig_1--momentum-0.9 ,Train Acc, 0.0000 ,Val Acc, -inf ,Test Acc, 0.0166
+/data0/clean/results/cifar10/wrn10-sbd--k-5--eta-1.0--l2-None--b-500-ndcg--momentum-0.9 ,Train Acc, 53.1478 ,Val Acc, 58.7600 ,Test Acc, 58.2000
+/data0/clean/results/cifar10/wrn10-sgd--k-1--eta-1.0--l2-0--b-500-ndcg_sbd_1--momentum-0.9 ,Train Acc, 0.0000 ,Val Acc, -inf ,Test Acc, 0.0164
+/data0/clean/results/cifar10/wrn10-alig--k-2--eta-1.0--l2-150.0--b-120-1--momentum-0.9 ,Train Acc, 98.9372 ,Val Acc, 0.0536 ,Test Acc, 0.0605
