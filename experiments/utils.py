@@ -40,7 +40,7 @@ def setup_xp(args, model, optimizer):
 
     if args.tensorboard:
         print('args.tensorboard:', args.tensorboard)
-        summary_writer = SummaryWriter(log_dir=args.tensorboard)
+        summary_writer = SummaryWriter(log_dir=args.tb_dir)
     else:
         summary_writer = None
 

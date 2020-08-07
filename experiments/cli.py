@@ -104,11 +104,13 @@ def _add_misc_parser(parser):
                           help="use cuda")
     m_parser.add_argument('--no_visdom', dest='visdom', action='store_false',
                           help='do not use visdom')
+    m_parser.add_argument('--no_tb', dest='tensorboard', action='store_false',
+                          help='do not use tensorboard')
     m_parser.add_argument('--server', type=str, default='http://helios',
                           help="server for visdom")
     m_parser.add_argument('--log_dir', type=str, default='/data0/clean/',
                           help="server for visdom")
-    m_parser.add_argument('--tensorboard', '--tb', dest="tensorboard", type=str, default='/data0/tb_logs',
+    m_parser.add_argument('--tb_dir', dest="tb_dir", type=str, default='/data0/tb_logs',
     # m_parser.add_argument('--tensorboard', '--tb', dest="tensorboard", type=str, default=None,
                           help="destiation for tensorboard logs to be saved too")
     m_parser.add_argument('--port', type=int, default=9030,
