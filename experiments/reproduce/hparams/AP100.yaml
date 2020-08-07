@@ -1,0 +1,10 @@
+- {model: wrn, dataset: cifar100, batch_size: 500, opt: sbd, k: 5, eta: 1.0, epochs: 200, loss: map, tag: AP, max_norm: 50}
+- {model: wrn, dataset: cifar100, batch_size: 500, opt: alig, k: 2, eta: 1.0, epochs: 200, loss: map, tag: AP, max_norm: 50}
+- {model: wrn, dataset: cifar100, batch_size: 500, opt: sbd, k: 5, eta: 1.0, epochs: 200, loss: map, tag: AP, max_norm: 100}
+- {model: wrn, dataset: cifar100, batch_size: 500, opt: alig, k: 2, eta: 1.0, epochs: 200, loss: map, tag: AP, max_norm: 100}
+- {model: wrn, dataset: cifar100, batch_size: 500, opt: sbd, k: 5, eta: 1.0, epochs: 200, loss: map, tag: AP, max_norm: 150}
+- {model: wrn, dataset: cifar100, batch_size: 500, opt: alig, k: 2, eta: 1.0, epochs: 200, loss: map, tag: AP, max_norm: 150}
+- {model: wrn, dataset: cifar100, batch_size: 500, opt: sbd, k: 5, eta: 1.0, epochs: 200, loss: map, tag: AP, max_norm: 200}
+- {model: wrn, dataset: cifar100, batch_size: 500, opt: alig, k: 2, eta: 1.0, epochs: 200, loss: map, tag: AP, max_norm: 200}
+- {model: wrn, dataset: cifar100, batch_size: 500, opt: sbd, k: 5, eta: 1.0, epochs: 200, loss: map, tag: AP, max_norm: 250}
+- {model: wrn, dataset: cifar100, batch_size: 500, opt: alig, k: 2, eta: 1.0, epochs: 200, loss: map, tag: AP, max_norm: 250}

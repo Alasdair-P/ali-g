@@ -24,8 +24,9 @@ def run_command(command, on_gpu, noprint):
                 # print("Failed to run `waitGPU.wait` --> no automatic scheduling on GPU")
         # else:
         try:
-            waitGPU.wait(nproc=0, interval=1, ngpu=1, gpu_ids=[0, 1, 3])
-            print('GPUS IDS SET TO 0&1 ONLY')
+            # waitGPU.wait(nproc=0, interval=1, ngpu=1, gpu_ids=[0, 1, 3])
+            waitGPU.wait(nproc=0, interval=1, ngpu=1, gpu_ids=[1, 2, 3])
+            print(f'GPUS IDS SET TO {gpu_ids}')
         except:
             print("Failed to run `waitGPU.wait` --> no automatic scheduling on GPU")
     command = " ".join(command.split())

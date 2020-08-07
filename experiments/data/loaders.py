@@ -132,7 +132,7 @@ def loaders_cifar(dataset, batch_size, cuda, n_classes, eq_class,
 
     return create_loaders(dataset_train, dataset_val,
                           dataset_test, train_size, val_size, test_size,
-                          batch_size, test_batch_size, cuda, n_classes, num_workers=2, eq_class=eq_class)
+                          batch_size, test_batch_size, cuda, n_classes, num_workers=0, eq_class=eq_class)
 
 def loaders_svhn(dataset, batch_size, cuda,
                  train_size=None, augment=False, val_size=6000, test_size=26032,
@@ -183,7 +183,7 @@ def loaders_svhn(dataset, batch_size, cuda,
                           dataset_test, train_size, val_size, test_size,
                           batch_size, test_batch_size, cuda, n_classes, num_workers=4, split=split)
 
-def loaders_imagenet(dataset, batch_size, cuda,
+def loaders_imagenet(dataset, batch_size, cuda, n_classes,
                                           train_size=1231166, augment=True, val_size=50000,
                                           test_size=50000, test_batch_size=256, topk=None, noise=False,
                                           multiple_crops=False, data_root=None, **kwargs):

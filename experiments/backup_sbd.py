@@ -30,7 +30,6 @@ class SBD(torch.optim.Optimizer):
         self.N = n
         self.eps = eps
         self.eta = eta
-        self.solve_forward = True
 
         for group in self.param_groups:
             for p in group['params']:
@@ -38,8 +37,6 @@ class SBD(torch.optim.Optimizer):
                     self.state[p]['momentum_buffer'] = torch.zeros_like(p.data, requires_grad=False)
 
         self.device = p.device
-        self.last_alpha = torch.zeros(self.N,device = self.device)
-        self.last_loss = 1e12
         self.reset_bundle()
 
         if self.projection is not None:
@@ -50,10 +47,12 @@ class SBD(torch.optim.Optimizer):
         self.n = 1
         self.max_dual_value = 0.0
         self.best_alpha = torch.zeros(self.N,device = self.device)
+        self.last_alpha = torch.zeros(self.N,device = self.device)
         self.losses = []
         self.Create_Q_and_b()
         self.alig_step = 0
         for group in self.param_groups:
+            # group['eta'] = self.eta
             for p in group['params']:
                 self.state[p]['grads'] = []
 
@@ -61,13 +60,18 @@ class SBD(torch.optim.Optimizer):
     def step(self, loss):
         self.update_bundle(loss())
         self.Update_Q_and_b()
-        if self.solve_forward or self.n == self.N:
-            if self.n == 2:
-                self.alig_solve()
-            else:
-                self.solve_dual()
+        if self.n == 2:
+            self.alig_solve()
         else:
-            self.sgd_solve()
+            self.solve_dual()
+
+        # if (self.best_alpha[0]-self.last_alpha[0]>0).any():
+            # print('n',self.n)
+            # print('best',self.best_alpha)
+            # print('last',self.last_alpha)
+            # print(self.best_alpha[0]-self.last_alpha[0])
+            # print('---------------------------------------------------')
+
         self.update_parameters()
         self.update_diagnostics()
         if self.n == self.N:
@@ -117,14 +121,9 @@ class SBD(torch.optim.Optimizer):
         idxs = idxs.bool()
         Q_rows = self.Q_[idxs, :]
         A = Q_rows[:, idxs]
-        b = self.b_[idxs].view(-1,1)
+        b = self.b_[idxs]
         # solve the linear system
-        try:
-            this_alpha, _ = torch.solve(b.view(-1,1), A)
-        except:
-            print('------------------- no solution found -----------------')
-            return 0, torch.zeros(self.N, device=device)
-        this_alpha = this_alpha.view(-1)
+        this_alpha = A.inverse().mv(b)
         this_alpha = this_alpha[:-1]
         # check if valid solution 
         if (this_alpha >= 0).all():
@@ -137,31 +136,32 @@ class SBD(torch.optim.Optimizer):
         else:
             alpha = torch.zeros(self.N, device=device)
             dual_val = -1
+        # return {'dual': dual_val, 'alpha': alpha}
         return dual_val, alpha
 
-    # @torch.autograd.no_grad()
-    # def solve_one_system(self, i):
-        # idxs = torch.zeros(self.N+1, device=self.device)
-        # idxs[:self.n-1] = torch.tensor(i, device=self.device)
-        # idxs[self.n-1] = 1
-        # idxs[-1] = 1
-        # active_idxs = idxs.bool()
-        # Q_rows = self.Q[idxs, :]
-        # A = Q_rows[:, idxs]
-        # b = self.b[idxs]
-        # # solve the linear system
-        # this_alpha = A.inverse().mv(b)
-        # this_alpha = this_alpha[:-1]
-        # # check if valid solution 
-        # if (this_alpha >= 0).all():
-            # alpha = torch.zeros(self.N, device=self.device)
-            # active_idxs = active_idxs[:-1]
-            # alpha[active_idxs] = this_alpha
-            # dual_val = self.dual(alpha)
-        # else:
-            # alpha = torch.zeros(self.N, device=self.device)
-            # dual_val = -1
-        # return dual_val, alpha
+    @torch.autograd.no_grad()
+    def solve_one_system(self, i):
+        idxs = torch.zeros(self.N+1, device=self.device)
+        idxs[:self.n-1] = torch.tensor(i, device=self.device)
+        idxs[self.n-1] = 1
+        idxs[-1] = 1
+        active_idxs = idxs.bool()
+        Q_rows = self.Q[idxs, :]
+        A = Q_rows[:, idxs]
+        b = self.b[idxs]
+        # solve the linear system
+        this_alpha = A.inverse().mv(b)
+        this_alpha = this_alpha[:-1]
+        # check if valid solution 
+        if (this_alpha >= 0).all():
+            alpha = torch.zeros(self.N, device=self.device)
+            active_idxs = active_idxs[:-1]
+            alpha[active_idxs] = this_alpha
+            dual_val = self.dual(alpha)
+        else:
+            alpha = torch.zeros(self.N, device=self.device)
+            dual_val = -1
+        return dual_val, alpha
 
     @torch.autograd.no_grad()
     def solve_dual(self):
@@ -190,12 +190,6 @@ class SBD(torch.optim.Optimizer):
                 self.best_alpha[1] = 1
 
     @torch.autograd.no_grad()
-    def sgd_solve(self):
-        self.alig_step = (self.b[1]/(self.Q[1,1]+self.eps))
-        self.max_dual_value = 0
-        self.best_alpha[self.n-1] = 1
-
-    @torch.autograd.no_grad()
     def Create_Q_and_b(self):
         self.Q = torch.ones(self.N + 1, self.N + 1, device=self.device)
         self.Q[0:-1,0:-1] = 0
@@ -208,7 +202,7 @@ class SBD(torch.optim.Optimizer):
     @torch.autograd.no_grad()
     def update_diagnostics(self):
         alpha = self.best_alpha
-        self.step_size = max(min(float(self.alig_step),1),0)
+        self.step_size = self.alig_step.clamp(min=0,max=1)
         self.step_0 = alpha[0]
         if len(alpha) > 1:
             self.step_size_unclipped = self.alig_step

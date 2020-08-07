@@ -1,8 +1,37 @@
 import torch
+import time
+
+class Timer:
+    def __init__(self,name):
+        self.name = name
+
+    def __enter__(self):
+        self.start = time.clock()
+        return  self
+
+    def __exit__(self, *args):
+        self.end = time.clock()
+        self.interval = self.end - self.start
+        print('{name} took {int:.4f} seconds'.format(name=self.name, int=self.interval))
+        print('------------------------------------------------------------------------')
 
 from tqdm import tqdm
 # from dfw.losses import set_smoothing_enabled
 from utils import accuracy, regularization
+
+
+def forward_backwards(model, loss, optimizer, x, y):
+    # forward pass
+    scores = model(x)
+    # compute the loss function, possibly using smoothing
+    # with set_smoothing_enabled(args.smooth_svm):
+    loss_value = loss(scores, y)
+    # backward pass
+    optimizer.zero_grad()
+    loss_value.backward()
+    # optimization step
+    optimizer.step(lambda: float(loss_value))
+    return loss_value, scores
 
 def train(model, loss, optimizer, loader, args, xp):
 
@@ -15,26 +44,14 @@ def train(model, loss, optimizer, loader, args, xp):
                      leave=False, total=len(loader)):
         (x, y) = (x.cuda(), y.cuda()) if args.cuda else (x, y)
 
-        # forward pass
-        scores = model(x)
-        # print('scores',scores, scores.mean(dim=1), scores.std(dim=1), scores.argmax(dim=1))
-        # input("---------")
-
-        # compute the loss function, possibly using smoothing
-        # with set_smoothing_enabled(args.smooth_svm):
-        loss_value = loss(scores, y)
-
-        # backward pass
-        optimizer.zero_grad()
-        loss_value.backward()
-
-        # optimization step
-        if 'sbd-sb' in args.opt:
-            optimizer.step(lambda: float(loss_value), x, y)
+        if args.opt == 'sbd-sb':
+            # while not (optimizer.n == 1):
+            for _ in range(args.k-1):
+                loss_value, scores = forward_backwards(model, loss, optimizer, x, y)
         else:
-            optimizer.step(lambda: float(loss_value))
+            loss_value, scores = forward_backwards(model, loss, optimizer, x, y)
 
-        if 'sbd' in args.opt and not optimizer.k == 0:
+        if 'sbd' in args.opt and not optimizer.n == 1:
             continue
 
         # monitoring

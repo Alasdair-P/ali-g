@@ -13,7 +13,8 @@ from epoch import train, test, test_rank
 
 
 def main(args):
-
+    if args.loss == 'ndcg':
+        return
     set_cuda(args)
     set_seed(args)
 

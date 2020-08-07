@@ -3,6 +3,7 @@ import argparse
 import warnings
 
 from cuda import set_cuda
+from utils import splitall
 
 
 def parse_command():
@@ -76,6 +77,8 @@ def _add_optimization_parser(parser):
                           help="decay factor for the learning rate / proximal term")
     o_parser.add_argument('--load_opt', default=None,
                           help='data file with opt')
+    o_parser.add_argument('--sgdf', action='store_true',
+                          help='sbd mode selection')
 
 
 def _add_loss_parser(parser):
@@ -105,6 +108,9 @@ def _add_misc_parser(parser):
                           help="server for visdom")
     m_parser.add_argument('--log_dir', type=str, default='/data0/clean/',
                           help="server for visdom")
+    m_parser.add_argument('--tensorboard', '--tb', dest="tensorboard", type=str, default='/data0/tb_logs',
+    # m_parser.add_argument('--tensorboard', '--tb', dest="tensorboard", type=str, default=None,
+                          help="destiation for tensorboard logs to be saved too")
     m_parser.add_argument('--port', type=int, default=9030,
                           help="port for visdom")
     m_parser.add_argument('--xp_name', type=str, default=None,
@@ -146,6 +152,9 @@ def set_xp_name(args):
         if args.debug:
             args.xp_name += "--debug"
 
+    if args.tensorboard:
+        args.tensorboard = os.path.join(args.tensorboard, splitall(args.xp_name)[-1])
+
     if args.log:
         # generate automatic experiment name if not provided
         if os.path.exists(args.xp_name):
@@ -170,6 +179,7 @@ def set_num_classes(args):
         args.n_classes = 1000
     else:
         raise ValueError
+
 
 def misc_filter(args):
     if args.loss == 'map' or args.loss == 'ndcg':

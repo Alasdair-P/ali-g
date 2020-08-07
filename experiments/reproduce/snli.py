@@ -6,7 +6,8 @@ from scheduling import launch
 
 def create_jobs():
     template = "python train_nli.py --no_tqdm --no_visdom "
-    with open("reproduce/hparams/snli.yaml", "r") as f:
+    # with open("reproduce/hparams/snli.yaml", "r") as f:
+    with open("reproduce/hparams/snli_borat.yaml", "r") as f:
         hparams = yaml.safe_load(f)
 
     jobs = []

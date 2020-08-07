@@ -38,11 +38,15 @@ def get_optimizer(args, model, loss, parameters):
     elif args.opt == 'l4mom':
         optimizer = L4Mom(parameters, weight_decay=args.weight_decay)
     elif args.opt == 'sbd':
-        optimizer = SBD(parameters, eta=args.eta, k=args.k, momentum=args.momentum,
+        optimizer = SBD(parameters, eta=args.eta, n=args.k, momentum=args.momentum,
                          projection_fn=lambda: l2_projection(parameters, args.max_norm), debug=args.debug)
     elif args.opt == 'sbd-sb':
+        optimizer = SBD(parameters, eta=args.eta, n=args.k, momentum=args.momentum,
+                         projection_fn=lambda: l2_projection(parameters, args.max_norm), debug=args.debug)
+        """
         optimizer = SBD2(parameters, model, loss, eta=args.eta, k=args.k, momentum=args.momentum,
                          projection_fn=lambda: l2_projection(parameters, args.max_norm), debug=args.debug)
+        """
     else:
         raise ValueError(args.opt)
 
