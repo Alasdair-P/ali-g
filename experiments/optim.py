@@ -5,7 +5,6 @@ import torch.optim
 # from l4pytorch import L4Mom, L4Adam
 from alig.th import AliG, Yogi, AdamW
 from sbd import SBD
-from sbd2 import SBD2
 from alig.th.projection import l2_projection
 
 

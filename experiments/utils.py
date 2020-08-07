@@ -5,7 +5,10 @@ import torch
 import mlogger
 import random
 import numpy as np
-from torch.utils.tensorboard import SummaryWriter
+try:
+    from torch.utils.tensorboard import SummaryWriter
+except:
+    print('tensor board not found')
 
 
 def regularization(model, l2):
@@ -38,6 +41,7 @@ def setup_xp(args, model, optimizer):
     else:
         visdom_plotter = None
 
+    print(args.tensorboard)
     if args.tensorboard:
         print('args.tensorboard:', args.tensorboard)
         summary_writer = SummaryWriter(log_dir=args.tb_dir)
