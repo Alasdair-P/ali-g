@@ -111,7 +111,6 @@ def _add_misc_parser(parser):
     m_parser.add_argument('--log_dir', type=str, default='/data0/clean/',
                           help="server for visdom")
     m_parser.add_argument('--tb_dir', dest="tb_dir", type=str, default='/data0/tb_logs',
-    # m_parser.add_argument('--tensorboard', '--tb', dest="tensorboard", type=str, default=None,
                           help="destiation for tensorboard logs to be saved too")
     m_parser.add_argument('--port', type=int, default=9030,
                           help="port for visdom")
@@ -155,7 +154,7 @@ def set_xp_name(args):
             args.xp_name += "--debug"
 
     if args.tensorboard:
-        args.tensorboard = os.path.join(args.tensorboard, splitall(args.xp_name)[-1])
+        args.tensorboard = os.path.join(args.tb_dir, splitall(args.xp_name)[-1])
 
     if args.log:
         # generate automatic experiment name if not provided

@@ -135,7 +135,7 @@ def loaders_cifar(dataset, batch_size, cuda, n_classes, eq_class,
                           batch_size, test_batch_size, cuda, n_classes, num_workers=0, eq_class=eq_class)
 
 def loaders_svhn(dataset, batch_size, cuda,
-                 train_size=None, augment=False, val_size=6000, test_size=26032,
+                 n_classes, eq_class, train_size=None, augment=False, val_size=6000, test_size=26032,
                  test_batch_size=1000, **kwargs):
 
     assert 'svhn' in dataset

@@ -1,4 +1,10 @@
-- {model: dn, dataset: cifar100, batch_size: 128, opt: sbd, eta: 0.1, max_norm: 75, k: 3}
-- {model: dn, dataset: cifar100, batch_size: 128, opt: sbd, eta: 0.1, max_norm: 50, k: 3}
-- {model: dn, dataset: cifar10, batch_size: 128, opt: sbd, eta: 0.1, max_norm: 75, k: 3}
-- {model: dn, dataset: cifar10, batch_size: 128, opt: sbd, eta: 0.1, max_norm: 50, k: 3}
+- {model: wrn, dataset: cifar100, batch_size: 128, opt: sgd, eta: 0.1, max_norm: 200, k: 1, epochs: 3, tag: timing}
+- {model: wrn, dataset: cifar100, batch_size: 128, opt: alig, eta: 0.1, max_norm: 200, k: 2, epochs: 3, tag: timing}
+- {model: wrn, dataset: cifar100, batch_size: 128, opt: sbd, eta: 0.1, max_norm: 200, k: 3, epochs: 3, tag: timing}
+- {model: wrn, dataset: cifar100, batch_size: 128, opt: sbd, eta: 0.1, max_norm: 200, k: 4, epochs: 3, tag: timing}
+- {model: wrn, dataset: cifar100, batch_size: 128, opt: sbd, eta: 0.1, max_norm: 200, k: 5, epochs: 3, tag: timing}
+- {model: wrn, dataset: cifar100, batch_size: 128, opt: sbd, eta: 0.1, max_norm: 200, k: 6, epochs: 3, tag: timing}
+- {model: wrn, dataset: cifar100, batch_size: 128, opt: sbd, eta: 0.1, max_norm: 200, k: 7, epochs: 3, tag: timing}
+- {model: wrn, dataset: cifar100, batch_size: 128, opt: sbd, eta: 0.1, max_norm: 200, k: 8, epochs: 3, tag: timing}
+- {model: wrn, dataset: cifar100, batch_size: 128, opt: sbd, eta: 0.1, max_norm: 200, k: 9, epochs: 3, tag: timing}
+- {model: wrn, dataset: cifar100, batch_size: 128, opt: sbd, eta: 0.1, max_norm: 200, k: 10, epochs: 3, tag: timing}

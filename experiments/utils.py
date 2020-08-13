@@ -41,7 +41,6 @@ def setup_xp(args, model, optimizer):
     else:
         visdom_plotter = None
 
-    print(args.tensorboard)
     if args.tensorboard:
         print('args.tensorboard:', args.tensorboard)
         summary_writer = SummaryWriter(log_dir=args.tb_dir)

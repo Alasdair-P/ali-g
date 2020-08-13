@@ -569,3 +569,7 @@ k=3 CIFAR100 WRN
 /data0/clean/results/cifar100/wrn100-sbd--k-10--eta-10.0--l2-250.0--b-128-ce--momentum-0.9 ,Train Acc, 99.5793 ,Val Acc, 73.4200 ,Test Acc, 72.8800
 /data0/clean/results/cifar100/wrn100-sbd--k-5--eta-0.1--l2-100.0--b-3-speed_up--momentum-0.9--debug ,Train Acc, 33.3333 ,Val Acc, 12.5000 ,Test Acc, 0.0000
 /data0/clean/results/cifar100/wrn100-sbd--k-5--eta-0.1--l2-50.0--b-128-solve_not_inv--momentum-0.9 ,Train Acc, 99.9732 ,Val Acc, 76.3000 ,Test Acc, 76.1800
+/data0/clean/results/cifar100/wrn100-sbd--k-10--eta-0.3--l2-150.0--b-128-svm--momentum-0.9 ,Train Acc, 54.0064 ,Val Acc, 47.7600 ,Test Acc, 48.0100
+/data0/clean/results/cifar100/wrn100-sbd--k-10--eta-0.1--l2-150.0--b-128-svm--momentum-0.9 ,Train Acc, 10.9375 ,Val Acc, 13.4000 ,Test Acc, 13.2900
+/data0/clean/results/cifar100/wrn100-sbd--k-10--eta-3.0--l2-150.0--b-128-svm--momentum-0.9 ,Train Acc, 99.8998 ,Val Acc, 73.7400 ,Test Acc, 73.4700
+/data0/clean/results/cifar100/wrn100-sbd--k-10--eta-1.0--l2-150.0--b-128-svm--momentum-0.9 ,Train Acc, 97.6562 ,Val Acc, 68.8000 ,Test Acc, 68.8900
