@@ -573,3 +573,23 @@ k=3 CIFAR100 WRN
 /data0/clean/results/cifar100/wrn100-sbd--k-10--eta-0.1--l2-150.0--b-128-svm--momentum-0.9 ,Train Acc, 10.9375 ,Val Acc, 13.4000 ,Test Acc, 13.2900
 /data0/clean/results/cifar100/wrn100-sbd--k-10--eta-3.0--l2-150.0--b-128-svm--momentum-0.9 ,Train Acc, 99.8998 ,Val Acc, 73.7400 ,Test Acc, 73.4700
 /data0/clean/results/cifar100/wrn100-sbd--k-10--eta-1.0--l2-150.0--b-128-svm--momentum-0.9 ,Train Acc, 97.6562 ,Val Acc, 68.8000 ,Test Acc, 68.8900
+/data0/clean/results/svhn-extra/wrnsvhn-extra-alig--k-2--eta-0.01--l2-50.0--b-128---momentum-0.0 ,Train Acc, 99.4251 ,Val Acc, 96.3667 ,Test Acc, 97.9640
+/data0/clean/results/cifar100/wrn100-sbd--k-10--eta-1.0--l2-50.0--b-128-svm--momentum-0.9 ,Train Acc, 61.2380 ,Val Acc, 55.9800 ,Test Acc, 54.7100
+/data0/clean/results/cifar100/wrn100-sbd--k-10--eta-0.3--l2-50.0--b-128-svm--momentum-0.9 ,Train Acc, 66.3261 ,Val Acc, 56.1200 ,Test Acc, 56.5800
+/data0/clean/results/cifar100/wrn100-sbd--k-10--eta-0.1--l2-50.0--b-128-svm--momentum-0.9 ,Train Acc, 31.0296 ,Val Acc, 34.6000 ,Test Acc, 33.6300
+/data0/clean/results/cifar100/wrn100-sbd--k-10--eta-3.0--l2-50.0--b-128-svm--momentum-0.9 ,Train Acc, 46.9151 ,Val Acc, 47.0400 ,Test Acc, 46.3100
+/data0/clean/results/cifar100/wrn100-sbd--k-10--eta-0.3--l2-100.0--b-128-svm--momentum-0.9 ,Train Acc, 63.3213 ,Val Acc, 52.2400 ,Test Acc, 52.5300
+/data0/clean/results/cifar100/wrn100-sbd--k-10--eta-0.1--l2-100.0--b-128-svm--momentum-0.9 ,Train Acc, 13.7620 ,Val Acc, 17.9600 ,Test Acc, 17.8500
+/data0/clean/results/cifar100/wrn100-sbd--k-10--eta-1.0--l2-100.0--b-128-svm--momentum-0.9 ,Train Acc, 86.2780 ,Val Acc, 66.4200 ,Test Acc, 66.0600
+/data0/clean/results/cifar100/wrn100-sbd--k-10--eta-3.0--l2-100.0--b-128-svm--momentum-0.9 ,Train Acc, 78.1651 ,Val Acc, 66.9600 ,Test Acc, 66.8300
+----------------------------------------------------------------------------------------------------------------------------------
+/data0/clean/results/cifar100/wrn100-alig--k-2--eta-0.1--l2-50.0--b-128-svm200--momentum-0.9 ,Train Acc, 53.1133 ,Val Acc, 48.3200 ,Test Acc, 47.7100
+/data0/clean/results/cifar100/wrn100-alig--k-2--eta-0.01--l2-50.0--b-128-svm200--momentum-0.9 ,Train Acc, 13.1000 ,Val Acc, 15.6200 ,Test Acc, 15.7700
+/data0/clean/results/cifar100/wrn100-alig--k-2--eta-1.0--l2-50.0--b-128-svm200--momentum-0.9 ,Train Acc, 1.0422 ,Val Acc, 1.6400 ,Test Acc, 1.5400
+/data0/clean/results/cifar100/wrn100-alig--k-2--eta-10.0--l2-50.0--b-128-svm200--momentum-0.9 ,Train Acc, 0.9600 ,Val Acc, 1.3200 ,Test Acc, 1.0000
+/data0/clean/results/cifar100/wrn100-alig--k-2--eta-0.01--l2-100.0--b-128-svm200--momentum-0.9 ,Train Acc, 6.0689 ,Val Acc, 10.6400 ,Test Acc, 10.7500
+/data0/clean/results/cifar100/wrn100-alig--k-2--eta-0.1--l2-100.0--b-128-svm200--momentum-0.9 ,Train Acc, 59.8956 ,Val Acc, 48.7000 ,Test Acc, 48.9200
+/data0/clean/results/cifar100/wrn100-alig--k-2--eta-1.0--l2-100.0--b-128-svm200--momentum-0.9 ,Train Acc, 1.0311 ,Val Acc, 1.4800 ,Test Acc, 1.2600
+/data0/clean/results/cifar100/wrn100-alig--k-2--eta-10.0--l2-100.0--b-128-svm200--momentum-0.9 ,Train Acc, 0.9889 ,Val Acc, 1.3200 ,Test Acc, 1.0000
+/data0/clean/results/cifar100/wrn100-alig--k-2--eta-0.01--l2-150.0--b-128-svm200--momentum-0.9 ,Train Acc, 5.6200 ,Val Acc, 8.1400 ,Test Acc, 8.4800
+/data0/clean/results/cifar100/wrn100-alig--k-2--eta-0.1--l2-150.0--b-128-svm200--momentum-0.9 ,Train Acc, 45.7378 ,Val Acc, 38.4000 ,Test Acc, 38.9200

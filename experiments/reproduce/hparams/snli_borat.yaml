@@ -1,1 +1,1 @@
-- {eta: 1, loss: ce, opt: alig}
+- {eta: 1, loss: svm, opt: alig}
