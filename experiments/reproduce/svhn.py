@@ -8,7 +8,8 @@ def create_jobs():
         --width 4 --batch_size 128 --momentum 0 --epochs 160
         --dropout 0.4 --no_data_augmentation --no_visdom --no_tqdm """
 
-    with open("reproduce/hparams/svhn.yaml", "r") as f:
+    # with open("reproduce/hparams/svhn.yaml", "r") as f:
+    with open("reproduce/hparams/svhn_borat.yaml", "r") as f:
         hparams = yaml.safe_load(f)
 
     jobs = []

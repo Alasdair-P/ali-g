@@ -18,27 +18,24 @@
 #- {eta: 0.1, max_norm: 250, opt: alig}
 #- {eta: 1.0, max_norm: 250, opt: alig}
 #- {eta: 10.0, max_norm: 250, opt: alig}
-- {eta: 0.001, max_norm: 25, opt: alig}
-- {eta: 0.01, max_norm: 25, opt: alig}
-- {eta: 0.1, max_norm: 25, opt: alig}
-- {eta: 1.0, max_norm: 25, opt: alig}
-- {eta: 0.001, max_norm: 50, opt: alig}
-- {eta: 0.01, max_norm: 50, opt: alig}
-- {eta: 0.1, max_norm: 50, opt: alig}
-- {eta: 1.0, max_norm: 50, opt: alig}
-- {eta: 0.001, max_norm: 75, opt: alig}
-- {eta: 0.01, max_norm: 75, opt: alig}
-- {eta: 0.1, max_norm: 75, opt: alig}
-- {eta: 1.0, max_norm: 75, opt: alig}
-- {eta: 0.001, max_norm: 100, opt: alig}
-- {eta: 0.01, max_norm: 100, opt: alig}
-- {eta: 0.1, max_norm: 100, opt: alig}
-- {eta: 1.0, max_norm: 100, opt: alig}
-- {eta: 0.001, max_norm: 150, opt: alig}
-- {eta: 0.01, max_norm: 150, opt: alig}
-- {eta: 0.1, max_norm: 150, opt: alig}
-- {eta: 1.0, max_norm: 150, opt: alig}
-- {eta: 0.001, max_norm: 200, opt: alig}
-- {eta: 0.01, max_norm: 200, opt: alig}
-- {eta: 0.1, max_norm: 200, opt: alig}
-- {eta: 1.0, max_norm: 200, opt: alig}
+- {eta: 0.001, max_norm: 50, opt: sbd, k: 3}
+- {eta: 0.01, max_norm: 50, opt: sbd, k: 3}
+- {eta: 0.1, max_norm: 50, opt: sbd, k: 3}
+- {eta: 1.0, max_norm: 50, opt: sbd, k: 3}
+- {eta: 0.001, max_norm: 100, opt: sbd, k: 3}
+- {eta: 0.01, max_norm: 100, opt: sbd, k: 3}
+- {eta: 0.1, max_norm: 100, opt: sbd, k: 3}
+- {eta: 1.0, max_norm: 100, opt: sbd, k: 3}
+- {eta: 0.001, max_norm: 150, opt: sbd, k: 3}
+- {eta: 0.01, max_norm: 150, opt: sbd, k: 3}
+- {eta: 0.1, max_norm: 150, opt: sbd, k: 3}
+- {eta: 1.0, max_norm: 150, opt: sbd, k: 3}
+- {eta: 0.001, max_norm: 200, opt: sbd, k: 3}
+- {eta: 0.01, max_norm: 200, opt: sbd, k: 3}
+- {eta: 0.1, max_norm: 200, opt: sbd, k: 3}
+- {eta: 1.0, max_norm: 200, opt: sbd, k: 3}
+- {eta: 0.001, max_norm: 250, opt: sbd, k: 3}
+- {eta: 0.01, max_norm: 250, opt: sbd, k: 3}
+- {eta: 0.1, max_norm: 250, opt: sbd, k: 3}
+- {eta: 1.0, max_norm: 250, opt: sbd, k: 3}
+

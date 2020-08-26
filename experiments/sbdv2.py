@@ -47,15 +47,16 @@ class SBD(torch.optim.Optimizer):
 
     @torch.autograd.no_grad()
     def reset_bundle(self):
-        self.n = 1
-        self.max_dual_value = 0.0
-        self.best_alpha = torch.zeros(self.N,device = self.device)
-        self.losses = []
-        self.Create_Q_and_b()
-        self.alig_step = 0
+        self.n -= 1 # done
+        self.max_dual_value = 0.0 have to think more about this one
+        self.best_alpha = torch.zeros(self.N,device = self.device) # done
+        self.losses.pop(0) # done
+        self.Create_Q_and_b() need to  just remove 1indexed row and column
+
+        self.alig_step = 0 # done
         for group in self.param_groups:
             for p in group['params']:
-                self.state[p]['grads'] = []
+                self.state[p]['grads'].pop(0) # done
 
     @torch.autograd.no_grad()
     def step(self, loss):
@@ -70,10 +71,9 @@ class SBD(torch.optim.Optimizer):
             self.sgd_solve()
         self.update_parameters()
         self.update_diagnostics()
-        if self.n == self.N:
-            if self.projection is not None:
-                self.projection()
-            self.reset_bundle()
+        if self.projection is not None:
+            self.projection()
+        self.reset_bundle()
 
     @torch.autograd.no_grad()
     def update_bundle(self, loss):
