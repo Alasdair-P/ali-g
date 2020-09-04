@@ -200,7 +200,7 @@ class SBD(torch.optim.Optimizer):
     def Create_Q_and_b(self):
         self.Q = torch.ones(self.N + 1, self.N + 1, device=self.device)
         self.Q[0:-1,0:-1] = 0
-        self.Q += self.eps * torch.eye(self.N + 1, device=self.device)
+        # self.Q += self.eps * torch.eye(self.N + 1, device=self.device)
         self.Q[-1,-1] = 0
         self.Q[0,0] = 0
         self.b = torch.zeros(self.N + 1, device=self.device)

@@ -19,7 +19,6 @@ from tqdm import tqdm
 # from dfw.losses import set_smoothing_enabled
 from utils import accuracy, regularization
 
-
 def forward_backwards(model, loss, optimizer, x, y):
     # forward pass
     scores = model(x)

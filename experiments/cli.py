@@ -112,7 +112,7 @@ def _add_misc_parser(parser):
                           help="server for visdom")
     m_parser.add_argument('--tb_dir', dest="tb_dir", type=str, default='/data0/tb_logs',
                           help="destiation for tensorboard logs to be saved too")
-    m_parser.add_argument('--port', type=int, default=9030,
+    m_parser.add_argument('--port', type=int, default=8000,
                           help="port for visdom")
     m_parser.add_argument('--xp_name', type=str, default=None,
                           help="name of experiment")
