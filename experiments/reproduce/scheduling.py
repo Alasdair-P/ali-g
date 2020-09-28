@@ -10,6 +10,7 @@ import os
 
 
 def run_command(command, on_gpu, noprint):
+    waitGPU = None
     if not on_gpu:
         while True:
             time.sleep(1)
@@ -24,9 +25,10 @@ def run_command(command, on_gpu, noprint):
                 # print("Failed to run `waitGPU.wait` --> no automatic scheduling on GPU")
         # else:
         try:
-            # waitGPU.wait(nproc=0, interval=1, ngpu=1, gpu_ids=[0, 1, 2, 3])
-            # waitGPU.wait(nproc=0, interval=1, ngpu=1, gpu_ids=[3])
-            waitGPU.wait(nproc=0, interval=1, ngpu=1, gpu_ids=[0, 1])
+            waitGPU.wait(nproc=0, interval=1, ngpu=1, gpu_ids=[0, 1, 2, 3])
+            # waitGPU.wait(nproc=0, interval=1, ngpu=1, gpu_ids=[2])
+            # waitGPU.wait(nproc=0, interval=1, ngpu=1, gpu_ids=[0, 1])
+            # waitGPU.wait(nproc=0, interval=1, ngpu=1, gpu_ids=[2, 3])
             print(f'GPUS IDS SET TO {gpu_ids}')
         except:
             print("Failed to run `waitGPU.wait` --> no automatic scheduling on GPU")

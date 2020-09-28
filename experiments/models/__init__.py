@@ -8,6 +8,7 @@ from collections import OrderedDict
 
 
 def get_model(args):
+    # device = torch.device("cuda:0" if torch.cuda.is_available() else "cpu")
     if args.model == "dn":
         model = DenseNet3(args.depth, args.n_classes, args.growth,
                           bottleneck=bool(args.bottleneck), dropRate=args.dropout)
@@ -15,7 +16,7 @@ def get_model(args):
         model = WideResNet(args.depth, args.n_classes, args.width, dropRate=args.dropout)
     elif args.dataset == 'imagenet':
         model = th_models.__dict__[args.model](pretrained=False)
-        model = torch.nn.DataParallel(model)
+        model = torch.nn.DataParallel(model, device_ids=[0,1,2,3])
     else:
         raise NotImplementedError
 

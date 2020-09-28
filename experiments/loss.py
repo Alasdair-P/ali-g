@@ -7,7 +7,7 @@ def get_loss(args):
         if 'cifar' in args.dataset:
             args.smooth_svm = True
     elif args.loss == 'map':
-        loss_fn = AP(n_classes=args.n_classes)
+        loss_fn = ap(n_classes=args.n_classes)
     elif args.loss == 'ndcg':
         loss_fn = NDCG(n_classes=args.n_classes)
     elif args.dataset == 'imagenet':
