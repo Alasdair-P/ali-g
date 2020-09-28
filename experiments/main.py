@@ -13,8 +13,6 @@ from epoch import train, test, test_rank
 
 
 def main(args):
-    if args.loss == 'ndcg':
-        return
     set_cuda(args)
     set_seed(args)
 
@@ -26,14 +24,11 @@ def main(args):
 
     for i in range(args.epochs):
         xp.epoch.update(i)
-
         train(model, loss, optimizer, loader_train, args, xp)
-
         if args.loss == 'map' or args.loss  == 'ndcg':
             test_rank(model, loss, optimizer, loader_val, args, xp)
         else:
             test(model, optimizer, loader_val, args, xp)
-
         if (i + 1) in args.T:
             decay_optimizer(optimizer, args.decay_factor)
 

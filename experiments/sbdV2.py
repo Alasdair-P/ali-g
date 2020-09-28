@@ -28,9 +28,9 @@ class SBD(torch.optim.Optimizer):
         self.print = debug
         # self.print = True
         self.N = n
+        self.n = 1
         self.eps = eps
         self.eta = eta
-        self.solve_forward = True
 
         for group in self.param_groups:
             for p in group['params']:
@@ -38,70 +38,84 @@ class SBD(torch.optim.Optimizer):
                     self.state[p]['momentum_buffer'] = torch.zeros_like(p.data, requires_grad=False)
 
         self.device = p.device
-        self.last_alpha = torch.zeros(self.N,device = self.device)
-        self.last_loss = 1e12
-        self.reset_bundle()
+        self.Create_bundle()
 
         if self.projection is not None:
             self.projection()
-
-    @torch.autograd.no_grad()
-    def reset_bundle(self):
-        self.n -= 1 # done
-        self.max_dual_value = 0.0 have to think more about this one
-        self.best_alpha = torch.zeros(self.N,device = self.device) # done
-        self.losses.pop(0) # done
-        self.Create_Q_and_b() need to  just remove 1indexed row and column
-
-        self.alig_step = 0 # done
-        for group in self.param_groups:
-            for p in group['params']:
-                self.state[p]['grads'].pop(0) # done
 
     @torch.autograd.no_grad()
     def step(self, loss):
         self.update_bundle(loss())
         self.Update_Q_and_b()
-        if self.solve_forward or self.n == self.N:
-            if self.n == 2:
-                self.alig_solve()
-            else:
-                self.solve_dual()
-        else:
-            self.sgd_solve()
+        self.solve_dual()
         self.update_parameters()
         self.update_diagnostics()
         if self.projection is not None:
             self.projection()
-        self.reset_bundle()
+
+    @torch.autograd.no_grad()
+    def Create_bundle(self):
+        self.steps = 0
+        self.last_loss = 1e12
+        self.last_alpha = torch.zeros(self.N,device = self.device)
+        self.best_alpha = torch.zeros(self.N,device = self.device) # done
+        self.max_dual_value = 0
+        self.losses = [0 for _ in range(self.N-1)]
+        for group in self.param_groups:
+            for p in group['params']:
+                self.state[p]['grads'] = [torch.zeros_like(p.data) for _ in range(self.N-1)]
+        self.Q = torch.ones(self.N + 1, self.N + 1, device=self.device)
+        self.Q[0:-1,0:-1] = 0
+        self.Q[-1,-1] = 0
+        self.Q[0,0] = 0
+        self.b = torch.zeros(self.N + 1, device=self.device)
+        self.b[-1] = 1
 
     @torch.autograd.no_grad()
     def update_bundle(self, loss):
+        self.steps += 1
+        self.losses.pop(0) # done
         self.losses.append(float(loss))
         for group in self.param_groups:
             for p in group['params']:
                 state = self.state[p]
+                state['grads'].pop(0) # done
                 state['grads'].append(p.grad.data.detach().clone())
-                if self.n == 1:
-                    state['w_t'] = p.data.detach().clone()
-        self.n += 1
+        self.calc_all = False
+        if (self.best_alpha[1] > 0) or (self.steps < self.N-1):
+            self.calc_all = True
+            self.max_dual_value = 0
+            self.best_alpha = torch.zeros(self.N,device = self.device) # done
+        else:
+            best_alpha = self.best_alpha.clone()  # done
+            self.best_alpha[1:-1] = best_alpha[2:]  # done
+            self.best_alpha[-1] = 0
+        self.Q[1:-2,1:-2] = self.Q[2:-1,2:-1]
+        self.Q[-2,1:-1] = 0
+        self.Q[1:-1,-2] = 0
+        b = self.b.clone()
+        b[1:-2] = self.b[2:-1]
+        b[-2] = 0
+        self.b = b
 
     @torch.autograd.no_grad()
     def Update_Q_and_b(self):
-        # i is the current index , n is current the number of LA in bundle 
-        i = self.n-1
+        i = self.N-1
         for group in self.param_groups:
             for p in group['params']:
                 g_i = self.state[p]['grads'][i-1]
-                for j in range(1,self.n):
+                for j in range(1,self.N):
                     g_j = self.state[p]['grads'][j-1]
                     self.Q[i, j] += group['eta'] * (g_i * g_j).sum()
                     if not (i==j):
                         self.Q[j, i] = self.Q[i, j]
 
-        self.b[i] += self.losses[i-1] + (self.Q[i,:-1] * self.best_alpha).sum()
+        self.b[i] += self.losses[i-1]
+        self.alig_step = (self.b[i]/(self.Q[i,i]+self.eps))
+
         if self.print:
             print('i',i)
+            print('losses')
             print('Q')
             print(self.Q)
             print('b')
@@ -110,10 +124,11 @@ class SBD(torch.optim.Optimizer):
     @torch.autograd.no_grad()
     def solve_system(self, i):
         device = self.Q_.device
-        idxs = torch.zeros(self.N+1, device=device)
-        idxs[:self.n-1] = torch.tensor(i, device=device)
-        idxs[self.n-1] = 1
-        idxs[-1] = 1
+        idxs = torch.ones(self.N+1, device=device)
+        if len(i) == self.N:
+            idxs[:self.N] = torch.tensor(i, device=device)
+        else:
+            idxs[:self.N-1] = torch.tensor(i, device=device)
         idxs = idxs.bool()
         Q_rows = self.Q_[idxs, :]
         A = Q_rows[:, idxs]
@@ -122,7 +137,8 @@ class SBD(torch.optim.Optimizer):
         try:
             this_alpha, _ = torch.solve(b.view(-1,1), A)
         except:
-            print('------------------- no solution found -----------------')
+            if self.print:
+                print('------------------- no solution found -----------------')
             return 0, torch.zeros(self.N, device=device)
         this_alpha = this_alpha.view(-1)
         this_alpha = this_alpha[:-1]
@@ -139,72 +155,26 @@ class SBD(torch.optim.Optimizer):
             dual_val = -1
         return dual_val, alpha
 
-    # @torch.autograd.no_grad()
-    # def solve_one_system(self, i):
-        # idxs = torch.zeros(self.N+1, device=self.device)
-        # idxs[:self.n-1] = torch.tensor(i, device=self.device)
-        # idxs[self.n-1] = 1
-        # idxs[-1] = 1
-        # active_idxs = idxs.bool()
-        # Q_rows = self.Q[idxs, :]
-        # A = Q_rows[:, idxs]
-        # b = self.b[idxs]
-        # # solve the linear system
-        # this_alpha = A.inverse().mv(b)
-        # this_alpha = this_alpha[:-1]
-        # # check if valid solution 
-        # if (this_alpha >= 0).all():
-            # alpha = torch.zeros(self.N, device=self.device)
-            # active_idxs = active_idxs[:-1]
-            # alpha[active_idxs] = this_alpha
-            # dual_val = self.dual(alpha)
-        # else:
-            # alpha = torch.zeros(self.N, device=self.device)
-            # dual_val = -1
-        # return dual_val, alpha
-
     @torch.autograd.no_grad()
     def solve_dual(self):
         self.Q_ = self.Q.clone().cpu()
         self.b_ = self.b.clone().cpu()
-        iters = [i for i in itertools.product([1,0], repeat=self.n-1)]
+        if self.calc_all:
+            iters = [i for i in itertools.product([1,0], repeat=self.N)]
+        else:
+            iters = [i for i in itertools.product([1,0], repeat=self.N-1)]
         with concurrent.futures.ThreadPoolExecutor() as executor:
             a = executor.map(self.solve_system, iters)
         results = [x for x in a]
         dual_vals, alphas = zip(*results)
         idx, val = argmax(dual_vals)
         if val > self.max_dual_value:
-            print('using last alpha')
             self.max_dual_value = val
             self.last_alpha = self.best_alpha.clone()
             self.best_alpha.copy_(torch.Tensor(alphas[idx]))
-
-    @torch.autograd.no_grad()
-    def alig_solve(self):
-        self.alig_step = (self.b[1]/(self.Q[1,1]+self.eps))
-        if self.Q[1,1] > self.eps:
-            if self.alig_step <= 1:
-                self.max_dual_value = 0.5 * self.alig_step * self.b[1]
-                self.best_alpha[1] = self.alig_step
-            else:
-                self.max_dual_value = -0.5 * self.Q[1,1] + self.b[1]
-                self.best_alpha[1] = 1
-
-    @torch.autograd.no_grad()
-    def sgd_solve(self):
-        self.alig_step = (self.b[1]/(self.Q[1,1]+self.eps))
-        self.max_dual_value = 0
-        self.best_alpha[self.n-1] = 1
-
-    @torch.autograd.no_grad()
-    def Create_Q_and_b(self):
-        self.Q = torch.ones(self.N + 1, self.N + 1, device=self.device)
-        self.Q[0:-1,0:-1] = 0
-        self.Q += self.eps * torch.eye(self.N + 1, device=self.device)
-        self.Q[-1,-1] = 0
-        self.Q[0,0] = 0
-        self.b = torch.zeros(self.N + 1, device=self.device)
-        self.b[-1] = 1
+        else:
+            if self.print:
+                print('using last alpha')
 
     @torch.autograd.no_grad()
     def update_diagnostics(self):
@@ -223,6 +193,7 @@ class SBD(torch.optim.Optimizer):
 
         if self.print:
             print('------------------------')
+            print('calc all', self.calc_all)
             print('best dual')
             print(self.max_dual_value)
             print('best alpha')
@@ -251,11 +222,16 @@ class SBD(torch.optim.Optimizer):
         for group in self.param_groups:
             if group['eta'] > 0.0:
                 for p in group['params']:
+                    # state['w_t'] = p.data.detach().clone()
                     A_alpha = self.update(p,group)
-                    p.data.copy_(self.state[p]['w_t'] + A_alpha)
-                    if self.n == self.N:
-                        if group["momentum"]:
-                            self.apply_momentum_nesterov(p, group, A_alpha)
+                    p.data.add_(A_alpha)
+                    if group["momentum"]:
+                        self.apply_momentum_nesterov(p, group, A_alpha)
+
+        for j in range(1,self.N):
+            self.b[j] -= (self.Q[j,:-1] * self.best_alpha).sum()
+            if self.print:
+                print('b',self.b)
 
     @torch.autograd.no_grad()
     def update(self, p, group):

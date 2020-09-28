@@ -4,10 +4,11 @@ from scheduling import launch
 
 def create_jobs():
     template = "python main.py "
-    wrn_opts = " --depth 40 --width 4 --no_visdom --no_tb "
-    dn_opts = " --depth 40 --growth 40 --epochs 300 "
+    wrn_opts = " --depth 40 --width 4 --no_tb --epochs 200 "
+    dn_opts = " --depth 40 --growth 40 --no_tb --epochs 300 "
 
-    with open("reproduce/hparams/svm_1e.yaml", "r") as f:
+    # with open("reproduce/hparams/wrn_remaining.yaml", "r") as f:
+    with open("reproduce/hparams/APsmalleta.yaml", "r") as f:
         hparams = yaml.safe_load(f)
 
     jobs = []

@@ -112,7 +112,7 @@ def _add_misc_parser(parser):
                           help="server for visdom")
     m_parser.add_argument('--tb_dir', dest="tb_dir", type=str, default='/data0/tb_logs',
                           help="destiation for tensorboard logs to be saved too")
-    m_parser.add_argument('--port', type=int, default=9030,
+    m_parser.add_argument('--port', type=int, default=8000,
                           help="port for visdom")
     m_parser.add_argument('--xp_name', type=str, default=None,
                           help="name of experiment")
@@ -149,6 +149,9 @@ def set_xp_name(args):
         xp_name += "--momentum-{}".format(args.momentum)
         args.k = 2 if args.opt == 'alig' else args.k
         args.k = 1 if args.opt == 'sgd' else args.k
+        # args.k = 3 if args.opt == 'borat3' else args.k
+        # args.k = 5 if args.opt == 'borat5' else args.k
+        # args.opt = 'sbd' if 'borat' in args.opt
         args.xp_name = xp_name.format(model=args.model, data=data, opt=args.opt, k=args.k,  eta=args.eta, l2=l2, b=args.batch_size, tag=args.tag)
         if args.debug:
             args.xp_name += "--debug"

@@ -19,8 +19,8 @@ from tqdm import tqdm
 # from dfw.losses import set_smoothing_enabled
 from utils import accuracy, regularization
 
-
 def forward_backwards(model, loss, optimizer, x, y):
+
     # forward pass
     scores = model(x)
     # compute the loss function, possibly using smoothing
@@ -34,7 +34,6 @@ def forward_backwards(model, loss, optimizer, x, y):
     return loss_value, scores
 
 def train(model, loss, optimizer, loader, args, xp):
-
     model.train()
 
     for metric in xp.train.metrics():
@@ -44,12 +43,23 @@ def train(model, loss, optimizer, loader, args, xp):
                      leave=False, total=len(loader)):
         (x, y) = (x.cuda(), y.cuda()) if args.cuda else (x, y)
 
-        if args.opt == 'sbd-sb':
-            # while not (optimizer.n == 1):
-            for _ in range(args.k-1):
-                loss_value, scores = forward_backwards(model, loss, optimizer, x, y)
-        else:
-            loss_value, scores = forward_backwards(model, loss, optimizer, x, y)
+        # if args.opt == 'sbd-sb':
+            # # while not (optimizer.n == 1):
+            # for _ in range(args.k-1):
+                # loss_value, scores = forward_backwards(model, loss, optimizer, x, y)
+        # else:
+            # loss_value, scores = forward_backwards(model, loss, optimizer, x, y)
+
+        # forward pass
+        scores = model(x)
+        # compute the loss function, possibly using smoothing
+        # with set_smoothing_enabled(args.smooth_svm):
+        loss_value = loss(scores, y)
+        # backward pass
+        optimizer.zero_grad()
+        loss_value.backward()
+        # optimization step
+        optimizer.step(lambda: float(loss_value))
 
         if 'sbd' in args.opt and not optimizer.n == 1:
             continue
@@ -114,7 +124,8 @@ def test_rank(model, loss, optimizer, loader, args, xp):
 
     # print('R', R, R.size(), 'R_star', R_star, R_star.size())
     # input('press any key')
-    xp_group.acc.update(loss(R, R_star))
+    loss_val = loss(R, R_star)
+    xp_group.acc.update(loss_val)
     # xp_group.acc.update(accuracy(R, R_star), weighting=x.size(0))
     xp_group.timer.update()
 

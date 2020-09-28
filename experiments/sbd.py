@@ -139,29 +139,6 @@ class SBD(torch.optim.Optimizer):
             dual_val = -1
         return dual_val, alpha
 
-    # @torch.autograd.no_grad()
-    # def solve_one_system(self, i):
-        # idxs = torch.zeros(self.N+1, device=self.device)
-        # idxs[:self.n-1] = torch.tensor(i, device=self.device)
-        # idxs[self.n-1] = 1
-        # idxs[-1] = 1
-        # active_idxs = idxs.bool()
-        # Q_rows = self.Q[idxs, :]
-        # A = Q_rows[:, idxs]
-        # b = self.b[idxs]
-        # # solve the linear system
-        # this_alpha = A.inverse().mv(b)
-        # this_alpha = this_alpha[:-1]
-        # # check if valid solution 
-        # if (this_alpha >= 0).all():
-            # alpha = torch.zeros(self.N, device=self.device)
-            # active_idxs = active_idxs[:-1]
-            # alpha[active_idxs] = this_alpha
-            # dual_val = self.dual(alpha)
-        # else:
-            # alpha = torch.zeros(self.N, device=self.device)
-            # dual_val = -1
-        # return dual_val, alpha
 
     @torch.autograd.no_grad()
     def solve_dual(self):
@@ -174,10 +151,12 @@ class SBD(torch.optim.Optimizer):
         dual_vals, alphas = zip(*results)
         idx, val = argmax(dual_vals)
         if val > self.max_dual_value:
-            print('using last alpha')
             self.max_dual_value = val
             self.last_alpha = self.best_alpha.clone()
             self.best_alpha.copy_(torch.Tensor(alphas[idx]))
+        else:
+            if self.print:
+                print('using last alpha')
 
     @torch.autograd.no_grad()
     def alig_solve(self):
@@ -200,7 +179,7 @@ class SBD(torch.optim.Optimizer):
     def Create_Q_and_b(self):
         self.Q = torch.ones(self.N + 1, self.N + 1, device=self.device)
         self.Q[0:-1,0:-1] = 0
-        self.Q += self.eps * torch.eye(self.N + 1, device=self.device)
+        # self.Q += self.eps * torch.eye(self.N + 1, device=self.device)
         self.Q[-1,-1] = 0
         self.Q[0,0] = 0
         self.b = torch.zeros(self.N + 1, device=self.device)

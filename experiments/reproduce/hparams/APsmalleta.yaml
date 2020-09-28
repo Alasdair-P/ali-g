@@ -1,0 +1,30 @@
+- {model: wrn, dataset: cifar10, batch_size: 500, opt: sgd, eta: 1e-10, epochs: 0, loss: map, tag: alig-ap-0.01-50,
+  load_model: /data0/clean/results/cifar10/wrn10-alig--k-2--eta-0.01--l2-50.0--b-500-AP1--momentum-0.9/best_model.pkl}
+- {model: wrn, dataset: cifar10, batch_size: 500, opt: sgd, eta: 1e-10, epochs: 0, loss: map, tag: borat3-ap-0.01-50,
+  load_model: /data0/clean/results/cifar10/wrn10-sbd--k-3--eta-0.01--l2-50.0--b-500-AP1--momentum-0.9/best_model.pkl}
+- {model: wrn, dataset: cifar10, batch_size: 500, opt: sgd, eta: 1e-10, epochs: 0, loss: map, tag: borat5-ap-0.01-50,
+  load_model: /data0/clean/results/cifar10/wrn10-sbd--k-5--eta-0.01--l2-50.0--b-500-AP1--momentum-0.9/best_model.pkl}
+- {model: wrn, dataset: cifar10, batch_size: 500, opt: sgd, eta: 1e-10, epochs: 0, loss: map, tag: alig-ap-0.01-100,
+  load_model: /data0/clean/results/cifar10/wrn10-alig--k-2--eta-0.01--l2-100.0--b-500-AP1--momentum-0.9/best_model.pkl}
+- {model: wrn, dataset: cifar10, batch_size: 500, opt: sgd, eta: 1e-10, epochs: 0, loss: map, tag: borat3-ap-0.01-100,
+  load_model: /data0/clean/results/cifar10/wrn10-sbd--k-3--eta-0.01--l2-100.0--b-500-AP1--momentum-0.9/best_model.pkl}
+- {model: wrn, dataset: cifar10, batch_size: 500, opt: sgd, eta: 1e-10, epochs: 0, loss: map, tag: borat5-ap-0.01-100,
+  load_model: /data0/clean/results/cifar10/wrn10-sbd--k-5--eta-0.01--l2-100.0--b-500-AP1--momentum-0.9/best_model.pkl}
+- {model: wrn, dataset: cifar10, batch_size: 500, opt: sgd, eta: 1e-10, epochs: 0, loss: map, tag: alig-ap-0.01-150,
+  load_model: /data0/clean/results/cifar10/wrn10-alig--k-2--eta-0.01--l2-150.0--b-500-AP1--momentum-0.9/best_model.pkl}
+- {model: wrn, dataset: cifar10, batch_size: 500, opt: sgd, eta: 1e-10, epochs: 0, loss: map, tag: borat3-ap-0.01-150,
+  load_model: /data0/clean/results/cifar10/wrn10-sbd--k-3--eta-0.01--l2-150.0--b-500-AP1--momentum-0.9/best_model.pkl}
+- {model: wrn, dataset: cifar10, batch_size: 500, opt: sgd, eta: 1e-10, epochs: 0, loss: map, tag: borat5-ap-0.01-150,
+  load_model: /data0/clean/results/cifar10/wrn10-sbd--k-5--eta-0.01--l2-150.0--b-500-AP1--momentum-0.9/best_model.pkl}
+- {model: wrn, dataset: cifar10, batch_size: 500, opt: sgd, eta: 1e-10, epochs: 0, loss: map, tag: alig-ap-0.01-200,
+  load_model: /data0/clean/results/cifar10/wrn10-alig--k-2--eta-0.01--l2-200.0--b-500-AP1--momentum-0.9/best_model.pkl}
+- {model: wrn, dataset: cifar10, batch_size: 500, opt: sgd, eta: 1e-10, epochs: 0, loss: map, tag: borat3-ap-0.01-200,
+  load_model: /data0/clean/results/cifar10/wrn10-sbd--k-3--eta-0.01--l2-200.0--b-500-AP1--momentum-0.9/best_model.pkl}
+- {model: wrn, dataset: cifar10, batch_size: 500, opt: sgd, eta: 1e-10, epochs: 0, loss: map, tag: borat5-ap-0.01-200,
+  load_model: /data0/clean/results/cifar10/wrn10-sbd--k-5--eta-0.01--l2-200.0--b-500-AP1--momentum-0.9/best_model.pkl}
+- {model: wrn, dataset: cifar10, batch_size: 500, opt: sgd, eta: 1e-10, epochs: 0, loss: map, tag: alig-ap-0.01-250,
+  load_model: /data0/clean/results/cifar10/wrn10-alig--k-2--eta-0.01--l2-250.0--b-500-AP1--momentum-0.9/best_model.pkl}
+- {model: wrn, dataset: cifar10, batch_size: 500, opt: sgd, eta: 1e-10, epochs: 0, loss: map, tag: borat3-ap-0.01-250,
+  load_model: /data0/clean/results/cifar10/wrn10-sbd--k-3--eta-0.01--l2-250.0--b-500-AP1--momentum-0.9/best_model.pkl}
+- {model: wrn, dataset: cifar10, batch_size: 500, opt: sgd, eta: 1e-10, epochs: 0, loss: map, tag: borat5-ap-0.01-250,
+  load_model: /data0/clean/results/cifar10/wrn10-sbd--k-5--eta-0.01--l2-250.0--b-500-AP1--momentum-0.9/best_model.pkl}
