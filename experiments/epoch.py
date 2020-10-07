@@ -120,13 +120,8 @@ def test_rank(model, loss, optimizer, loader, args, xp):
         R_star = torch.cat((R_star,y),0)
         R = torch.cat((R,scores),0)
 
-        # print('R', R, R.size(), 'R_star', R_star, R_star.size())
-
-    # print('R', R, R.size(), 'R_star', R_star, R_star.size())
-    # input('press any key')
     loss_val = loss(R, R_star)
     xp_group.acc.update(loss_val)
-    # xp_group.acc.update(accuracy(R, R_star), weighting=x.size(0))
     xp_group.timer.update()
 
     print('Epoch: [{0}] ({tag})\t'
