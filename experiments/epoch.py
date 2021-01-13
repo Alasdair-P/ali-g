@@ -1,39 +1,116 @@
 import torch
+import numpy as np
 import time
-
-class Timer:
-    def __init__(self,name):
-        self.name = name
-
-    def __enter__(self):
-        self.start = time.clock()
-        return  self
-
-    def __exit__(self, *args):
-        self.end = time.clock()
-        self.interval = self.end - self.start
-        print('{name} took {int:.4f} seconds'.format(name=self.name, int=self.interval))
-        print('------------------------------------------------------------------------')
-
 from tqdm import tqdm
 # from dfw.losses import set_smoothing_enabled
 from utils import accuracy, regularization
 
-def forward_backwards(model, loss, optimizer, x, y):
-
-    # forward pass
-    scores = model(x)
-    # compute the loss function, possibly using smoothing
-    # with set_smoothing_enabled(args.smooth_svm):
-    loss_value = loss(scores, y)
-    # backward pass
-    optimizer.zero_grad()
-    loss_value.backward()
-    # optimization step
-    optimizer.step(lambda: float(loss_value))
-    return loss_value, scores
-
 def train(model, loss, optimizer, loader, args, xp):
+    model.train()
+
+    for metric in xp.train.metrics():
+        metric.reset()
+
+    for idx, data in tqdm(loader, disable=not args.tqdm, desc='Train Epoch',
+                                               leave=False, total=len(loader)):
+        x_, y = data
+        if isinstance(x_,dict):
+            transforms, x = x_['trans'], x_['image']
+        else:
+            x = x_
+        # print('trans',transforms)
+        # input('press any key')
+        (x, y) = (x.cuda(), y.cuda()) if args.cuda else (x, y)
+
+        # forward pass
+        scores = model(x)
+
+        # compute the loss function, possibly using smoothing
+        # with set_smoothing_enabled(args.smooth_svm):
+        losses = loss(scores, y)
+        if args.opt == 'alig2':
+            clipped_losses = torch.max(losses, optimizer.fhat[idx])
+            losses = clipped_losses
+
+        loss_value = losses.mean()
+
+        # backward pass
+        optimizer.zero_grad()
+        loss_value.backward()
+            # optimization step
+        if args.opt == 'alig2':
+            optimizer.step(lambda: (idx,losses))
+        else:
+            optimizer.step(lambda: loss_value)
+
+        if 'sbd' in args.opt and not optimizer.n == 1:
+            continue
+
+        # monitoring
+        batch_size = x.size(0)
+        xp.train.acc.update(accuracy(scores, y), weighting=batch_size)
+        xp.train.loss.update(loss_value, weighting=batch_size)
+        xp.train.step_size.update(optimizer.step_size, weighting=batch_size)
+        xp.train.step_size_u.update(optimizer.step_size_unclipped, weighting=batch_size)
+        if args.dataset == "imagenet":
+            xp.train.acc5.update(accuracy(scores, y, topk=5), weighting=batch_size)
+        xp.train.alpha0.update(optimizer.step_0, weighting=batch_size)
+        xp.train.alpha1.update(optimizer.step_1, weighting=batch_size)
+        xp.train.alpha2.update(optimizer.step_2, weighting=batch_size)
+        xp.train.alpha3.update(optimizer.step_3, weighting=batch_size)
+        xp.train.alpha4.update(optimizer.step_4, weighting=batch_size)
+
+    xp.train.grad_norm.update(torch.sqrt(sum(p.grad.data.norm() ** 2  for p in model.parameters())))
+    xp.train.weight_norm.update(torch.sqrt(sum(p.data.norm() ** 2 for p in model.parameters())))
+    xp.train.reg.update(0.5 * args.weight_decay * xp.train.weight_norm.value ** 2)
+    xp.train.obj.update(xp.train.reg.value + xp.train.loss.value)
+    xp.train.lower_bound.update(optimizer.step_0)
+    xp.train.timer.update()
+
+    print('\nEpoch: [{0}] (Train) \t'
+          '({timer:.2f}s) \t'
+          'Obj {obj:.3f}\t'
+          'Loss {loss:.3f}\t'
+          'Acc {acc:.2f}%\t'
+          .format(int(xp.epoch.value),
+                  timer=xp.train.timer.value,
+                  acc=xp.train.acc.value,
+                  obj=xp.train.obj.value,
+                  loss=xp.train.loss.value))
+
+    for metric in xp.train.metrics():
+        metric.log(time=xp.epoch.value)
+
+@torch.autograd.no_grad()
+def forward(model, loss, optimizer, loader, args, xp, ls):
+    model.eval()
+
+    for metric in xp.train.metrics():
+        metric.reset()
+
+    for idx, data in tqdm(loader, disable=not args.tqdm, desc='Train Epoch',
+                                               leave=False, total=len(loader)):
+        x_, y = data
+        if isinstance(x_,dict):
+            trans, x = x_['trans'], x_['image']
+        else:
+            x = x_
+        (x, y) = (x.cuda(), y.cuda()) if args.cuda else (x, y)
+        index_ = torch.cat((idx.view(-1,1), trans), dim=1)
+        scores = model(x)
+        losses = loss(scores, y)
+        ls.update(index_, losses)
+
+        """
+        print("trans", trans)
+        print("idx", idx)
+        print("index_", index_)
+        print("losses", losses)
+        print("ls", ls.lst)
+        input('press any key')
+        """
+
+def train_old(model, loss, optimizer, loader, args, xp):
     model.train()
 
     for metric in xp.train.metrics():

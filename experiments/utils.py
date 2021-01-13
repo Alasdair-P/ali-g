@@ -5,6 +5,7 @@ import torch
 import mlogger
 import random
 import numpy as np
+import copy
 try:
     from torch.utils.tensorboard import SummaryWriter
 except:
@@ -49,7 +50,17 @@ def setup_xp(args, model, optimizer):
 
     xp = mlogger.Container()
 
-    xp.config = mlogger.Config(visdom_plotter=visdom_plotter, summary_writer=summary_writer, **vars(args))
+    xp.config = mlogger.Config(visdom_plotter=visdom_plotter, summary_writer=summary_writer)
+
+    vars_ = copy.deepcopy(vars(args))
+    # print(vars_)
+    for key, value in vars_.items():
+        if value is None or type(value) is list:
+            vars_[key] = str(value)
+    print(vars_)
+    # input('press any key')
+
+    xp.config.update(**vars_)
 
     xp.epoch = mlogger.metric.Simple()
 
@@ -158,3 +169,19 @@ def splitall(path):
             path = parts[0]
             allparts.insert(0, parts[1])
     return allparts
+
+class Timer:
+    def __init__(self,name):
+        self.name = name
+
+    def __enter__(self):
+        self.start = time.clock()
+        return  self
+
+    def __exit__(self, *args):
+        self.end = time.clock()
+        self.interval = self.end - self.start
+        print('{name} took {int:.4f} seconds'.format(name=self.name, int=self.interval))
+        print('------------------------------------------------------------------------')
+
+

@@ -63,7 +63,7 @@ def _add_optimization_parser(parser):
                           help="number of epochs")
     o_parser.add_argument('--batch_size', type=int, default=None,
                           help="batch size")
-    o_parser.add_argument('--eta', type=float, default=0.1,
+    o_parser.add_argument('--eta', type=float, default=None,
                           help="initial / maximal learning rate")
     o_parser.add_argument('--k', type=int, default=1,
                           help="bundle size")
@@ -73,6 +73,8 @@ def _add_optimization_parser(parser):
                           help="optimizer to use")
     o_parser.add_argument('--T', type=int, default=[-1], nargs='+',
                           help="number of epochs between proximal updates / lr decay")
+    o_parser.add_argument('--t', type=int, default=None,
+                          help="Fixed number of epochs between proximal updates / lr decay")
     o_parser.add_argument('--decay_factor', type=float, default=0.1,
                           help="decay factor for the learning rate / proximal term")
     o_parser.add_argument('--load_opt', default=None,
@@ -128,6 +130,10 @@ def _add_misc_parser(parser):
                           help="use of tqdm progress bars")
     m_parser.add_argument('--tag', type=str, default='',
                           help="tag used to indenify experiments")
+    m_parser.add_argument('--save_loses', dest='save_loses', action='store_true',
+                          help="flag to save loses")
+    m_parser.add_argument('--load_loses', dest='load_loses', type=str, default='best_loses.npy',
+                          help="path to load loses")
     m_parser.set_defaults(visdom=True, log=True, debug=False, parallel_gpu=False, tqdm=True)
 
 
@@ -157,7 +163,8 @@ def set_xp_name(args):
             args.xp_name += "--debug"
 
     if args.tensorboard:
-        args.tensorboard = os.path.join(args.tb_dir, splitall(args.xp_name)[-1])
+        args.tb_dir = os.path.join(args.tb_dir, args.dataset)
+        args.tb_dir = os.path.join(args.tb_dir, splitall(args.xp_name)[-1])
 
     if args.log:
         # generate automatic experiment name if not provided
@@ -171,10 +178,26 @@ def set_xp_name(args):
 
 
 def set_num_classes(args):
+    args.crop_i = 0
+    args.crop_j = 0
+    args.flip = 0
     if args.dataset == 'cifar10':
         args.n_classes = 10
+        args.input_dims = 3*32**2
+        if args.augment:
+            args.transforms = [2,8,8]
+        else:
+            args.transforms = [0]
     elif args.dataset == 'cifar100':
         args.n_classes = 100
+        args.input_dims = 3*32**2
+        if args.augment:
+            args.transforms = [2,8,8]
+        else:
+            args.transforms = [0]
+    elif args.dataset == 'mnist':
+        args.n_classes = 10
+        args.input_dims = 28**2
     elif args.dataset == 'snli':
         args.n_classes = 3
     elif 'svhn' in args.dataset:
@@ -202,7 +225,10 @@ def set_visdom(args):
 
 
 def filter_args(args):
-    args.T = list(args.T)
+    if args.t:
+        args.T = [x for x in range(args.epochs) if x%args.t == 0 and not(x==0)]
+    else:
+        args.T = list(args.T)
     set_cuda(args)
     misc_filter(args)
 

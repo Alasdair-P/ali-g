@@ -4,8 +4,19 @@ import torch.utils.data as data
 import torchvision.datasets as datasets
 import torchvision.transforms as transforms
 from .balancedsampler import BalancedBatchSampler
+from .transforms import RandomHorizontalFlipIndex, RandomCropIndex, ToTensorIndex, NormalizeCifar, FormatTransDict, CreateTransDict, HorizontalFlipIndex, CropIndex
+from torch_geometric.data import DataLoader
+from ogb.graphproppred import PygGraphPropPredDataset, Evaluator
 
 from .utils import random_subsets, Subset
+
+class IndexedDataset(data.Dataset):
+    def __init__(self, dataset):
+        self._dataset = dataset
+    def __getitem__(self, idx):
+        return idx, self._dataset[idx]
+    def __len__(self):
+        return self._dataset.__len__()
 
 def create_loaders(dataset_train, dataset_val, dataset_test,
                    train_size, val_size, test_size, batch_size, test_batch_size,
@@ -48,6 +59,7 @@ def create_loaders(dataset_train, dataset_val, dataset_test,
                                        batch_sampler=balanced_batch_sampler,
                                        **kwargs)
     else:
+        dataset_train = IndexedDataset(dataset_train)
         train_loader = data.DataLoader(dataset_train,
                                        batch_size=batch_size,
                                        shuffle=True, **kwargs)
@@ -91,7 +103,7 @@ def loaders_mnist(dataset, batch_size=64, cuda=0,
                           test_batch_size=test_batch_size,
                           cuda=cuda, num_workers=0)
 
-def loaders_cifar(dataset, batch_size, cuda, n_classes, eq_class,
+def loaders_cifar(dataset, batch_size, cuda, n_classes, eq_class, crop_i, crop_j, flip,
                   train_size=45000, augment=True, val_size=5000, test_size=10000,
                   test_batch_size=128, **kwargs):
 
@@ -111,11 +123,29 @@ def loaders_cifar(dataset, batch_size, cuda, n_classes, eq_class,
 
     if augment:
         print('Using data augmentation')
+        """
         transform_train = transforms.Compose([
             transforms.RandomCrop(32, padding=4),
             transforms.RandomHorizontalFlip(),
             transforms.ToTensor(),
             normalize])
+        """
+        """
+        transform_train = transforms.Compose([
+            CreateTransDict(),
+            RandomHorizontalFlipIndex(),
+            RandomCropIndex(32, padding=4),
+            ToTensorIndex(),
+            NormalizeCifar(),
+        ])
+        """
+        transform_train = transforms.Compose([
+                    CreateTransDict(),
+                    HorizontalFlipIndex(flip),
+                    CropIndex(32, padding=4, crop_index_i=crop_i, crop_index_j=crop_j),
+                    ToTensorIndex(),
+                    NormalizeCifar(),
+        ])
     else:
         print('Not using data augmentation')
         transform_train = transform_test
@@ -222,4 +252,37 @@ def loaders_imagenet(dataset, batch_size, cuda, n_classes,
     return create_loaders(dataset_train, dataset_val,
                           dataset_test, train_size, val_size, test_size,
                           batch_size, test_batch_size, cuda, n_classes, num_workers=8, split=False)
+
+def loaders_mol(dataset, batch_size, cuda,
+                 n_classes, eq_class, train_size=None, augment=False, val_size=6000, test_size=26032,
+                 test_batch_size=1000, **kwargs):
+
+    assert 'mol' in dataset
+
+    dataset = PygGraphPropPredDataset(name = args.dataset)
+
+    if args.feature == 'full':
+        pass
+    elif args.feature == 'simple':
+        print('using simple feature')
+        # only retain the top two node/edge features
+        dataset.data.x = dataset.data.x[:,:2]
+        dataset.data.edge_attr = dataset.data.edge_attr[:,:2]
+
+    n_classes = 2
+    split_idx = dataset.get_idx_split()
+    split = False
+
+    dataset_train = dataset[split_idx["train"]]
+    dataset_val = dataset[split_idx["valid"]]
+    dataset_test = dataset[split_idx["test"]]
+
+    train_size = len(dataset[split_idx["train"]])
+    val_size = len(dataset[split_idx["train"]])
+    test_size = len(dataset[split_idx["train"]])
+    test_batch_size = batch_size
+
+    return create_loaders(dataset_train, dataset_val,
+                          dataset_test, train_size, val_size, test_size,
+                          batch_size, test_batch_size, cuda, n_classes, num_workers=4, split=split)
 

@@ -2,8 +2,14 @@ import torch
 import torch.nn as nn
 
 def get_loss(args):
+
+    if args.opt == 'alig2':
+        reduction_type = 'none'
+    else:
+        reduction_type = 'mean'
+
     if args.opt == 'dfw' or args.loss == 'svm':
-        loss_fn = MultiClassHingeLoss()
+        loss_fn = MultiClassHingeLoss(reduction=reduction_type)
         if 'cifar' in args.dataset:
             args.smooth_svm = True
     elif args.loss == 'map':
@@ -12,10 +18,12 @@ def get_loss(args):
         loss_fn = NDCG(n_classes=args.n_classes)
     elif args.dataset == 'imagenet':
         return EntrLoss(n_classes=args.n_classes-1)
-    elif args.loss == 'norm_ce':
-        loss_fn = NormCE()
+    elif args.loss == 'mse':
+        loss_fn = torch.nn.MSELoss(reduction=reduction_type)
+    elif args.loss == 'bce':
+        loss_fn =  torch.nn.BCEWithLogitsLoss(reduction=reduction_type)
     else:
-        loss_fn = nn.CrossEntropyLoss()
+        loss_fn = nn.CrossEntropyLoss(reduction=reduction_type)
 
     print('L2 regularization: \t {}'.format(args.weight_decay))
     print('\nLoss function:')
@@ -145,16 +153,6 @@ class EntrLoss(nn.Module):
         losses = torch.log(1.+torch.sum(safe_z.exp()*J, dim=1))
 
         return losses.mean()
-
-class NormCE(nn.Module):
-
-    def __init__(self):
-        super(NormCE, self).__init__()
-        self.loss = nn.CrossEntropyLoss()
-
-    def forward(self, scores, y):
-        scores = (scores-scores.mean(dim=1,keepdim=True)).div(scores.std(dim=1, keepdim=True))
-        return self.loss(scores, y)
 
 class AP(nn.Module):
     """Implementation of <Efficient Optimization for Rank-based Loss Functions>.

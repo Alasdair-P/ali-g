@@ -2,6 +2,7 @@
 from cuda import set_cuda
 
 import mlogger
+import torch
 
 from cli import parse_command
 from loss import get_loss
@@ -9,28 +10,33 @@ from utils import setup_xp, set_seed, save_state, write_results
 from data import get_data_loaders
 from models import get_model, load_best_model
 from optim import get_optimizer, decay_optimizer
-from epoch import train, test, test_rank
+from epoch import train, test, test_rank, forward
 
 
 def main(args):
+    print('being main')
     set_cuda(args)
     set_seed(args)
 
     loader_train, loader_val, loader_test = get_data_loaders(args)
     loss = get_loss(args)
     model = get_model(args)
+    print([module for module in model.modules() if type(module) != torch.nn.Sequential][0])
     optimizer = get_optimizer(args, model, loss, parameters=model.parameters())
+    save_state(model, optimizer, '{}/x_0.pkl'.format(args.xp_name))
     xp = setup_xp(args, model, optimizer)
 
     for i in range(args.epochs):
         xp.epoch.update(i)
         train(model, loss, optimizer, loader_train, args, xp)
-        if args.loss == 'map' or args.loss  == 'ndcg':
-            test_rank(model, loss, optimizer, loader_val, args, xp)
-        else:
-            test(model, optimizer, loader_val, args, xp)
+        test(model, optimizer, loader_val, args, xp)
+        if args.opt ==  'alig2':
+            optimizer.epoch()
         if (i + 1) in args.T:
             decay_optimizer(optimizer, args.decay_factor)
+            if args.opt ==  'alig2':
+                optimizer.update_lb()
+                # load_best_model(model, '{}/x_0.pkl'.format(args.xp_name))
 
     load_best_model(model, '{}/best_model.pkl'.format(args.xp_name))
     if args.loss == 'map' or args.loss  == 'ndcg':

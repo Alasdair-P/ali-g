@@ -5,6 +5,7 @@ import torch.optim
 # from l4pytorch import L4Mom, L4Adam
 from alig.th import AliG, Yogi, AdamW
 from sbd import SBD
+from alig2 import AliG2
 from alig.th.projection import l2_projection
 
 
@@ -30,6 +31,9 @@ def get_optimizer(args, model, loss, parameters):
     elif args.opt == 'alig':
         optimizer = AliG(parameters, max_lr=args.eta, momentum=args.momentum,
                          projection_fn=lambda: l2_projection(parameters, args.max_norm))
+    elif args.opt == 'alig2':
+        optimizer = AliG2(parameters, max_lr=args.eta, momentum=args.momentum,
+                         projection_fn=lambda: l2_projection(parameters, args.max_norm), data_size=args.train_size, transforms_size=args.transforms)
     elif args.opt == 'bpgrad':
         optimizer = BPGrad(parameters, eta=args.eta, momentum=args.momentum, weight_decay=args.weight_decay)
     elif args.opt == 'l4adam':
@@ -76,4 +80,5 @@ def decay_optimizer(optimizer, decay_factor=0.1):
         optimizer.step_size = optimizer.param_groups[0]['lr']
         optimizer.step_size_unclipped = optimizer.param_groups[0]['lr']
     else:
-        raise ValueError
+        print('decay learning rate only supported for SGD')
+        # raise ValueError
