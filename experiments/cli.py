@@ -35,6 +35,8 @@ def _add_dataset_parser(parser):
                           action='store_false', help='no data augmentation')
     d_parser.add_argument('--equal_classes', dest='eq_class',
                           action='store_true', help='force all batches to have equal class weighting')
+    d_parser.add_argument('--feature', type=str, default='simple', choices=('full','simple'),
+                          help="graph features to use ('simple', 'full')")
     d_parser.set_defaults(augment=True)
 
 
@@ -204,6 +206,9 @@ def set_num_classes(args):
         args.n_classes = 10
     elif args.dataset == 'imagenet':
         args.n_classes = 1000
+    elif 'mol' in args.dataset:
+        args.n_classes = 2
+        args.transforms = [1]
     else:
         raise ValueError
 

@@ -7,7 +7,7 @@ def create_jobs():
     wrn_opts = " --depth 40 --width 4 --no_tb --epochs 200 "
     dn_opts = " --depth 40 --growth 40 --no_tb --epochs 300 "
 
-    with open("reproduce/hparams/wrn_remaining.yaml", "r") as f:
+    with open("reproduce/hparams/test.yaml", "r") as f:
         hparams = yaml.safe_load(f)
 
     jobs = []

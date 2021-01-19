@@ -253,36 +253,75 @@ def loaders_imagenet(dataset, batch_size, cuda, n_classes,
                           dataset_test, train_size, val_size, test_size,
                           batch_size, test_batch_size, cuda, n_classes, num_workers=8, split=False)
 
-def loaders_mol(dataset, batch_size, cuda,
-                 n_classes, eq_class, train_size=None, augment=False, val_size=6000, test_size=26032,
-                 test_batch_size=1000, **kwargs):
+def loaders_mol_(dataset, batch_size, cuda,
+                n_classes, eq_class, feature, train_size=32901, augment=False,
+                val_size=4113, test_size=4113, **kwargs):
 
     assert 'mol' in dataset
 
-    dataset = PygGraphPropPredDataset(name = args.dataset)
+    dataset = PygGraphPropPredDataset(name = dataset)
 
-    if args.feature == 'full':
+    if feature == 'full':
         pass
-    elif args.feature == 'simple':
-        print('using simple feature')
+    elif feature == 'simple':
+        print('using simple features')
         # only retain the top two node/edge features
         dataset.data.x = dataset.data.x[:,:2]
         dataset.data.edge_attr = dataset.data.edge_attr[:,:2]
 
     n_classes = 2
     split_idx = dataset.get_idx_split()
-    split = False
+    split = None
 
     dataset_train = dataset[split_idx["train"]]
     dataset_val = dataset[split_idx["valid"]]
     dataset_test = dataset[split_idx["test"]]
 
-    train_size = len(dataset[split_idx["train"]])
-    val_size = len(dataset[split_idx["train"]])
-    test_size = len(dataset[split_idx["train"]])
+    """
+    train_size = len(dataset_train)
+    val_size = len(dataset_val)
+    test_size = len(dataset_test)
+    print('train_size', train_size, 'val_size', val_size, 'test_size', test_size)
+    input('press any key')
+    """
+
     test_batch_size = batch_size
 
     return create_loaders(dataset_train, dataset_val,
                           dataset_test, train_size, val_size, test_size,
                           batch_size, test_batch_size, cuda, n_classes, num_workers=4, split=split)
+
+def loaders_mol(dataset, batch_size, cuda,
+                n_classes, eq_class, feature, train_size=32901, augment=False,
+                val_size=4113, test_size=4113, **kwargs):
+
+    assert 'mol' in dataset
+
+    root_ = '{}/{}'.format(os.environ['VISION_DATA'], dataset)
+    dataset = PygGraphPropPredDataset(name = dataset, root = root_)
+
+    if feature == 'full':
+        pass
+    elif feature == 'simple':
+        print('using simple features')
+        # only retain the top two node/edge features
+        dataset.data.x = dataset.data.x[:,:2]
+        dataset.data.edge_attr = dataset.data.edge_attr[:,:2]
+
+    n_classes = 2
+    split_idx = dataset.get_idx_split()
+    split = None
+
+
+    train_idxed_loader = DataLoader(IndexedDataset(dataset[split_idx["train"]]), batch_size=batch_size, shuffle=True, num_workers = 2)
+    train_loader = DataLoader(dataset[split_idx["train"]], batch_size=batch_size, shuffle=True, num_workers = 2)
+    val_loader = DataLoader(dataset[split_idx["valid"]], batch_size=batch_size, shuffle=False, num_workers = 2)
+    test_loader = DataLoader(dataset[split_idx["test"]], batch_size=batch_size, shuffle=False, num_workers = 2)
+    # args.train_size = len(dataset[split_idx["train"]])
+    train_idxed_loader.tag = 'train'
+    train_loader.tag = 'train'
+    val_loader.tag = 'val'
+    test_loader.tag = 'test'
+
+    return train_idxed_loader, val_loader, test_loader
 

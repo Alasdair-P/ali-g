@@ -1,5 +1,6 @@
 import torch
 import torch.nn as nn
+from ogb.graphproppred import PygGraphPropPredDataset
 
 def get_loss(args):
 
@@ -7,6 +8,14 @@ def get_loss(args):
         reduction_type = 'none'
     else:
         reduction_type = 'mean'
+
+    if "mol" in args.dataset:
+        dataset = PygGraphPropPredDataset(name = args.dataset)
+        if "classification" in dataset.task_type:
+            args.loss = 'mse'
+        else:
+            args.loss = 'bce'
+
 
     if args.opt == 'dfw' or args.loss == 'svm':
         loss_fn = MultiClassHingeLoss(reduction=reduction_type)
@@ -24,6 +33,7 @@ def get_loss(args):
         loss_fn =  torch.nn.BCEWithLogitsLoss(reduction=reduction_type)
     else:
         loss_fn = nn.CrossEntropyLoss(reduction=reduction_type)
+
 
     print('L2 regularization: \t {}'.format(args.weight_decay))
     print('\nLoss function:')
