@@ -60,6 +60,9 @@ def train(model, loss, optimizer, loader, args, xp):
         loss_value.backward()
         # optimization step
         optimizer.step(lambda: float(loss_value))
+        
+        if 'sgd' in args.opt and args.max_norm:
+            l2_projection(model.parameters(), args.max_norm)
 
         if 'sbd' in args.opt and not optimizer.n == 1:
             continue
@@ -97,6 +100,16 @@ def train(model, loss, optimizer, loader, args, xp):
 
     for metric in xp.train.metrics():
         metric.log(time=xp.epoch.value)
+
+@torch.autograd.no_grad()
+def l2_projection(parameters, max_norm):
+    if max_norm is None:
+        return
+    total_norm = torch.sqrt(sum(p.norm() ** 2 for p in parameters))
+    if total_norm > max_norm:
+        ratio = max_norm / total_norm
+        for p in parameters:
+            p *= ratio
 
 @torch.autograd.no_grad()
 def test_rank(model, loss, optimizer, loader, args, xp):

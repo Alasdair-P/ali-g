@@ -144,7 +144,7 @@ def set_xp_name(args):
         xp_name = args.log_dir
         xp_name += 'results/{data}/'.format(data=args.dataset)
         xp_name += "{model}{data}-{opt}--k-{k}--eta-{eta}--l2-{l2}--b-{b}-{tag}"
-        l2 = args.max_norm if (args.opt == 'alig') or (args.opt == 'sbd') else args.weight_decay
+        l2 = args.max_norm if (args.opt == 'alig') or (args.opt == 'sbd') or (args.opt == 'sgd') else args.weight_decay
         data = args.dataset.replace("cifar", "")
         xp_name += "--momentum-{}".format(args.momentum)
         args.k = 2 if args.opt == 'alig' else args.k
