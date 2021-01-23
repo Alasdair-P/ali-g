@@ -36,6 +36,7 @@ def train_graph(model, loss, optimizer, evaluator, dataset, loader, args, xp):
 
             loss_value = losses.mean()
             loss_value.backward()
+            # print('loss', loss_value)
 
             if args.opt == 'alig2':
                 optimizer.step(lambda: (idx,losses))
@@ -128,6 +129,7 @@ def train(model, loss, optimizer, loader, args, xp):
             losses = clipped_losses
 
         loss_value = losses.mean()
+        print('loss', loss_value)
 
         # backward pass
         optimizer.zero_grad()

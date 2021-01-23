@@ -887,3 +887,11 @@ k=3 CIFAR100 WRN
 /data0/clean/results/cifar100/wrn100-sgd--k-1--eta-0.1--l2-0--b-128-SGD_BASELINE_HALF_TRAINED--momentum-0.9 ,Train Acc, 76.5489 ,Val Acc, 59.3200 ,Test Acc, 59.8500
 /data0/clean/results/cifar10/mlp10-alig2--k-1--eta-0.1--l2-0--b-3-test--momentum-0.9--debug ,Train Acc, 0.0000 ,Val Acc, -inf ,Test Acc, 0.0000
 /data0/clean/results/cifar100/wrn100-sgd--k-1--eta-0.1--l2-0--b-128-SGD_BASELINE_10_EPOCHS--momentum-0.9 ,Train Acc, 53.7400 ,Val Acc, 35.0200 ,Test Acc, 35.4400
+/data0/clean/results/ogbg-molhiv/gcnogbg-molhiv-alig2--k-1--eta-0.1--l2-0--b-32-t200--momentum-0.9 ,Train Acc, 0.9782 ,Val Acc, 0.8520 ,Test Acc, 0.7614
+/data0/clean/results/ogbg-molhiv/gcnogbg-molhiv-sgd--k-1--eta-0.01--l2-0--b-32---momentum-0.9 ,Train Acc, 0.9926 ,Val Acc, 0.8443 ,Test Acc, 0.7549
+/data0/clean/results/ogbg-molhiv/gcnogbg-molhiv-alig2--k-1--eta-1.0--l2-0--b-32---momentum-0.9 ,Train Acc, 0.9576 ,Val Acc, 0.8392 ,Test Acc, 0.7559
+/data0/clean/results/ogbg-molhiv/gcnogbg-molhiv-alig2--k-1--eta-0.01--l2-0--b-32-t200--momentum-0.9 ,Train Acc, 0.9953 ,Val Acc, 0.8545 ,Test Acc, 0.7555
+/data0/clean/results/ogbg-molhiv/gcnogbg-molhiv-adam--k-1--eta-0.003--l2-0--b-32---momentum-0.9 ,Train Acc, 0.9767 ,Val Acc, 0.8232 ,Test Acc, 0.7303
+/data0/clean/results/ogbg-molhiv/gcnogbg-molhiv-adam--k-1--eta-0.0003--l2-0--b-32---momentum-0.9 ,Train Acc, 0.9935 ,Val Acc, 0.8368 ,Test Acc, 0.7619
+/data0/clean/results/ogbg-molhiv/gcnogbg-molhiv-adam--k-1--eta-0.0001--l2-0--b-32---momentum-0.9 ,Train Acc, 0.9968 ,Val Acc, 0.8159 ,Test Acc, 0.7603
+/data0/clean/results/ogbg-molhiv/gcnogbg-molhiv-sgd--k-1--eta-0.001--l2-0--b-32---momentum-0.9 ,Train Acc, 0.9784 ,Val Acc, 0.8289 ,Test Acc, 0.7593

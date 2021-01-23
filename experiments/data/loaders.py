@@ -253,51 +253,13 @@ def loaders_imagenet(dataset, batch_size, cuda, n_classes,
                           dataset_test, train_size, val_size, test_size,
                           batch_size, test_batch_size, cuda, n_classes, num_workers=8, split=False)
 
-def loaders_mol_(dataset, batch_size, cuda,
-                n_classes, eq_class, feature, train_size=32901, augment=False,
-                val_size=4113, test_size=4113, **kwargs):
-
-    assert 'mol' in dataset
-
-    dataset = PygGraphPropPredDataset(name = dataset)
-
-    if feature == 'full':
-        pass
-    elif feature == 'simple':
-        print('using simple features')
-        # only retain the top two node/edge features
-        dataset.data.x = dataset.data.x[:,:2]
-        dataset.data.edge_attr = dataset.data.edge_attr[:,:2]
-
-    n_classes = 2
-    split_idx = dataset.get_idx_split()
-    split = None
-
-    dataset_train = dataset[split_idx["train"]]
-    dataset_val = dataset[split_idx["valid"]]
-    dataset_test = dataset[split_idx["test"]]
-
-    """
-    train_size = len(dataset_train)
-    val_size = len(dataset_val)
-    test_size = len(dataset_test)
-    print('train_size', train_size, 'val_size', val_size, 'test_size', test_size)
-    input('press any key')
-    """
-
-    test_batch_size = batch_size
-
-    return create_loaders(dataset_train, dataset_val,
-                          dataset_test, train_size, val_size, test_size,
-                          batch_size, test_batch_size, cuda, n_classes, num_workers=4, split=split)
-
 def loaders_mol(dataset, batch_size, cuda,
                 n_classes, eq_class, feature, train_size=32901, augment=False,
                 val_size=4113, test_size=4113, **kwargs):
 
     assert 'mol' in dataset
 
-    root_ = '{}/{}'.format(os.environ['VISION_DATA'], dataset)
+    root_ = '{}/{}'.format(os.environ['GRAPH_DATA'], dataset)
     dataset = PygGraphPropPredDataset(name = dataset, root = root_)
 
     if feature == 'full':
@@ -308,20 +270,65 @@ def loaders_mol(dataset, batch_size, cuda,
         dataset.data.x = dataset.data.x[:,:2]
         dataset.data.edge_attr = dataset.data.edge_attr[:,:2]
 
-    n_classes = 2
     split_idx = dataset.get_idx_split()
-    split = None
-
 
     train_idxed_loader = DataLoader(IndexedDataset(dataset[split_idx["train"]]), batch_size=batch_size, shuffle=True, num_workers = 2)
-    train_loader = DataLoader(dataset[split_idx["train"]], batch_size=batch_size, shuffle=True, num_workers = 2)
+    # train_loader = DataLoader(dataset[split_idx["train"]], batch_size=batch_size, shuffle=True, num_workers = 2)
     val_loader = DataLoader(dataset[split_idx["valid"]], batch_size=batch_size, shuffle=False, num_workers = 2)
     test_loader = DataLoader(dataset[split_idx["test"]], batch_size=batch_size, shuffle=False, num_workers = 2)
     # args.train_size = len(dataset[split_idx["train"]])
+    train_idxed_loader.tag = 'train'
+    # train_loader.tag = 'train'
+    val_loader.tag = 'val'
+    test_loader.tag = 'test'
+
+    return train_idxed_loader, val_loader, test_loader
+
+def loders_code(dataset, batch_size, cuda,
+                n_classes, eq_class, feature, train_size=32901, augment=False,
+                val_size=4113, test_size=4113, **kwargs):
+
+    assert 'code' in dataset
+
+    root_ = '{}/{}'.format(os.environ['GRAPH_DATA'], dataset)
+    dataset = PygGraphPropPredDataset(name = dataset, root = root_)
+
+    seq_len_list = np.array([len(seq) for seq in dataset.data.y])
+    print('Target seqence less or equal to {} is {}%.'.format(args.max_seq_len, np.sum(seq_len_list <= args.max_seq_len) / len(seq_len_list)))
+
+    split_idx = dataset.get_idx_split()
+
+    vocab2idx, idx2vocab = get_vocab_mapping([dataset.data.y[i] for i in split_idx['train']], args.num_vocab)
+
+    # encode_y_to_arr: add y_arr to PyG data object, indicating the array representation of a sequence.
+    dataset.transform = transforms.Compose([augment_edge, lambda data: encode_y_to_arr(data, vocab2idx, args.max_seq_len)])
+
+    ### automatic evaluator. takes dataset name as input
+    evaluator = Evaluator(args.dataset)
+
+    train_loader = DataLoader(dataset[split_idx["train"]], batch_size=args.batch_size, shuffle=True, num_workers = args.num_workers)
+    valid_loader = DataLoader(dataset[split_idx["valid"]], batch_size=args.batch_size, shuffle=False, num_workers = args.num_workers)
+    test_loader = DataLoader(dataset[split_idx["test"]], batch_size=args.batch_size, shuffle=False, num_workers = args.num_workers)
+    print('train',len(dataset[split_idx["train"]]) )
+    print('valid',len(dataset[split_idx["valid"]]) )
+    print('test',len(dataset[split_idx["test"]]) )
+    input('press any key')
+
+    nodetypes_mapping = pd.read_csv(os.path.join(dataset.root, 'mapping', 'typeidx2type.csv.gz'))
+    nodeattributes_mapping = pd.read_csv(os.path.join(dataset.root, 'mapping', 'attridx2attr.csv.gz'))
+
+    ### Encoding node features into emb_dim vectors.
+    ### The following three node features are used.
+    # 1. node type
+    # 2. node attribute
+    # 3. node depth
+    node_encoder = ASTNodeEncoder(args.emb_dim, num_nodetypes = len(nodetypes_mapping['type']), num_nodeattributes = len(nodeattributes_mapping['attr']), max_depth = 20)
+
     train_idxed_loader.tag = 'train'
     train_loader.tag = 'train'
     val_loader.tag = 'val'
     test_loader.tag = 'test'
 
     return train_idxed_loader, val_loader, test_loader
+
 
