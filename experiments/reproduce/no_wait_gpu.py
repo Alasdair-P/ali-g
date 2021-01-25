@@ -1,12 +1,14 @@
+import os
+import time
 import yaml
-from scheduling import launch
-
 
 def create_jobs():
+
     template = "python main.py "
     wrn_opts = " --depth 40 --width 4 --no_tb --epochs 200 "
     dn_opts = " --depth 40 --growth 40 --no_tb --epochs 300 "
     gcn_opts = " --depth 5 --width 300 --epochs 500 --tag 500e"
+
     with open("reproduce/hparams/mol.yaml", "r") as f:
         hparams = yaml.safe_load(f)
     jobs = []
@@ -23,7 +25,22 @@ def create_jobs():
         jobs.append(command)
     return jobs
 
+def run_command(command, noprint=True):
+    command = " ".join(command.split())
+    print(command)
+    os.system(command)
+
+def launch(jobs, interval):
+    for i, job in enumerate(jobs):
+        print("\nJob {} out of {}".format(i + 1, len(jobs)))
+        run_command(job)
+        time.sleep(interval)
 
 if __name__ == "__main__":
     jobs = create_jobs()
-    launch(jobs)
+    for job in jobs:
+        print(job)
+    print("Total of {} jobs to launch".format(len(jobs)))
+    launch(jobs, 5)
+
+
