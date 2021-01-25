@@ -1,1 +1,1 @@
-- {model: wrn, dataset: mol, batch_size: 128, opt: sbd, eta: 1.0, max_norm: 100, k: 3, momentum: 0.0}
+- {model: gcn, dataset: ogbg-molhiv, batch_size: 32, opt: sgd, eta: 0.01, max_norm: 50, momentum: 0.9}

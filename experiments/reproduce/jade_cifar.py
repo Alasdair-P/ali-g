@@ -8,10 +8,9 @@ def create_jobs():
     wrn_opts = " --depth 40 --width 4 --epochs 200"
     # wsrn_opts = " --depth 40 --width 4 "
     dn_opts = " --depth 40 --growth 40 --epochs 300"
+    gcn_opts = " --depth 5 --growth 300 --epochs 500"
 
-    # with open("reproduce/hparams/cifar.yaml", "r") as f:
-    # with open("reproduce/hparams/alig.yaml", "r") as f:
-    with open("reproduce/hparams/cifar10_wrm.yaml", "r") as f:
+    with open("reproduce/hparams/test.yaml", "r") as f:
         hparams = yaml.safe_load(f)
 
     jobs = []
@@ -21,6 +20,8 @@ def create_jobs():
             command += wrn_opts
         elif hparam['model'] == "dn":
             command += dn_opts
+        elif hparam['model'] == "gcn":
+            command += gcn_opts
         else:
             raise ValueError("Model {} not recognized".format(hparam["model"]))
         jobs.append(command)

@@ -1,5 +1,6 @@
 # top-import for cuda device initialization
 from cuda import set_cuda
+from cuda_jade import set_cuda_jade
 
 import mlogger
 import torch
@@ -15,8 +16,12 @@ from ogb.graphproppred import PygGraphPropPredDataset, Evaluator
 
 
 def main(args):
-    print('being main')
-    set_cuda(args)
+    print('beginning main')
+    print('jade:',args.jade)
+    if args.jade:
+        set_cuda_jade(args)
+    else:
+        set_cuda(args)
     set_seed(args)
 
     loader_train, loader_val, loader_test = get_data_loaders(args)
