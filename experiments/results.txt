@@ -895,3 +895,14 @@ k=3 CIFAR100 WRN
 /data0/clean/results/ogbg-molhiv/gcnogbg-molhiv-adam--k-1--eta-0.0003--l2-0--b-32---momentum-0.9 ,Train Acc, 0.9935 ,Val Acc, 0.8368 ,Test Acc, 0.7619
 /data0/clean/results/ogbg-molhiv/gcnogbg-molhiv-adam--k-1--eta-0.0001--l2-0--b-32---momentum-0.9 ,Train Acc, 0.9968 ,Val Acc, 0.8159 ,Test Acc, 0.7603
 /data0/clean/results/ogbg-molhiv/gcnogbg-molhiv-sgd--k-1--eta-0.001--l2-0--b-32---momentum-0.9 ,Train Acc, 0.9784 ,Val Acc, 0.8289 ,Test Acc, 0.7593
+/data0/clean/results/ogbg-molhiv/gcnogbg-molhiv-adam--k-1--eta-0.0003--l2-0.001--b-32---momentum-0.9 ,Train Acc, 0.7473 ,Val Acc, 0.7831 ,Test Acc, 0.6640
+/data0/clean/results/ogbg-molhiv/gcnogbg-molhiv-adam--k-1--eta-0.0001--l2-0.001--b-32---momentum-0.9 ,Train Acc, 0.8734 ,Val Acc, 0.8417 ,Test Acc, 0.7660
+/data0/clean/results/ogbg-molhiv/gcnogbg-molhiv-adam--k-1--eta-0.003--l2-0.001--b-32---momentum-0.9 ,Train Acc, 0.5015 ,Val Acc, 0.7057 ,Test Acc, 0.7105
+/data0/clean/results/ogbg-molhiv/gcnogbg-molhiv-sgd--k-1--eta-0.01--l2-0.001--b-32---momentum-0.9 ,Train Acc, 0.6159 ,Val Acc, 0.7889 ,Test Acc, 0.7304
+/data0/clean/results/ogbg-molhiv/gcnogbg-molhiv-sgd--k-1--eta-0.01--l2-0.0001--b-32---momentum-0.9 ,Train Acc, 0.9549 ,Val Acc, 0.8449 ,Test Acc, 0.7802
+/data0/clean/results/ogbg-molhiv/gcnogbg-molhiv-sgd--k-1--eta-0.01--l2-0.01--b-32---momentum-0.9 ,Train Acc, 0.4914 ,Val Acc, 0.6913 ,Test Acc, 0.7104
+/data0/clean/results/ogbg-molhiv/gcnogbg-molhiv-sgd--k-1--eta-0.01--l2-1e-05--b-32---momentum-0.9 ,Train Acc, 0.9805 ,Val Acc, 0.8494 ,Test Acc, 0.7294
+/data0/clean/results/ogbg-molhiv/gcnogbg-molhiv-alig2--k-1--eta-0.01--l2-None--b-32-500e--momentum-0.9 ,Train Acc, 0.9886 ,Val Acc, 0.8492 ,Test Acc, 0.7552
+/data0/clean/results/ogbg-molhiv/gcnogbg-molhiv-alig2--k-1--eta-0.1--l2-None--b-32-500e--momentum-0.9 ,Train Acc, 0.9776 ,Val Acc, 0.8446 ,Test Acc, 0.7793
+/data0/clean/results/ogbg-molhiv/gcnogbg-molhiv-alig2--k-1--eta-0.01--l2-50.0--b-32-500e--momentum-0.9 ,Train Acc, 0.9922 ,Val Acc, 0.8577 ,Test Acc, 0.7785
+/data0/clean/results/ogbg-molhiv/gcnogbg-molhiv-alig2--k-1--eta-0.1--l2-50.0--b-32-500e--momentum-0.9 ,Train Acc, 0.9699 ,Val Acc, 0.8350 ,Test Acc, 0.7358
