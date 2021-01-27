@@ -37,6 +37,10 @@ def _add_dataset_parser(parser):
                           action='store_true', help='force all batches to have equal class weighting')
     d_parser.add_argument('--feature', type=str, default='simple', choices=('full','simple'),
                           help="graph features to use ('simple', 'full')")
+    d_parser.add_argument('--max_seq_len', type=int, default=5,
+                        help='maximum sequence length to predict (default: 5)')
+    d_parser.add_argument('--num_vocab', type=int, default=5000,
+                        help='the number of vocabulary used for sequence prediction (default: 5000)')
     d_parser.set_defaults(augment=True)
 
 
@@ -207,6 +211,9 @@ def set_num_classes(args):
     elif args.dataset == 'imagenet':
         args.n_classes = 1000
     elif 'mol' in args.dataset:
+        args.n_classes = 2
+        args.transforms = [1]
+    elif 'code' in args.dataset:
         args.n_classes = 2
         args.transforms = [1]
     else:

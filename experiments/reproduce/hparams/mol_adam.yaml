@@ -1,0 +1,7 @@
+- {model: gcn, dataset: ogbg-molhiv, batch_size: 32, opt: adam, eta: 0.0003, weight_decay: 0.0, tag: 500e}
+- {model: gcn, dataset: ogbg-molhiv, batch_size: 32, opt: adam, eta: 0.0003, weight_decay: 1e-5, tag: 500e}
+- {model: gcn, dataset: ogbg-molhiv, batch_size: 32, opt: adam, eta: 0.0003, weight_decay: 1e-4, tag: 500e}
+- {model: gcn, dataset: ogbg-molhiv, batch_size: 32, opt: adam, eta: 0.0003, weight_decay: 1e-3, tag: 500e}
+  #- {model: gcn, dataset: ogbg-molhiv, batch_size: 32, opt: adam, eta: 0.001, weight_decay: 0.0}
+  #- {model: gcn, dataset: ogbg-molhiv, batch_size: 32, opt: adam, eta: 0.001, weight_decay: 1e-5}
+  #- {model: gcn, dataset: ogbg-molhiv, batch_size: 32, opt: adam, eta: 0.001, weight_decay: 1e-4}

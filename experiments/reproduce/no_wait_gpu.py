@@ -7,7 +7,7 @@ def create_jobs():
     template = "python main.py "
     wrn_opts = " --depth 40 --width 4 --no_tb --epochs 200 "
     dn_opts = " --depth 40 --growth 40 --no_tb --epochs 300 "
-    gcn_opts = " --depth 5 --width 300 --epochs 500 --tag 500e"
+    gcn_opts = " --depth 5 --width 300 --epochs 500 "
 
     with open("reproduce/hparams/mol.yaml", "r") as f:
         hparams = yaml.safe_load(f)

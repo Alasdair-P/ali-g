@@ -906,3 +906,30 @@ k=3 CIFAR100 WRN
 /data0/clean/results/ogbg-molhiv/gcnogbg-molhiv-alig2--k-1--eta-0.1--l2-None--b-32-500e--momentum-0.9 ,Train Acc, 0.9776 ,Val Acc, 0.8446 ,Test Acc, 0.7793
 /data0/clean/results/ogbg-molhiv/gcnogbg-molhiv-alig2--k-1--eta-0.01--l2-50.0--b-32-500e--momentum-0.9 ,Train Acc, 0.9922 ,Val Acc, 0.8577 ,Test Acc, 0.7785
 /data0/clean/results/ogbg-molhiv/gcnogbg-molhiv-alig2--k-1--eta-0.1--l2-50.0--b-32-500e--momentum-0.9 ,Train Acc, 0.9699 ,Val Acc, 0.8350 ,Test Acc, 0.7358
+/data0/clean/results/ogbg-molhiv/gcnogbg-molhiv-sgd--k-1--eta-0.01--l2-0.0--b-32-500e--momentum-0.9 ,Train Acc, 0.9734 ,Val Acc, 0.8473 ,Test Acc, 0.7627
+/data0/clean/results/ogbg-molhiv/gcnogbg-molhiv-sgd--k-1--eta-0.01--l2-1e-05--b-32-500e--momentum-0.9 ,Train Acc, 0.9816 ,Val Acc, 0.8452 ,Test Acc, 0.7961
+/data0/clean/results/ogbg-molhiv/gcnogbg-molhiv-sgd--k-1--eta-0.01--l2-0.0001--b-32-500e--momentum-0.9 ,Train Acc, 0.9605 ,Val Acc, 0.8582 ,Test Acc, 0.7856
+/data0/clean/results/ogbg-molhiv/gcnogbg-molhiv-sgd--k-1--eta-0.01--l2-0.001--b-32-500e--momentum-0.9 ,Train Acc, 0.6196 ,Val Acc, 0.7987 ,Test Acc, 0.7266
+/data0/clean/results/ogbg-molhiv/gcnogbg-molhiv-sgd--k-1--eta-0.001--l2-0.0--b-32-500e--momentum-0.9 ,Train Acc, 0.9791 ,Val Acc, 0.8523 ,Test Acc, 0.7551
+/data0/clean/results/ogbg-molhiv/gcnogbg-molhiv-adam--k-1--eta-0.003--l2-0.0--b-32-500e--momentum-0.9 ,Train Acc, 0.9534 ,Val Acc, 0.8451 ,Test Acc, 0.7666
+/data0/clean/results/ogbg-molhiv/gcnogbg-molhiv-alig2--k-1--eta-0.001--l2-None--b-32-500e--momentum-0.9 ,Train Acc, 0.9840 ,Val Acc, 0.8236 ,Test Acc, 0.6887
+/data0/clean/results/ogbg-molhiv/gcnogbg-molhiv-alig2--k-1--eta-0.01--l2-75.0--b-32-500e--momentum-0.9 ,Train Acc, 0.9919 ,Val Acc, 0.8513 ,Test Acc, 0.7698
+/data0/clean/results/ogbg-molhiv/gcnogbg-molhiv-sgd--k-1--eta-0.001--l2-1e-05--b-32-500e--momentum-0.9 ,Train Acc, 0.9745 ,Val Acc, 0.8557 ,Test Acc, 0.7472
+/data0/clean/results/ogbg-molhiv/gcnogbg-molhiv-adam--k-1--eta-0.003--l2-1e-05--b-32-500e--momentum-0.9 ,Train Acc, 0.7540 ,Val Acc, 0.7869 ,Test Acc, 0.7165
+/data0/clean/results/ogbg-molhiv/gcnogbg-molhiv-sgd--k-1--eta-0.001--l2-0.0001--b-32-500e--momentum-0.9 ,Train Acc, 0.9837 ,Val Acc, 0.8470 ,Test Acc, 0.7639
+/data0/clean/results/ogbg-molhiv/gcnogbg-molhiv-alig2--k-1--eta-0.001--l2-75.0--b-32-500e--momentum-0.9 ,Train Acc, 0.9871 ,Val Acc, 0.8523 ,Test Acc, 0.7592
+/data0/clean/results/ogbg-molhiv/gcnogbg-molhiv-adam--k-1--eta-0.003--l2-0.0001--b-32-500e--momentum-0.9 ,Train Acc, 0.6466 ,Val Acc, 0.7520 ,Test Acc, 0.6489
+/data0/clean/results/ogbg-molhiv/gcnogbg-molhiv-sgd--k-1--eta-0.001--l2-0.001--b-32-500e--momentum-0.9 ,Train Acc, 0.9510 ,Val Acc, 0.8418 ,Test Acc, 0.7553
+/data0/clean/results/ogbg-molhiv/gcnogbg-molhiv-sgd--k-1--eta-0.01--l2-0.0--b-32-500e--momentum-0.0 ,Train Acc, 0.9744 ,Val Acc, 0.8540 ,Test Acc, 0.7562
+/data0/clean/results/ogbg-molhiv/gcnogbg-molhiv-adam--k-1--eta-0.0003--l2-0.0--b-32-500e--momentum-0.9 ,Train Acc, 0.9882 ,Val Acc, 0.8728 ,Test Acc, 0.7166
+/data0/clean/results/ogbg-molhiv/gcnogbg-molhiv-sgd--k-1--eta-0.01--l2-1e-05--b-32-500e--momentum-0.0 ,Train Acc, 0.9782 ,Val Acc, 0.8277 ,Test Acc, 0.7158
+/data0/clean/results/ogbg-molhiv/gcnogbg-molhiv-alig2--k-1--eta-0.0001--l2-None--b-32-500e--momentum-0.9 ,Train Acc, 0.9496 ,Val Acc, 0.8154 ,Test Acc, 0.7755
+/data0/clean/results/ogbg-molhiv/gcnogbg-molhiv-sgd--k-1--eta-0.01--l2-0.0001--b-32-500e--momentum-0.0 ,Train Acc, 0.9813 ,Val Acc, 0.8470 ,Test Acc, 0.7608
+/data0/clean/results/ogbg-molhiv/gcnogbg-molhiv-adam--k-1--eta-0.0003--l2-1e-05--b-32-500e--momentum-0.9 ,Train Acc, 0.9440 ,Val Acc, 0.8469 ,Test Acc, 0.7699
+/data0/clean/results/ogbg-molhiv/gcnogbg-molhiv-sgd--k-1--eta-0.01--l2-0.001--b-32-500e--momentum-0.0 ,Train Acc, 0.9433 ,Val Acc, 0.8383 ,Test Acc, 0.7688
+/data0/clean/results/ogbg-molhiv/gcnogbg-molhiv-adam--k-1--eta-0.0003--l2-0.0001--b-32-500e--momentum-0.9 ,Train Acc, 0.8766 ,Val Acc, 0.8402 ,Test Acc, 0.7384
+/data0/clean/results/ogbg-molhiv/gcnogbg-molhiv-adam--k-1--eta-0.0003--l2-0.001--b-32-500e--momentum-0.9 ,Train Acc, 0.7646 ,Val Acc, 0.7902 ,Test Acc, 0.7150
+dataset,ogbg-molhiv,model,gcn,opt,adam,bs,32,eta,0.0003,wd,0.0,max_norm,None,tr_acc,0.66,val_acc,0.70,te_acc,0.69,name,/data0/clean/results/ogbg-molhiv/gcnogbg-molhiv-adam--k-1--eta-0.0003--l2-0.0--b-32-test--momentum-0.9
+dataset,ogbg-molhiv,model,gcn,opt,sgd,bs,32,eta,0.01,wd,0.0,max_norm,None,tr_acc,0.99,val_acc,0.83,te_acc,0.74,name,/data0/clean/results/ogbg-molhiv/gcnogbg-molhiv-sgd--k-1--eta-0.01--l2-0.0--b-32-run1--momentum-0.9
+dataset,ogbg-molhiv,model,gcn,opt,sgd,bs,32,eta,0.01,wd,0.0,max_norm,None,tr_acc,0.99,val_acc,0.84,te_acc,0.79,name,/data0/clean/results/ogbg-molhiv/gcnogbg-molhiv-sgd--k-1--eta-0.01--l2-0.0--b-32-run2--momentum-0.9
+dataset,ogbg-molhiv,model,gcn,opt,alig2,bs,32,eta,0.001,wd,0.0001,max_norm,None,tr_acc,0.99,val_acc,0.84,te_acc,0.76,name,/data0/clean/results/ogbg-molhiv/gcnogbg-molhiv-alig2--k-1--eta-0.001--l2-None--b-32-run1--momentum-0.9

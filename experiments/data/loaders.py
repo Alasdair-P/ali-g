@@ -3,6 +3,7 @@ import os
 import torch.utils.data as data
 import torchvision.datasets as datasets
 import torchvision.transforms as transforms
+import numpy as np
 from .balancedsampler import BalancedBatchSampler
 from .transforms import RandomHorizontalFlipIndex, RandomCropIndex, ToTensorIndex, NormalizeCifar, FormatTransDict, CreateTransDict, HorizontalFlipIndex, CropIndex
 from torch_geometric.data import DataLoader
@@ -284,8 +285,8 @@ def loaders_mol(dataset, batch_size, cuda,
 
     return train_idxed_loader, val_loader, test_loader
 
-def loders_code(dataset, batch_size, cuda,
-                n_classes, eq_class, feature, train_size=32901, augment=False,
+def loaders_code(dataset, batch_size, cuda,
+                n_classes, eq_class, feature, max_seq_len, train_size=32901, augment=False,
                 val_size=4113, test_size=4113, **kwargs):
 
     assert 'code' in dataset
@@ -294,21 +295,22 @@ def loders_code(dataset, batch_size, cuda,
     dataset = PygGraphPropPredDataset(name = dataset, root = root_)
 
     seq_len_list = np.array([len(seq) for seq in dataset.data.y])
-    print('Target seqence less or equal to {} is {}%.'.format(args.max_seq_len, np.sum(seq_len_list <= args.max_seq_len) / len(seq_len_list)))
+    print('Target seqence less or equal to {} is {}%.'.format(max_seq_len, np.sum(seq_len_list <= max_seq_len) / len(seq_len_list)))
 
     split_idx = dataset.get_idx_split()
 
-    vocab2idx, idx2vocab = get_vocab_mapping([dataset.data.y[i] for i in split_idx['train']], args.num_vocab)
+    vocab2idx, idx2vocab = get_vocab_mapping([dataset.data.y[i] for i in split_idx['train']], num_vocab)
 
     # encode_y_to_arr: add y_arr to PyG data object, indicating the array representation of a sequence.
-    dataset.transform = transforms.Compose([augment_edge, lambda data: encode_y_to_arr(data, vocab2idx, args.max_seq_len)])
+    dataset.transform = transforms.Compose([augment_edge, lambda data: encode_y_to_arr(data, vocab2idx, max_seq_len)])
 
     ### automatic evaluator. takes dataset name as input
     evaluator = Evaluator(args.dataset)
 
-    train_loader = DataLoader(dataset[split_idx["train"]], batch_size=args.batch_size, shuffle=True, num_workers = args.num_workers)
-    valid_loader = DataLoader(dataset[split_idx["valid"]], batch_size=args.batch_size, shuffle=False, num_workers = args.num_workers)
-    test_loader = DataLoader(dataset[split_idx["test"]], batch_size=args.batch_size, shuffle=False, num_workers = args.num_workers)
+    train_loader = DataLoader(dataset[split_idx["train"]], batch_size=batch_size, shuffle=True, num_workers = args.num_workers)
+    valid_loader = DataLoader(dataset[split_idx["valid"]], batch_size=batch_size, shuffle=False, num_workers = args.num_workers)
+    test_loader = DataLoader(dataset[split_idx["test"]], batch_size=batch_size, shuffle=False, num_workers = args.num_workers)
+
     print('train',len(dataset[split_idx["train"]]) )
     print('valid',len(dataset[split_idx["valid"]]) )
     print('test',len(dataset[split_idx["test"]]) )

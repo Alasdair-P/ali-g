@@ -2,14 +2,13 @@ import torch
 from torch_geometric.nn import MessagePassing
 import torch.nn.functional as F
 from torch_geometric.nn import global_mean_pool, global_add_pool
-from ogb.graphproppred.mol_encoder import AtomEncoder,BondEncoder
 from torch_geometric.utils import degree
 
 import math
 
 ### GIN convolution along the graph structure
 class GINConv(MessagePassing):
-    def __init__(self, emb_dim, bond_encoder):
+    def __init__(self, emb_dim):
         '''
             emb_dim (int): node embedding dimensionality
         '''
@@ -19,10 +18,8 @@ class GINConv(MessagePassing):
         self.mlp = torch.nn.Sequential(torch.nn.Linear(emb_dim, 2*emb_dim), torch.nn.BatchNorm1d(2*emb_dim), torch.nn.ReLU(), torch.nn.Linear(2*emb_dim, emb_dim))
         self.eps = torch.nn.Parameter(torch.Tensor([0]))
         
-        if bond_encoder:
-            self.edge_encoder = BondEncoder(emb_dim = emb_dim)
-        else:
-            self.edge_encoder = torch.nn.Linear(2, emb_dim)
+        # edge_attr is two dimensional after augment_edge transformation
+        self.edge_encoder = torch.nn.Linear(2, emb_dim)
 
     def forward(self, x, edge_index, edge_attr):
         edge_embedding = self.edge_encoder(edge_attr)    
@@ -38,19 +35,18 @@ class GINConv(MessagePassing):
 
 ### GCN convolution along the graph structure
 class GCNConv(MessagePassing):
-    def __init__(self, emb_dim, bond_encoder):
+    def __init__(self, emb_dim):
         super(GCNConv, self).__init__(aggr='add')
 
         self.linear = torch.nn.Linear(emb_dim, emb_dim)
         self.root_emb = torch.nn.Embedding(1, emb_dim)
-        if bond_encoder:
-            self.edge_encoder = BondEncoder(emb_dim = emb_dim)
-        else:
-            self.edge_encoder = torch.nn.Linear(2, emb_dim)
+
+        # edge_attr is two dimensional after augment_edge transformation
+        self.edge_encoder = torch.nn.Linear(2, emb_dim)
 
     def forward(self, x, edge_index, edge_attr):
         x = self.linear(x)
-        edge_embedding = self.bond_encoder(edge_attr)
+        edge_embedding = self.edge_encoder(edge_attr)
 
         row, col = edge_index
 
@@ -70,13 +66,14 @@ class GCNConv(MessagePassing):
         return aggr_out
 
 
+
 ### GNN to generate node embedding
 class GNN_node(torch.nn.Module):
     """
     Output:
         node representations
     """
-    def __init__(self, num_layer, emb_dim, drop_ratio = 0.5, JK = "last", residual = False, gnn_type = 'gin'):
+    def __init__(self, num_layer, emb_dim, node_encoder, drop_ratio = 0.5, JK = "last", residual = False, gnn_type = 'gin'):
         '''
             emb_dim (int): node embedding dimensionality
             num_layer (int): number of GNN message passing layers
@@ -93,7 +90,7 @@ class GNN_node(torch.nn.Module):
         if self.num_layer < 2:
             raise ValueError("Number of GNN layers must be greater than 1.")
 
-        self.atom_encoder = AtomEncoder(emb_dim)
+        self.node_encoder = node_encoder
 
         ###List of GNNs
         self.convs = torch.nn.ModuleList()
@@ -110,11 +107,12 @@ class GNN_node(torch.nn.Module):
             self.batch_norms.append(torch.nn.BatchNorm1d(emb_dim))
 
     def forward(self, batched_data):
-        x, edge_index, edge_attr, batch = batched_data.x, batched_data.edge_index, batched_data.edge_attr, batched_data.batch
+        x, edge_index, edge_attr, node_depth, batch = batched_data.x, batched_data.edge_index, batched_data.edge_attr, batched_data.node_depth, batched_data.batch
+
 
         ### computing input node embedding
 
-        h_list = [self.atom_encoder(x)]
+        h_list = [self.node_encoder(x, node_depth.view(-1,))]
         for layer in range(self.num_layer):
 
             h = self.convs[layer](h_list[layer], edge_index, edge_attr)
@@ -148,7 +146,7 @@ class GNN_node_Virtualnode(torch.nn.Module):
     Output:
         node representations
     """
-    def __init__(self, num_layer, emb_dim, drop_ratio = 0.5, JK = "last", residual = False, gnn_type = 'gin'):
+    def __init__(self, num_layer, emb_dim, node_encoder, drop_ratio = 0.5, JK = "last", residual = False, gnn_type = 'gin'):
         '''
             emb_dim (int): node embedding dimensionality
         '''
@@ -163,7 +161,7 @@ class GNN_node_Virtualnode(torch.nn.Module):
         if self.num_layer < 2:
             raise ValueError("Number of GNN layers must be greater than 1.")
 
-        self.atom_encoder = AtomEncoder(emb_dim)
+        self.node_encoder = node_encoder
 
         ### set the initial virtual node embedding to 0.
         self.virtualnode_embedding = torch.nn.Embedding(1, emb_dim)
@@ -194,12 +192,12 @@ class GNN_node_Virtualnode(torch.nn.Module):
 
     def forward(self, batched_data):
 
-        x, edge_index, edge_attr, batch = batched_data.x, batched_data.edge_index, batched_data.edge_attr, batched_data.batch
+        x, edge_index, edge_attr, node_depth, batch = batched_data.x, batched_data.edge_index, batched_data.edge_attr, batched_data.node_depth, batched_data.batch
 
         ### virtual node embeddings for graphs
         virtualnode_embedding = self.virtualnode_embedding(torch.zeros(batch[-1].item() + 1).to(edge_index.dtype).to(edge_index.device))
 
-        h_list = [self.atom_encoder(x)]
+        h_list = [self.node_encoder(x, node_depth.view(-1,))]
         for layer in range(self.num_layer):
             ### add message from virtual nodes to graph nodes
             h_list[layer] = h_list[layer] + virtualnode_embedding[batch]

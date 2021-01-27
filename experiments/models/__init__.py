@@ -1,19 +1,25 @@
 import os
 import torch
 import torchvision.models as th_models
+import pandas as pd
 
 from .densenet import DenseNet3
 from .wide_resnet import WideResNet
 from .mlp import MLP
 from collections import OrderedDict
-from .gnn import GNN
+from .gnn_mol import GNN
+from .gnn_code import GNN_CODE
 from ogb.graphproppred import PygGraphPropPredDataset
 
 
 def get_model(args):
     # device = torch.device("cuda:0" if torch.cuda.is_available() else "cpu")
-    if 'mol' in args.dataset:
+    if 'mol' in args.dataset or 'code' in args.dataset:
         dataset = PygGraphPropPredDataset(name = args.dataset)
+        virtual_node = True if 'virtual' in args.model else False
+        gnn_type = 'gin' if 'gin' in args.model else 'gcn'
+        root = '{}/{}'.format(os.environ['GRAPH_DATA'], args.dataset)
+
     if args.model == "dn":
         model = DenseNet3(args.depth, args.n_classes, args.growth,
                           bottleneck=bool(args.bottleneck), dropRate=args.dropout)
@@ -24,26 +30,15 @@ def get_model(args):
     elif args.dataset == 'imagenet':
         model = th_models.__dict__[args.model](pretrained=False)
         model = torch.nn.DataParallel(model, device_ids=[0,1,2,3])
-    elif args.model == 'gin':
-        model = GNN(gnn_type = 'gin', num_tasks = dataset.num_tasks, num_layer = args.depth, emb_dim = args.width, drop_ratio = args.dropout, virtual_node = False)
-    elif args.model == 'gin-virtual':
-        model = GNN(gnn_type = 'gin', num_tasks = dataset.num_tasks, num_layer = args.depth, emb_dim = args.width, drop_ratio = args.dropout, virtual_node = True)
-    elif args.model == 'gcn':
-        model = GNN(gnn_type = 'gcn', num_tasks = dataset.num_tasks, num_layer = args.depth, emb_dim = args.width, drop_ratio = args.dropout, virtual_node = False)
-    elif args.model == 'gcn-virtual':
-        model = GNN(gnn_type = 'gcn', num_tasks = dataset.num_tasks, num_layer = args.depth, emb_dim = args.width, drop_ratio = args.dropout, virtual_node = True)
+    elif 'mol' in args.dataset:
+        model = GNN(gnn_type = gnn_type, num_tasks = dataset.num_tasks, num_layer = args.depth, emb_dim = args.width, drop_ratio = args.dropout, virtual_node = virtual_node)
+    elif 'code' in args.dataset:
+        nodetypes_mapping = pd.read_csv(os.path.join(root, 'mapping', 'typeidx2type.csv.gz'))
+        nodeattributes_mapping = pd.read_csv(os.path.join(root, 'mapping', 'attridx2attr.csv.gz'))
+        node_encoder = ASTNodeEncoder(args.width, num_nodetypes = len(nodetypes_mapping['type']), num_nodeattributes = len(nodeattributes_mapping['attr']), max_depth = 20)
+        model = GNN_CODE(num_vocab = len(vocab2idx), max_seq_len = args.max_seq_len, node_encoder = node_encoder, num_layer = args.depth, gnn_type = gnn_type, emb_dim = args.width, drop_ratio = args.dropout, virtual_node = virtual_node)
     else:
         raise NotImplementedError
-    """
-    elif args.model == 'gin':
-        model = GNN(gnn_type = 'gin', num_tasks = dataset.num_tasks, num_layer = args.depth, emb_dim = args.width, drop_ratio = args.dropout, virtual_node = False).to(device)
-    elif args.model == 'gin-virtual':
-        model = GNN(gnn_type = 'gin', num_tasks = dataset.num_tasks, num_layer = args.depth, emb_dim = args.width, drop_ratio = args.dropout, virtual_node = True).to(device)
-    elif args.model == 'gcn':
-        model = GNN(gnn_type = 'gcn', num_tasks = dataset.num_tasks, num_layer = args.depth, emb_dim = args.width, drop_ratio = args.dropout, virtual_node = False).to(device)
-    elif args.model == 'gcn-virtual':
-        model = GNN(gnn_type = 'gcn', num_tasks = dataset.num_tasks, num_layer = args.depth, emb_dim = args.width, drop_ratio = args.dropout, virtual_node = True).to(device)
-    """
 
     if args.load_model:
         state = torch.load(args.load_model)['model']

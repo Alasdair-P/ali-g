@@ -1,0 +1,3 @@
+- {model: gcn, dataset: ogbg-molhiv, batch_size: 32, opt: alig2, eta: 0.01,  max_norm: 75, momentum: 0.9, t: 200}
+- {model: gcn, dataset: ogbg-molhiv, batch_size: 32, opt: alig2, eta: 0.001, max_norm: 75, momentum: 0.9, t: 200}
+- {model: gcn, dataset: ogbg-molhiv, batch_size: 32, opt: alig2, eta: 0.1,   max_norm: 50, momentum: 0.9, t: 200}

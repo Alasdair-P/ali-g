@@ -1,12 +1,75 @@
-- {model: gcn, dataset: ogbg-molhiv, batch_size: 32, opt: sgd, eta: 0.01, weight_decay: 0.0, momentum: 0.9}
-- {model: gcn, dataset: ogbg-molhiv, batch_size: 32, opt: sgd, eta: 0.01, weight_decay: 1e-5, momentum: 0.9}
-- {model: gcn, dataset: ogbg-molhiv, batch_size: 32, opt: sgd, eta: 0.01, weight_decay: 1e-4, momentum: 0.9}
-- {model: gcn, dataset: ogbg-molhiv, batch_size: 32, opt: sgd, eta: 0.01, weight_decay: 1e-3, momentum: 0.9}
-- {model: gcn, dataset: ogbg-molhiv, batch_size: 32, opt: sgd, eta: 0.001, weight_decay: 0.0, momentum: 0.9}
-- {model: gcn, dataset: ogbg-molhiv, batch_size: 32, opt: sgd, eta: 0.001, weight_decay: 1e-5, momentum: 0.9}
-- {model: gcn, dataset: ogbg-molhiv, batch_size: 32, opt: sgd, eta: 0.001, weight_decay: 1e-4, momentum: 0.9}
-- {model: gcn, dataset: ogbg-molhiv, batch_size: 32, opt: sgd, eta: 0.001, weight_decay: 1e-3, momentum: 0.9}
-- {model: gcn, dataset: ogbg-molhiv, batch_size: 32, opt: sgd, eta: 0.01, weight_decay: 0.0, momentum: 0.0}
-- {model: gcn, dataset: ogbg-molhiv, batch_size: 32, opt: sgd, eta: 0.01, weight_decay: 1e-5, momentum: 0.0}
-- {model: gcn, dataset: ogbg-molhiv, batch_size: 32, opt: sgd, eta: 0.01, weight_decay: 1e-4, momentum: 0.0}
-- {model: gcn, dataset: ogbg-molhiv, batch_size: 32, opt: sgd, eta: 0.01, weight_decay: 1e-3, momentum: 0.0}
+#- {model: gcn, dataset: ogbg-molhiv, batch_size: 32, opt: sgd, eta: 0.01, weight_decay: 0.0, momentum: 0.9, tag: run1}
+#- {model: gcn, dataset: ogbg-molhiv, batch_size: 32, opt: sgd, eta: 0.01, weight_decay: 1e-5, momentum: 0.9, tag: run1}
+#- {model: gcn, dataset: ogbg-molhiv, batch_size: 32, opt: sgd, eta: 0.01, weight_decay: 1e-4, momentum: 0.9, tag: run1}
+#- {model: gcn, dataset: ogbg-molhiv, batch_size: 32, opt: sgd, eta: 0.01, weight_decay: 1e-3, momentum: 0.9, tag: run1}
+#- {model: gcn, dataset: ogbg-molhiv, batch_size: 32, opt: sgd, eta: 0.001, weight_decay: 0.0, momentum: 0.9, tag: run1}
+#- {model: gcn, dataset: ogbg-molhiv, batch_size: 32, opt: sgd, eta: 0.001, weight_decay: 1e-5, momentum: 0.9, tag: run1}
+#- {model: gcn, dataset: ogbg-molhiv, batch_size: 32, opt: sgd, eta: 0.001, weight_decay: 1e-4, momentum: 0.9, tag: run1}
+#- {model: gcn, dataset: ogbg-molhiv, batch_size: 32, opt: sgd, eta: 0.001, weight_decay: 1e-3, momentum: 0.9, tag: run1}
+#- {model: gcn, dataset: ogbg-molhiv, batch_size: 32, opt: sgd, eta: 0.0001, weight_decay: 0.0, momentum: 0.9, tag: run1}
+#- {model: gcn, dataset: ogbg-molhiv, batch_size: 32, opt: sgd, eta: 0.0001, weight_decay: 1e-5, momentum: 0.9, tag: run1}
+#- {model: gcn, dataset: ogbg-molhiv, batch_size: 32, opt: sgd, eta: 0.0001, weight_decay: 1e-4, momentum: 0.9, tag: run1}
+#- {model: gcn, dataset: ogbg-molhiv, batch_size: 32, opt: sgd, eta: 0.0001, weight_decay: 1e-3, momentum: 0.9, tag: run1}
+#- {model: gcn, dataset: ogbg-molhiv, batch_size: 32, opt: alig2, eta: 0.01, weight_decay: 0.0, momentum: 0.9, t: 200, tag: run1}
+#- {model: gcn, dataset: ogbg-molhiv, batch_size: 32, opt: alig2, eta: 0.01, weight_decay: 1e-5, momentum: 0.9, t: 200, tag: run1}
+#- {model: gcn, dataset: ogbg-molhiv, batch_size: 32, opt: alig2, eta: 0.01, weight_decay: 1e-4, momentum: 0.9, t: 200, tag: run1}
+#- {model: gcn, dataset: ogbg-molhiv, batch_size: 32, opt: alig2, eta: 0.01, weight_decay: 1e-3, momentum: 0.9, t: 200, tag: run1}
+#- {model: gcn, dataset: ogbg-molhiv, batch_size: 32, opt: alig2, eta: 0.001, weight_decay: 0.0, momentum: 0.9, t: 200, tag: run1}
+#- {model: gcn, dataset: ogbg-molhiv, batch_size: 32, opt: alig2, eta: 0.001, weight_decay: 1e-5, momentum: 0.9, t: 200, tag: run1}
+
+#- {model: gcn, dataset: ogbg-molhiv, batch_size: 32, opt: alig2, eta: 0.001, weight_decay: 1e-4, momentum: 0.9, t: 200, tag: run1}
+#- {model: gcn, dataset: ogbg-molhiv, batch_size: 32, opt: alig2, eta: 0.001, weight_decay: 1e-3, momentum: 0.9, t: 200, tag: run1}
+#- {model: gcn, dataset: ogbg-molhiv, batch_size: 32, opt: alig2, eta: 0.1, weight_decay: 0.0, momentum: 0.9, t: 200, tag: run1}
+#- {model: gcn, dataset: ogbg-molhiv, batch_size: 32, opt: alig2, eta: 0.1, weight_decay: 1e-5, momentum: 0.9, t: 200, tag: run1}
+#- {model: gcn, dataset: ogbg-molhiv, batch_size: 32, opt: alig2, eta: 0.1, weight_decay: 1e-4, momentum: 0.9, t: 200, tag: run1}
+#- {model: gcn, dataset: ogbg-molhiv, batch_size: 32, opt: alig2, eta: 0.1, weight_decay: 1e-3, momentum: 0.9, t: 200, tag: run1}
+#- {model: gcn, dataset: ogbg-molhiv, batch_size: 32, opt: adam, eta: 0.00001, weight_decay: 0.0, tag: run1}
+#- {model: gcn, dataset: ogbg-molhiv, batch_size: 32, opt: adam, eta: 0.00001, weight_decay: 1e-5, tag: run1}
+#- {model: gcn, dataset: ogbg-molhiv, batch_size: 32, opt: adam, eta: 0.00001, weight_decay: 1e-4, tag: run1}
+#- {model: gcn, dataset: ogbg-molhiv, batch_size: 32, opt: adam, eta: 0.00001, weight_decay: 1e-3, tag: run1}
+#- {model: gcn, dataset: ogbg-molhiv, batch_size: 32, opt: adam, eta: 0.001, weight_decay: 0.0, tag: run1}
+#- {model: gcn, dataset: ogbg-molhiv, batch_size: 32, opt: adam, eta: 0.001, weight_decay: 1e-5, tag: run1}
+#- {model: gcn, dataset: ogbg-molhiv, batch_size: 32, opt: adam, eta: 0.001, weight_decay: 1e-4, tag: run1}
+#- {model: gcn, dataset: ogbg-molhiv, batch_size: 32, opt: adam, eta: 0.001, weight_decay: 1e-3, tag: run1}
+#- {model: gcn, dataset: ogbg-molhiv, batch_size: 32, opt: adam, eta: 0.0001, weight_decay: 0.0, tag: run1}
+#- {model: gcn, dataset: ogbg-molhiv, batch_size: 32, opt: adam, eta: 0.0001, weight_decay: 1e-5, tag: run1}
+#- {model: gcn, dataset: ogbg-molhiv, batch_size: 32, opt: adam, eta: 0.0001, weight_decay: 1e-4, tag: run1}
+#- {model: gcn, dataset: ogbg-molhiv, batch_size: 32, opt: adam, eta: 0.0001, weight_decay: 1e-3, tag: run1}
+
+#- {model: gcn, dataset: ogbg-molhiv, batch_size: 32, opt: sgd, eta: 0.01, weight_decay: 0.0, momentum: 0.9, tag: run2}
+#- {model: gcn, dataset: ogbg-molhiv, batch_size: 32, opt: sgd, eta: 0.01, weight_decay: 1e-5, momentum: 0.9, tag: run2}
+#- {model: gcn, dataset: ogbg-molhiv, batch_size: 32, opt: sgd, eta: 0.01, weight_decay: 1e-4, momentum: 0.9, tag: run2}
+#- {model: gcn, dataset: ogbg-molhiv, batch_size: 32, opt: sgd, eta: 0.01, weight_decay: 1e-3, momentum: 0.9, tag: run2}
+#- {model: gcn, dataset: ogbg-molhiv, batch_size: 32, opt: sgd, eta: 0.001, weight_decay: 0.0, momentum: 0.9, tag: run2}
+#- {model: gcn, dataset: ogbg-molhiv, batch_size: 32, opt: sgd, eta: 0.001, weight_decay: 1e-5, momentum: 0.9, tag: run2}
+#- {model: gcn, dataset: ogbg-molhiv, batch_size: 32, opt: sgd, eta: 0.001, weight_decay: 1e-4, momentum: 0.9, tag: run2}
+#- {model: gcn, dataset: ogbg-molhiv, batch_size: 32, opt: sgd, eta: 0.001, weight_decay: 1e-3, momentum: 0.9, tag: run2}
+#- {model: gcn, dataset: ogbg-molhiv, batch_size: 32, opt: sgd, eta: 0.0001, weight_decay: 0.0, momentum: 0.9, tag: run2}
+#- {model: gcn, dataset: ogbg-molhiv, batch_size: 32, opt: sgd, eta: 0.0001, weight_decay: 1e-5, momentum: 0.9, tag: run2}
+#- {model: gcn, dataset: ogbg-molhiv, batch_size: 32, opt: sgd, eta: 0.0001, weight_decay: 1e-4, momentum: 0.9, tag: run2}
+#- {model: gcn, dataset: ogbg-molhiv, batch_size: 32, opt: sgd, eta: 0.0001, weight_decay: 1e-3, momentum: 0.9, tag: run2}
+#- {model: gcn, dataset: ogbg-molhiv, batch_size: 32, opt: alig2, eta: 0.01, weight_decay: 0.0, momentum: 0.9, t: 200, tag: run2}
+#- {model: gcn, dataset: ogbg-molhiv, batch_size: 32, opt: alig2, eta: 0.01, weight_decay: 1e-5, momentum: 0.9, t: 200, tag: run2}
+#- {model: gcn, dataset: ogbg-molhiv, batch_size: 32, opt: alig2, eta: 0.01, weight_decay: 1e-4, momentum: 0.9, t: 200, tag: run2}
+#- {model: gcn, dataset: ogbg-molhiv, batch_size: 32, opt: alig2, eta: 0.01, weight_decay: 1e-3, momentum: 0.9, t: 200, tag: run2}
+#- {model: gcn, dataset: ogbg-molhiv, batch_size: 32, opt: alig2, eta: 0.001, weight_decay: 0.0, momentum: 0.9, t: 200, tag: run2}
+#- {model: gcn, dataset: ogbg-molhiv, batch_size: 32, opt: alig2, eta: 0.001, weight_decay: 1e-5, momentum: 0.9, t: 200, tag: run2}
+
+- {model: gcn, dataset: ogbg-molhiv, batch_size: 32, opt: alig2, eta: 0.001, weight_decay: 1e-4, momentum: 0.9, t: 200, tag: run2}
+- {model: gcn, dataset: ogbg-molhiv, batch_size: 32, opt: alig2, eta: 0.001, weight_decay: 1e-3, momentum: 0.9, t: 200, tag: run2}
+- {model: gcn, dataset: ogbg-molhiv, batch_size: 32, opt: alig2, eta: 0.1, weight_decay: 0.0, momentum: 0.9, t: 200, tag: run2}
+- {model: gcn, dataset: ogbg-molhiv, batch_size: 32, opt: alig2, eta: 0.1, weight_decay: 1e-5, momentum: 0.9, t: 200, tag: run2}
+- {model: gcn, dataset: ogbg-molhiv, batch_size: 32, opt: alig2, eta: 0.1, weight_decay: 1e-4, momentum: 0.9, t: 200, tag: run2}
+- {model: gcn, dataset: ogbg-molhiv, batch_size: 32, opt: alig2, eta: 0.1, weight_decay: 1e-3, momentum: 0.9, t: 200, tag: run2}
+- {model: gcn, dataset: ogbg-molhiv, batch_size: 32, opt: adam, eta: 0.00001, weight_decay: 0.0, tag: run2}
+- {model: gcn, dataset: ogbg-molhiv, batch_size: 32, opt: adam, eta: 0.00001, weight_decay: 1e-5, tag: run2}
+- {model: gcn, dataset: ogbg-molhiv, batch_size: 32, opt: adam, eta: 0.00001, weight_decay: 1e-4, tag: run2}
+- {model: gcn, dataset: ogbg-molhiv, batch_size: 32, opt: adam, eta: 0.00001, weight_decay: 1e-3, tag: run2}
+- {model: gcn, dataset: ogbg-molhiv, batch_size: 32, opt: adam, eta: 0.001, weight_decay: 0.0, tag: run2}
+- {model: gcn, dataset: ogbg-molhiv, batch_size: 32, opt: adam, eta: 0.001, weight_decay: 1e-5, tag: run2}
+- {model: gcn, dataset: ogbg-molhiv, batch_size: 32, opt: adam, eta: 0.001, weight_decay: 1e-4, tag: run2}
+- {model: gcn, dataset: ogbg-molhiv, batch_size: 32, opt: adam, eta: 0.001, weight_decay: 1e-3, tag: run2}
+- {model: gcn, dataset: ogbg-molhiv, batch_size: 32, opt: adam, eta: 0.0001, weight_decay: 0.0, tag: run2}
+- {model: gcn, dataset: ogbg-molhiv, batch_size: 32, opt: adam, eta: 0.0001, weight_decay: 1e-5, tag: run2}
+- {model: gcn, dataset: ogbg-molhiv, batch_size: 32, opt: adam, eta: 0.0001, weight_decay: 1e-4, tag: run2}
+- {model: gcn, dataset: ogbg-molhiv, batch_size: 32, opt: adam, eta: 0.0001, weight_decay: 1e-3, tag: run2}

@@ -128,19 +128,23 @@ def setup_xp(args, model, optimizer):
 
 def write_results(args, xp):
     if args.jade:
-        with open('jade_results.txt', 'a') as results:
-            results.write('{xp_name} ,Train Acc, {tracc:.2f} ,Val Acc, {vacc:.2f} ,Test Acc, {teacc:.2f}\n'
-                    .format(xp_name=args.xp_name,
-                            tracc=xp.train.acc.value,
-                            vacc=xp.max_val.value,
-                            teacc=xp.test.acc.value))
+        file_name = 'jade_results.txt'
     else:
-        with open('results.txt', 'a') as results:
-            results.write('{xp_name} ,Train Acc, {tracc:.4f} ,Val Acc, {vacc:.4f} ,Test Acc, {teacc:.4f}\n'
-                    .format(xp_name=args.xp_name,
+        file_name = 'results.txt'
+        with open(file_name, 'a') as results:
+            results.write('dataset,{ds},model,{model},opt,{opt},bs,{bs},eta,{eta},wd,{wd},max_norm,{mn},tr_acc,{tracc:.2f},val_acc,{vacc:.2f},te_acc,{teacc:.2f},name,{xp_name}\n'
+                    .format(ds=args.dataset,
+                            model=args.model,
+                            opt=args.opt,
+                            bs=args.batch_size,
+                            eta=args.eta,
+                            wd=args.weight_decay,
+                            mn=args.max_norm,
                             tracc=xp.train.acc.value,
                             vacc=xp.max_val.value,
-                            teacc=xp.test.acc.value))
+                            teacc=xp.test.acc.value,
+                            xp_name=args.xp_name))
+
 
 @torch.autograd.no_grad()
 def accuracy(out, targets, topk=1):
