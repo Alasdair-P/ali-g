@@ -25,12 +25,15 @@ def train_graph(model, loss, optimizer, evaluator, dataset, loader, args, xp):
             pass
         else:
             pred = model(batch)
+            # print('pred', pred.size())
             optimizer.zero_grad()
             ## ignore nan targets (unlabeled) when computing training loss.
             is_labeled = batch.y == batch.y
             losses = loss(pred.to(torch.float32)[is_labeled], batch.y.to(torch.float32)[is_labeled])
 
             if args.opt == 'alig2':
+                print('losses', losses.size(), 'idx', idx.size(), 'fhat', optimizer.fhat[idx].size(), 'pred', pred.size())
+                input('press any key')
                 clipped_losses = torch.max(losses, optimizer.fhat[idx])
                 losses = clipped_losses
 

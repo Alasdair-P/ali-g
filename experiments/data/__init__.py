@@ -27,5 +27,6 @@ def get_data_loaders(args):
     args.train_size = len(loader_train.dataset)
     args.val_size = len(loader_val.dataset)
     args.test_size = len(loader_test.dataset)
+    print('train size: ', args.train_size,'val size: ', args.val_size, 'test size: ', args.test_size)
 
     return loader_train, loader_val, loader_test
