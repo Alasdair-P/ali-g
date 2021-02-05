@@ -12,9 +12,9 @@ def get_loss(args):
     if "mol" in args.dataset:
         dataset = PygGraphPropPredDataset(name = args.dataset)
         if "classification" in dataset.task_type:
-            args.loss = 'mse'
-        else:
             args.loss = 'bce'
+        else:
+            args.loss = 'mse'
 
 
     if args.opt == 'dfw' or args.loss == 'svm':

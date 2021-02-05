@@ -9,7 +9,7 @@ def create_jobs():
     dn_opts = " --depth 40 --growth 40 --epochs 300"
     gcn_opts = " --depth 5 --width 300 --epochs 500"
 
-    with open("reproduce/hparams/test.yaml", "r") as f:
+    with open("reproduce/hparams/mol.yaml", "r") as f:
         hparams = yaml.safe_load(f)
 
     jobs = []
