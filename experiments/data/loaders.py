@@ -274,14 +274,29 @@ def loaders_mol(dataset, batch_size, cuda,
     split_idx = dataset.get_idx_split()
 
     train_idxed_loader = DataLoader(IndexedDataset(dataset[split_idx["train"]]), batch_size=batch_size, shuffle=True, num_workers = 2)
-    # train_loader = DataLoader(dataset[split_idx["train"]], batch_size=batch_size, shuffle=True, num_workers = 2)
     val_loader = DataLoader(dataset[split_idx["valid"]], batch_size=batch_size, shuffle=False, num_workers = 2)
     test_loader = DataLoader(dataset[split_idx["test"]], batch_size=batch_size, shuffle=False, num_workers = 2)
+
+    """
+    train_loader = DataLoader(dataset[split_idx["train"]], batch_size=batch_size, shuffle=True, num_workers = 2)
+    print('train',len(dataset[split_idx["train"]]) )
+    print('valid',len(dataset[split_idx["valid"]]) )
+    print('test',len(dataset[split_idx["test"]]) )
+    input('press any key')
+    """
+
+    # train_loader = DataLoader(dataset[split_idx["train"]], batch_size=batch_size, shuffle=True, num_workers = 2)
     # args.train_size = len(dataset[split_idx["train"]])
     train_idxed_loader.tag = 'train'
     # train_loader.tag = 'train'
     val_loader.tag = 'val'
     test_loader.tag = 'test'
+
+    """
+    train 350343
+    valid 43793
+    test 43793
+    """
 
     return train_idxed_loader, val_loader, test_loader
 
@@ -315,6 +330,7 @@ def loaders_code(dataset, batch_size, cuda,
     print('valid',len(dataset[split_idx["valid"]]) )
     print('test',len(dataset[split_idx["test"]]) )
     input('press any key')
+
 
     nodetypes_mapping = pd.read_csv(os.path.join(dataset.root, 'mapping', 'typeidx2type.csv.gz'))
     nodeattributes_mapping = pd.read_csv(os.path.join(dataset.root, 'mapping', 'attridx2attr.csv.gz'))

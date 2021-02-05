@@ -1,1 +1,2 @@
-- {model: gcn, dataset: ogbg-molhiv, batch_size: 32, opt: sgd, eta: 0.01, max_norm: 50, momentum: 0.9}
+#- {model: gcn, dataset: ogbg-molpcba, batch_size: 512, opt: alig2, eta: 1.0, momentum: 0.9, tag: 500e200t, t: 200}
+- {model: gcn, dataset: ogbg-molpcba, batch_size: 512, opt: sgd, eta: 1.0, momentum: 0.9, tag: 500e_loss}

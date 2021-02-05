@@ -11,11 +11,12 @@ def get_loss(args):
 
     if "mol" in args.dataset:
         dataset = PygGraphPropPredDataset(name = args.dataset)
+        print('task type: ', dataset.task_type)
+        print("classification" in dataset.task_type)
         if "classification" in dataset.task_type:
             args.loss = 'bce'
         else:
             args.loss = 'mse'
-
 
     if args.opt == 'dfw' or args.loss == 'svm':
         loss_fn = MultiClassHingeLoss(reduction=reduction_type)
