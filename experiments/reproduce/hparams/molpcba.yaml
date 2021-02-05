@@ -1,0 +1,8 @@
+- {model: gcn, dataset: ogbg-molpcba, batch_size: 512, opt: sgd, eta: 0.1, weight_decay: 0.0, momentum: 0.9, tag: run1}
+- {model: gcn, dataset: ogbg-molpcba, batch_size: 512, opt: sgd, eta: 0.1, weight_decay: 1e-5, momentum: 0.9, tag: run1}
+- {model: gcn, dataset: ogbg-molpcba, batch_size: 512, opt: sgd, eta: 0.1, weight_decay: 1e-4, momentum: 0.9, tag: run1}
+- {model: gcn, dataset: ogbg-molpcba, batch_size: 512, opt: sgd, eta: 0.1, weight_decay: 1e-3, momentum: 0.9, tag: run1}
+- {model: gcn, dataset: ogbg-molpcba, batch_size: 512, opt: sgd, eta: 1.0, weight_decay: 0.0, momentum: 0.9, tag: run1}
+- {model: gcn, dataset: ogbg-molpcba, batch_size: 512, opt: sgd, eta: 1.0, weight_decay: 1e-5, momentum: 0.9, tag: run1}
+- {model: gcn, dataset: ogbg-molpcba, batch_size: 512, opt: sgd, eta: 1.0, weight_decay: 1e-4, momentum: 0.9, tag: run1}
+- {model: gcn, dataset: ogbg-molpcba, batch_size: 512, opt: sgd, eta: 1.0, weight_decay: 1e-3, momentum: 0.9, tag: run1}
