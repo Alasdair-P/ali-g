@@ -422,3 +422,4 @@
 /jmain01/home/JAD035/pkm01/shared/models/results/cifar100/wrn100-sgd--k-1--eta-10.0--l2-150.0--b-128-sgd_norm_svm--momentum-0.9 ,Train Acc, 1.00 ,Val Acc, 1.30 ,Test Acc, 1.00
 /jmain01/home/JAD035/pkm01/shared/models/results/cifar100/wrn100-sgd--k-1--eta-10.0--l2-100.0--b-128-sgd_norm_svm--momentum-0.9 ,Train Acc, 1.07 ,Val Acc, 1.32 ,Test Acc, 1.00
 /jmain01/home/JAD035/pkm01/shared/models/results/cifar100/wrn100-sgd--k-1--eta-10.0--l2-250.0--b-128-sgd_norm_svm--momentum-0.9 ,Train Acc, 1.01 ,Val Acc, 1.32 ,Test Acc, 1.00
+--------------------------------------------------------------------------------------------------------------------------------------------------------------------
