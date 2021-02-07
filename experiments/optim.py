@@ -11,6 +11,9 @@ from alig.th.projection import l2_projection
 
 def get_optimizer(args, model, loss, parameters):
     parameters = list(parameters)
+    data_size = (args.train_size,)
+    if 'molpcba' in args.dataset:
+        data_size = (args.train_size, 128)
     if args.opt == 'sgd':
         optimizer = torch.optim.SGD(parameters, lr=args.eta, weight_decay=args.weight_decay,
                                     momentum=args.momentum, nesterov=bool(args.momentum))
@@ -33,7 +36,7 @@ def get_optimizer(args, model, loss, parameters):
                          projection_fn=lambda: l2_projection(parameters, args.max_norm))
     elif args.opt == 'alig2':
         optimizer = AliG2(parameters, max_lr=args.eta, momentum=args.momentum,
-                         projection_fn=lambda: l2_projection(parameters, args.max_norm), data_size=args.train_size, transforms_size=args.transforms)
+                         projection_fn=lambda: l2_projection(parameters, args.max_norm), data_size=data_size, transforms_size=args.transforms)
     elif args.opt == 'bpgrad':
         optimizer = BPGrad(parameters, eta=args.eta, momentum=args.momentum, weight_decay=args.weight_decay)
     elif args.opt == 'l4adam':
@@ -72,8 +75,9 @@ def get_optimizer(args, model, loss, parameters):
     return optimizer
 
 
-def decay_optimizer(optimizer, decay_factor=0.1):
-    if isinstance(optimizer, torch.optim.SGD):
+def decay_optimizer(args, optimizer, decay_factor=0.1):
+    # if isinstance(optimizer, torch.optim.SGD):
+    if 'sgd' in args.opt:
         for param_group in optimizer.param_groups:
             param_group['lr'] *= decay_factor
 

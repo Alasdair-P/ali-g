@@ -25,27 +25,35 @@ def train_graph(model, loss, optimizer, evaluator, dataset, loader, args, xp):
             pass
         else:
             pred = model(batch)
+
             # print('pred', pred.size())
             optimizer.zero_grad()
             ## ignore nan targets (unlabeled) when computing training loss.
             is_labeled = batch.y == batch.y
+
+            # print('pred',pred.to(torch.float32)[is_labeled].size())
+            # print('y',batch.y,batch.y.to(torch.float32)[is_labeled].size())
+            # print('is_labeled',is_labeled,is_labeled.size())
+            # input('press any key')
+
             losses = loss(pred.to(torch.float32)[is_labeled], batch.y.to(torch.float32)[is_labeled])
 
             if args.opt == 'alig2':
-                print('losses', losses.size(), 'idx', idx.size(), 'fhat', optimizer.fhat[idx].size(), 'pred', pred.size())
-                input('press any key')
-                clipped_losses = torch.max(losses, optimizer.fhat[idx])
+                fhat_ = optimizer.fhat[idx,:]
+                clipped_losses = torch.max(losses, fhat_[is_labeled])
                 losses = clipped_losses
+                # print('losses', losses.size(), 'idx', idx.size(), 'fhat', optimizer.fhat[idx].size(), 'pred', pred.size())
 
             loss_value = losses.mean()
             loss_value.backward()
             # print('loss', loss_value)
 
             if args.opt == 'alig2':
-                optimizer.step(lambda: (idx,losses))
+                optimizer.step(lambda: (idx,losses,is_labeled))
             else:
                optimizer.step()
 
+            # input('press any key')
         y_true.append(batch.y.view(pred.shape).detach().cpu())
         y_pred.append(pred.detach().cpu())
 
@@ -102,7 +110,6 @@ def train_graph(model, loss, optimizer, evaluator, dataset, loader, args, xp):
 
     for metric in xp.train.metrics():
         metric.log(time=xp.epoch.value)
-
 
 def train(model, loss, optimizer, loader, args, xp):
     model.train()

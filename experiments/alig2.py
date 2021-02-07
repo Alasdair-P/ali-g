@@ -58,6 +58,8 @@ class AliG2(torch.optim.Optimizer):
 
         if data_size:
             self.fhat = torch.zeros(data_size, device=self.device)
+            print('fhat',self.fhat,self.fhat.size())
+            input('press any key')
             self.delta = torch.zeros(data_size, device=self.device)
             self.fhat_old = torch.zeros(data_size, device=self.device)
             self.fxbar = torch.ones(data_size, device=self.device) * 1e6
@@ -147,13 +149,19 @@ class AliG2(torch.optim.Optimizer):
 
     @torch.autograd.no_grad()
     def step(self, closure):
-        idx, losses = closure()
+        idx, losses, is_labeled = closure()
 
         if self.print:
             print('idx', idx, 'fbar',self.fhat[idx])
 
-        self.fx[idx] = losses
-        fhat = self.fhat[idx]
+        # self.fx[idx] = losses
+        # fhat = self.fhat[idx]
+        these_idxs = self.fx[idx,:]
+        these_idxs[is_labeled].copy_(losses)
+
+        fhat_ = self.fhat[idx,:]
+        fhat = fhat_[is_labeled]
+
         self.compute_step_size(losses, fhat)
 
         if self.print:

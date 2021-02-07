@@ -277,13 +277,10 @@ def loaders_mol(dataset, batch_size, cuda,
     val_loader = DataLoader(dataset[split_idx["valid"]], batch_size=batch_size, shuffle=False, num_workers = 2)
     test_loader = DataLoader(dataset[split_idx["test"]], batch_size=batch_size, shuffle=False, num_workers = 2)
 
-    """
-    train_loader = DataLoader(dataset[split_idx["train"]], batch_size=batch_size, shuffle=True, num_workers = 2)
+    # train_loader = DataLoader(dataset[split_idx["train"]], batch_size=batch_size, shuffle=True, num_workers = 2)
     print('train',len(dataset[split_idx["train"]]) )
     print('valid',len(dataset[split_idx["valid"]]) )
     print('test',len(dataset[split_idx["test"]]) )
-    input('press any key')
-    """
 
     # train_loader = DataLoader(dataset[split_idx["train"]], batch_size=batch_size, shuffle=True, num_workers = 2)
     # args.train_size = len(dataset[split_idx["train"]])

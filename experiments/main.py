@@ -46,7 +46,7 @@ def main(args):
         if args.opt ==  'alig2':
             optimizer.epoch()
         if (i + 1) in args.T:
-            decay_optimizer(optimizer, args.decay_factor)
+            decay_optimizer(args, optimizer, args.decay_factor)
             if args.opt ==  'alig2':
                 optimizer.update_lb()
                 # load_best_model(model, '{}/x_0.pkl'.format(args.xp_name))
