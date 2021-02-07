@@ -1,0 +1,40 @@
+#- {T: 60 120 160, batch_size: 128, dataset: cifar100, decay_factor: 0.2, eta: 0.01, model: wrn, momentum: 0.9, opt: sgd, max_norm:  50, tag: sgd_norm}
+#- {T: 60 120 160, batch_size: 128, dataset: cifar100, decay_factor: 0.2, eta: 0.01, model: wrn, momentum: 0.9, opt: sgd, max_norm: 100, tag: sgd_norm}
+#- {T: 60 120 160, batch_size: 128, dataset: cifar100, decay_factor: 0.2, eta: 0.01, model: wrn, momentum: 0.9, opt: sgd, max_norm: 150, tag: sgd_norm}
+#- {T: 60 120 160, batch_size: 128, dataset: cifar100, decay_factor: 0.2, eta: 0.01, model: wrn, momentum: 0.9, opt: sgd, max_norm: 200, tag: sgd_norm}
+#- {T: 60 120 160, batch_size: 128, dataset: cifar100, decay_factor: 0.2, eta: 0.01, model: wrn, momentum: 0.9, opt: sgd, max_norm: 250, tag: sgd_norm}
+#- {T: 60 120 160, batch_size: 128, dataset: cifar100, decay_factor: 0.2, eta:  0.1, model: wrn, momentum: 0.9, opt: sgd, max_norm:  50, tag: sgd_norm}
+#- {T: 60 120 160, batch_size: 128, dataset: cifar100, decay_factor: 0.2, eta:  0.1, model: wrn, momentum: 0.9, opt: sgd, max_norm: 100, tag: sgd_norm}
+#- {T: 60 120 160, batch_size: 128, dataset: cifar100, decay_factor: 0.2, eta:  0.1, model: wrn, momentum: 0.9, opt: sgd, max_norm: 150, tag: sgd_norm}
+#- {T: 60 120 160, batch_size: 128, dataset: cifar100, decay_factor: 0.2, eta:  0.1, model: wrn, momentum: 0.9, opt: sgd, max_norm: 200, tag: sgd_norm}
+#- {T: 60 120 160, batch_size: 128, dataset: cifar100, decay_factor: 0.2, eta:  0.1, model: wrn, momentum: 0.9, opt: sgd, max_norm: 250, tag: sgd_norm}
+#- {T: 60 120 160, batch_size: 128, dataset: cifar100, decay_factor: 0.2, eta:  1.0, model: wrn, momentum: 0.9, opt: sgd, max_norm:  50, tag: sgd_norm}
+#- {T: 60 120 160, batch_size: 128, dataset: cifar100, decay_factor: 0.2, eta:  1.0, model: wrn, momentum: 0.9, opt: sgd, max_norm: 100, tag: sgd_norm}
+#- {T: 60 120 160, batch_size: 128, dataset: cifar100, decay_factor: 0.2, eta:  1.0, model: wrn, momentum: 0.9, opt: sgd, max_norm: 150, tag: sgd_norm}
+#- {T: 60 120 160, batch_size: 128, dataset: cifar100, decay_factor: 0.2, eta:  1.0, model: wrn, momentum: 0.9, opt: sgd, max_norm: 200, tag: sgd_norm}
+#- {T: 60 120 160, batch_size: 128, dataset: cifar100, decay_factor: 0.2, eta:  1.0, model: wrn, momentum: 0.9, opt: sgd, max_norm: 250, tag: sgd_norm}
+#- {T: 60 120 160, batch_size: 128, dataset: cifar100, decay_factor: 0.2, eta: 10.0, model: wrn, momentum: 0.9, opt: sgd, max_norm:  50, tag: sgd_norm}
+#- {T: 60 120 160, batch_size: 128, dataset: cifar100, decay_factor: 0.2, eta: 10.0, model: wrn, momentum: 0.9, opt: sgd, max_norm: 100, tag: sgd_norm}
+#- {T: 60 120 160, batch_size: 128, dataset: cifar100, decay_factor: 0.2, eta: 10.0, model: wrn, momentum: 0.9, opt: sgd, max_norm: 150, tag: sgd_norm}
+#- {T: 60 120 160, batch_size: 128, dataset: cifar100, decay_factor: 0.2, eta: 10.0, model: wrn, momentum: 0.9, opt: sgd, max_norm: 200, tag: sgd_norm}
+#- {T: 60 120 160, batch_size: 128, dataset: cifar100, decay_factor: 0.2, eta: 10.0, model: wrn, momentum: 0.9, opt: sgd, max_norm: 250, tag: sgd_norm}
+- {T: 60 120 160, batch_size: 128, dataset: cifar100, decay_factor: 0.2, eta: 0.01, model: wrn, momentum: 0.9, opt: sgd, max_norm:  50, tag: sgd_norm_svm, loss: svm}
+- {T: 60 120 160, batch_size: 128, dataset: cifar100, decay_factor: 0.2, eta: 0.01, model: wrn, momentum: 0.9, opt: sgd, max_norm: 100, tag: sgd_norm_svm, loss: svm}
+- {T: 60 120 160, batch_size: 128, dataset: cifar100, decay_factor: 0.2, eta: 0.01, model: wrn, momentum: 0.9, opt: sgd, max_norm: 150, tag: sgd_norm_svm, loss: svm}
+- {T: 60 120 160, batch_size: 128, dataset: cifar100, decay_factor: 0.2, eta: 0.01, model: wrn, momentum: 0.9, opt: sgd, max_norm: 200, tag: sgd_norm_svm, loss: svm}
+- {T: 60 120 160, batch_size: 128, dataset: cifar100, decay_factor: 0.2, eta: 0.01, model: wrn, momentum: 0.9, opt: sgd, max_norm: 250, tag: sgd_norm_svm, loss: svm}
+- {T: 60 120 160, batch_size: 128, dataset: cifar100, decay_factor: 0.2, eta:  0.1, model: wrn, momentum: 0.9, opt: sgd, max_norm:  50, tag: sgd_norm_svm, loss: svm}
+- {T: 60 120 160, batch_size: 128, dataset: cifar100, decay_factor: 0.2, eta:  0.1, model: wrn, momentum: 0.9, opt: sgd, max_norm: 100, tag: sgd_norm_svm, loss: svm}
+- {T: 60 120 160, batch_size: 128, dataset: cifar100, decay_factor: 0.2, eta:  0.1, model: wrn, momentum: 0.9, opt: sgd, max_norm: 150, tag: sgd_norm_svm, loss: svm}
+- {T: 60 120 160, batch_size: 128, dataset: cifar100, decay_factor: 0.2, eta:  0.1, model: wrn, momentum: 0.9, opt: sgd, max_norm: 200, tag: sgd_norm_svm, loss: svm}
+- {T: 60 120 160, batch_size: 128, dataset: cifar100, decay_factor: 0.2, eta:  0.1, model: wrn, momentum: 0.9, opt: sgd, max_norm: 250, tag: sgd_norm_svm, loss: svm}
+- {T: 60 120 160, batch_size: 128, dataset: cifar100, decay_factor: 0.2, eta:  1.0, model: wrn, momentum: 0.9, opt: sgd, max_norm:  50, tag: sgd_norm_svm, loss: svm}
+- {T: 60 120 160, batch_size: 128, dataset: cifar100, decay_factor: 0.2, eta:  1.0, model: wrn, momentum: 0.9, opt: sgd, max_norm: 100, tag: sgd_norm_svm, loss: svm}
+- {T: 60 120 160, batch_size: 128, dataset: cifar100, decay_factor: 0.2, eta:  1.0, model: wrn, momentum: 0.9, opt: sgd, max_norm: 150, tag: sgd_norm_svm, loss: svm}
+- {T: 60 120 160, batch_size: 128, dataset: cifar100, decay_factor: 0.2, eta:  1.0, model: wrn, momentum: 0.9, opt: sgd, max_norm: 200, tag: sgd_norm_svm, loss: svm}
+- {T: 60 120 160, batch_size: 128, dataset: cifar100, decay_factor: 0.2, eta:  1.0, model: wrn, momentum: 0.9, opt: sgd, max_norm: 250, tag: sgd_norm_svm, loss: svm}
+- {T: 60 120 160, batch_size: 128, dataset: cifar100, decay_factor: 0.2, eta: 10.0, model: wrn, momentum: 0.9, opt: sgd, max_norm:  50, tag: sgd_norm_svm, loss: svm}
+- {T: 60 120 160, batch_size: 128, dataset: cifar100, decay_factor: 0.2, eta: 10.0, model: wrn, momentum: 0.9, opt: sgd, max_norm: 100, tag: sgd_norm_svm, loss: svm}
+- {T: 60 120 160, batch_size: 128, dataset: cifar100, decay_factor: 0.2, eta: 10.0, model: wrn, momentum: 0.9, opt: sgd, max_norm: 150, tag: sgd_norm_svm, loss: svm}
+- {T: 60 120 160, batch_size: 128, dataset: cifar100, decay_factor: 0.2, eta: 10.0, model: wrn, momentum: 0.9, opt: sgd, max_norm: 200, tag: sgd_norm_svm, loss: svm}
+- {T: 60 120 160, batch_size: 128, dataset: cifar100, decay_factor: 0.2, eta: 10.0, model: wrn, momentum: 0.9, opt: sgd, max_norm: 250, tag: sgd_norm_svm, loss: svm}

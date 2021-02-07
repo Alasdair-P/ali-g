@@ -1,0 +1,4 @@
+- {model:  dn, dataset: cifar100, batch_size:  64, opt: sbd, eta: 1.0, k: 3, tag: no_max_norm}
+- {model:  dn, dataset: cifar100, batch_size:  64, opt: sbd, eta: 1.0, k: 5, tag: no_max_norm}
+- {model: wrn, dataset: cifar100, batch_size: 128, opt: sbd, eta: 10.0, k: 3, tag: no_max_norm}
+- {model: wrn, dataset: cifar100, batch_size: 128, opt: sbd, eta: 10.0, k: 5, tag: no_max_norm}

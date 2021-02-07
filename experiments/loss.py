@@ -15,11 +15,8 @@ def get_loss(args):
         print("classification" in dataset.task_type)
         if "classification" in dataset.task_type:
             args.loss = 'bce'
-            print('loss - bce')
         else:
             args.loss = 'mse'
-            print('loss - mse')
-
 
     if args.opt == 'dfw' or args.loss == 'svm':
         loss_fn = MultiClassHingeLoss(reduction=reduction_type)
