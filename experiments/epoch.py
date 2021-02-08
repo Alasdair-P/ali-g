@@ -24,23 +24,40 @@ def train_graph(model, loss, optimizer, evaluator, dataset, loader, args, xp):
         if batch.x.shape[0] == 1 or batch.batch[-1] == 0:
             pass
         else:
-            pred = model(batch)
+            pred = model(batch).to(torch.float32)
 
             # print('pred', pred.size())
             optimizer.zero_grad()
             ## ignore nan targets (unlabeled) when computing training loss.
             is_labeled = batch.y == batch.y
+            # print('pred', pred[:5,:5], 'is_labeled',is_labeled[:5,:5])
 
-            # print('pred',pred.to(torch.float32)[is_labeled].size())
-            # print('y',batch.y,batch.y.to(torch.float32)[is_labeled].size())
+            if 'molpcba' in args.dataset:
+                N = is_labeled.sum(dim = 1)
+                pred[~is_labeled] = -1e6
+                y_ = batch.y.to(torch.float32)
+                y_[~is_labeled] = 0
+                losses = loss(pred, y_).sum(dim=1)/N
+                losses[N==0] = 0
+                # print('N',N[:5],'pred', pred[:5,:5],'y_',y_,'losses',losses[5:], losses.size())
+                # input('press any key')
+            else:
+                losses = loss(pred.to(torch.float32)[is_labeled], batch.y.to(torch.float32)[is_labeled])
+
+            # print('pred',pred.to(torch.float32)[:10,:10])
+            # print('y',batch.y,batch.y.to(torch.float32)[:10,:10])
             # print('is_labeled',is_labeled,is_labeled.size())
+            # zeros = torch.zeros(4,4).to(torch.float32)
+            # neginf = torch.ones(4,4).to(torch.float32)*-1e6
+            # posinf = torch.ones(4,4).to(torch.float32)*1e6
+            # ones = torch.ones(4,4).to(torch.float32)
+            # print(zeros, neginf)
+            # print('loss',loss(neginf, zeros))
+            # # print('loss',loss(posinf, ones))
             # input('press any key')
 
-            losses = loss(pred.to(torch.float32)[is_labeled], batch.y.to(torch.float32)[is_labeled])
-
             if args.opt == 'alig2':
-                fhat_ = optimizer.fhat[idx,:]
-                clipped_losses = torch.max(losses, fhat_[is_labeled])
+                clipped_losses = torch.max(losses, optimizer.fhat[idx])
                 losses = clipped_losses
                 # print('losses', losses.size(), 'idx', idx.size(), 'fhat', optimizer.fhat[idx].size(), 'pred', pred.size())
 
@@ -49,7 +66,7 @@ def train_graph(model, loss, optimizer, evaluator, dataset, loader, args, xp):
             # print('loss', loss_value)
 
             if args.opt == 'alig2':
-                optimizer.step(lambda: (idx,losses,is_labeled))
+                optimizer.step(lambda: (idx,losses))
             else:
                optimizer.step()
 

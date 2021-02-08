@@ -57,15 +57,14 @@ class AliG2(torch.optim.Optimizer):
         self.device = p.device
 
         if data_size:
-            self.fhat = torch.zeros(data_size, device=self.device)
-            print('fhat',self.fhat,self.fhat.size())
-            input('press any key')
+            self.fhat = torch.zeros(data_size, device=self.device) # Estimated optimal value
             self.delta = torch.zeros(data_size, device=self.device)
             self.fhat_old = torch.zeros(data_size, device=self.device)
-            self.fxbar = torch.ones(data_size, device=self.device) * 1e6
-            self.fx = torch.ones(data_size, device=self.device) * 1e6
+            self.fxbar = torch.ones(data_size, device=self.device) * 1e6 # Loss of sample from best epoch
+            self.fx = torch.ones(data_size, device=self.device) * 1e6 # Current loss of samble this epoch
             self.step_0 = self.fhat.mean()
             self.step_1 = self.fxbar.mean()
+            self.step_2 = self.fx.mean()
 
         if self.adjusted_momentum:
             self.apply_momentum = self.apply_momentum_adjusted
@@ -112,6 +111,7 @@ class AliG2(torch.optim.Optimizer):
             np.save('losses_.npy', self.fxbar.detach().cpu().numpy())
         self.step_0 = self.fhat.mean()
         self.step_4 = self.delta.mean()
+        self.step_2 = self.fx.mean()
 
     @torch.autograd.no_grad()
     def compute_step_size(self, losses, lbs):
@@ -149,24 +149,17 @@ class AliG2(torch.optim.Optimizer):
 
     @torch.autograd.no_grad()
     def step(self, closure):
-        idx, losses, is_labeled = closure()
+        idx, losses = closure()
 
         if self.print:
             print('idx', idx, 'fbar',self.fhat[idx])
 
-        # self.fx[idx] = losses
-        # fhat = self.fhat[idx]
-        these_idxs = self.fx[idx,:]
-        these_idxs[is_labeled].copy_(losses)
-
-        fhat_ = self.fhat[idx,:]
-        fhat = fhat_[is_labeled]
-
+        self.fx[idx] = losses
+        fhat = self.fhat[idx]
         self.compute_step_size(losses, fhat)
 
         if self.print:
             print('losses', losses, 'fbar',self.fhat[idx])
-
 
         for group in self.param_groups:
             step_size = group["step_size"]

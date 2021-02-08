@@ -12,8 +12,6 @@ from alig.th.projection import l2_projection
 def get_optimizer(args, model, loss, parameters):
     parameters = list(parameters)
     data_size = (args.train_size,)
-    if 'molpcba' in args.dataset:
-        data_size = (args.train_size, 128)
     if args.opt == 'sgd':
         optimizer = torch.optim.SGD(parameters, lr=args.eta, weight_decay=args.weight_decay,
                                     momentum=args.momentum, nesterov=bool(args.momentum))
