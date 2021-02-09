@@ -32,7 +32,7 @@ def train_graph(model, loss, optimizer, evaluator, dataset, loader, args, xp):
             is_labeled = batch.y == batch.y
             # print('pred', pred[:5,:5], 'is_labeled',is_labeled[:5,:5])
 
-            if 'molpcba' in args.dataset:
+            if 'molpcba' in args.dataset and args.opt == 'alig2':
                 N = is_labeled.sum(dim = 1)
                 pred[~is_labeled] = -1e6
                 y_ = batch.y.to(torch.float32)
@@ -43,18 +43,6 @@ def train_graph(model, loss, optimizer, evaluator, dataset, loader, args, xp):
                 # input('press any key')
             else:
                 losses = loss(pred.to(torch.float32)[is_labeled], batch.y.to(torch.float32)[is_labeled])
-
-            # print('pred',pred.to(torch.float32)[:10,:10])
-            # print('y',batch.y,batch.y.to(torch.float32)[:10,:10])
-            # print('is_labeled',is_labeled,is_labeled.size())
-            # zeros = torch.zeros(4,4).to(torch.float32)
-            # neginf = torch.ones(4,4).to(torch.float32)*-1e6
-            # posinf = torch.ones(4,4).to(torch.float32)*1e6
-            # ones = torch.ones(4,4).to(torch.float32)
-            # print(zeros, neginf)
-            # print('loss',loss(neginf, zeros))
-            # # print('loss',loss(posinf, ones))
-            # input('press any key')
 
             if args.opt == 'alig2':
                 clipped_losses = torch.max(losses, optimizer.fhat[idx])

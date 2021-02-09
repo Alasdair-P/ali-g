@@ -1,4 +1,4 @@
-from data.loaders import loaders_cifar, loaders_mnist, loaders_svhn, loaders_imagenet, loaders_mol, loaders_code
+from data.loaders import loaders_cifar, loaders_mnist, loaders_svhn, loaders_imagenet, loaders_mol, loaders_code, loaders_tiny_imagenet
 
 def get_data_loaders(args):
 
