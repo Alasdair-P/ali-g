@@ -1,5 +1,6 @@
 import torch
 import time
+from alig.th.projection import l2_projection
 
 class Timer:
     def __init__(self,name):
@@ -19,6 +20,7 @@ from tqdm import tqdm
 # from dfw.losses import set_smoothing_enabled
 from utils import accuracy, regularization
 
+"""
 def forward_backwards(model, loss, optimizer, x, y):
 
     # forward pass
@@ -32,6 +34,7 @@ def forward_backwards(model, loss, optimizer, x, y):
     # optimization step
     optimizer.step(lambda: float(loss_value))
     return loss_value, scores
+"""
 
 def train(model, loss, optimizer, loader, args, xp):
     model.train()
@@ -52,6 +55,7 @@ def train(model, loss, optimizer, loader, args, xp):
 
         # forward pass
         scores = model(x)
+        # print('x',x.size(),'y',y.size(),'scores',scores.size(),'batch_size', args.batch_size)
         # compute the loss function, possibly using smoothing
         # with set_smoothing_enabled(args.smooth_svm):
         loss_value = loss(scores, y)

@@ -68,8 +68,9 @@ def get_optimizer(args, model, loss, parameters):
     return optimizer
 
 
-def decay_optimizer(optimizer, decay_factor=0.1):
-    if isinstance(optimizer, torch.optim.SGD):
+def decay_optimizer(args, optimizer, decay_factor=0.1):
+    if 'sgd' in args.opt:
+    # if isinstance(optimizer, torch.optim.SGD):
         for param_group in optimizer.param_groups:
             param_group['lr'] *= decay_factor
 

@@ -720,3 +720,4 @@ k=3 CIFAR100 WRN
 /data0/clean/results/cifar100/dn100-sbd--k-5--eta-0.1--l2-None--b-64-no_max_norm--momentum-0.9 ,Train Acc, 99.9375 ,Val Acc, 70.4400 ,Test Acc, 69.9300
 /data0/clean/results/cifar10/wrn10-sbd--k-5--eta-0.01--l2-50.0--b-500-AP1--momentum-0.9 ,Train Acc, 95.3304 ,Val Acc, 0.1158 ,Test Acc, 0.1318
 /data0/clean/results/cifar10/wrn10-sgd--k-1--eta-1e-10--l2-0--b-500-borat5-ap-0.01-50--momentum-0.9 ,Train Acc, 0.0000 ,Val Acc, inf ,Test Acc, 0.8654
+----------------------------------------------------------------------------------------------------------------------------------

@@ -7,7 +7,7 @@ def get_loss(args):
         if 'cifar' in args.dataset:
             args.smooth_svm = True
     elif args.loss == 'map':
-        loss_fn = ap(n_classes=args.n_classes)
+        loss_fn = AP(n_classes=args.n_classes)
     elif args.loss == 'ndcg':
         loss_fn = NDCG(n_classes=args.n_classes)
     elif args.dataset == 'imagenet':
@@ -296,7 +296,6 @@ class AP(nn.Module):
         return loss
 
     def forward(self, scores, class_lables):
-        # scores = (scores-scores.mean(dim=1,keepdim=True)).div(scores.std(dim=1, keepdim=True))
         loss = 0
         for i in range(self.n_classes):
             loss += self.calc_loss_for_cth_class(scores[:,i], class_lables, i)
@@ -448,20 +447,6 @@ class NDCG(nn.Module):
             self.calc_optimal_interleaving_rank(l_minus, m, l_plus, opt_m)
         if m+1 < r_minus:
             self.calc_optimal_interleaving_rank(m+1, r_minus, opt_m, r_plus)
-
-    """
-    # NDCG
-    @torch.autograd.no_grad()
-    def opt_j(self, l_plus, r_plus, m):
-        # range of i
-        j = m + 1
-        l = torch.arange(r_plus, l_plus+1, device=self.s_plus.device)
-        deltas = (self.D(l+j-1)-self.D(self.P+j))/self.C - 2*(self.s_plus[(k-1)]-self.s_minus[m])/(self.P*self.N)
-        idx = torch.argmax(deltas)
-        if self.print:
-            print('r_plus', r_plus, 'l_plus', l_plus, 'm', m, 'deltas', deltas,'idx', idx, 'opt', l[idx], 'l', l)
-        return l[idx]
-    """
 
     @torch.autograd.no_grad()
     def opt_j(self, l_plus, r_plus, m):

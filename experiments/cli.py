@@ -141,6 +141,7 @@ def set_xp_name(args):
     if args.xp_name is None:
         if args.jade:
             args.log_dir = '/jmain01/home/JAD035/pkm01/shared/models/'
+            args.tb_dir = '/jmain01/home/JAD035/pkm01/shared/tb_logs/'
         xp_name = args.log_dir
         xp_name += 'results/{data}/'.format(data=args.dataset)
         xp_name += "{model}{data}-{opt}--k-{k}--eta-{eta}--l2-{l2}--b-{b}-{tag}"
@@ -161,6 +162,7 @@ def set_xp_name(args):
 
     if args.log:
         # generate automatic experiment name if not provided
+        print('xp_name', args.xp_name)
         if os.path.exists(args.xp_name):
             if not args.debug:
                 warnings.warn('An experiment already exists at {}'
@@ -181,6 +183,8 @@ def set_num_classes(args):
         args.n_classes = 10
     elif args.dataset == 'imagenet':
         args.n_classes = 1000
+    elif args.dataset == 'tiny_imagenet':
+        args.n_classes = 200
     else:
         raise ValueError
 
@@ -207,5 +211,8 @@ def filter_args(args):
     misc_filter(args)
 
     set_xp_name(args)
+    print('finish set_xp_name')
     set_visdom(args)
+    print('finish set_visdom')
     set_num_classes(args)
+    print('finish filtering args')

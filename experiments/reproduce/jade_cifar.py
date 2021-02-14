@@ -4,14 +4,13 @@ import yaml
 
 
 def create_jobs():
-    template = "python main.py --no_visdom --no_tqdm --jade "
-    wrn_opts = " --depth 40 --width 4 --epochs 200"
-    # wsrn_opts = " --depth 40 --width 4 "
-    dn_opts = " --depth 40 --growth 40 --epochs 300"
+    template = "python main.py --no_visdom --no_tqdm --no_tb --jade "
+    wrn_opts = " --depth 40 --width 4"
+    #wrn_opts = " --depth 40 --width 4 --epochs 200"
+    dn_opts = " --depth 40 --growth 40 --epochs 300 "
 
-    # with open("reproduce/hparams/cifar.yaml", "r") as f:
-    # with open("reproduce/hparams/alig.yaml", "r") as f:
-    with open("reproduce/hparams/sgd_svm_loss.yaml", "r") as f:
+    #with open("reproduce/hparams/sgd_max_norm_ap.yaml", "r") as f:
+    with open("reproduce/hparams/tiny_imagenet_test.yaml", "r") as f:
         hparams = yaml.safe_load(f)
 
     jobs = []

@@ -336,7 +336,6 @@
 /jmain01/home/JAD035/pkm01/shared/models/results/cifar100/wrn100-sbd--k-5--eta-0.1--l2-50.0--b-128-run_thr--momentum-0.9 ,Train Acc, 99.95 ,Val Acc, 76.30 ,Test Acc, 75.77
 /jmain01/home/JAD035/pkm01/shared/models/results/cifar10/dn10-sbd--k-2--eta-0.1--l2-100.0--b-64-run_thr--momentum-0.9 ,Train Acc, 100.00 ,Val Acc, 94.96 ,Test Acc, 94.47
 /jmain01/home/JAD035/pkm01/shared/models/results/cifar100/dn100-sbd--k-2--eta-0.1--l2-75.0--b-256-run_thr--momentum-0.9 ,Train Acc, 99.97 ,Val Acc, 77.12 ,Test Acc, 75.90
-                                                                                                                                                                          /jmain01/home/JAD035/pkm01/shared/models/results/cifar100/dn100-sbd--k-3--eta-0.1--l2-75.0--b-128-run_thr--momentum-0.9 ,Train Acc, 99.96 ,Val Acc, 76.60 ,Test Acc, 76.67
 /jmain01/home/JAD035/pkm01/shared/models/results/cifar100/wrn100-alig--k-2--eta-0.1--l2-50.0--b-512-run_two--momentum-0.9 ,Train Acc, 99.97 ,Val Acc, 76.18 ,Test Acc, 75.82
 /jmain01/home/JAD035/pkm01/shared/models/results/cifar10/wrn10-alig--k-2--eta-0.1--l2-50.0--b-128-run_two--momentum-0.9 ,Train Acc, 100.00 ,Val Acc, 95.90 ,Test Acc, 95.50
 /jmain01/home/JAD035/pkm01/shared/models/results/cifar10/wrn10-alig--k-2--eta-0.1--l2-50.0--b-128-run_thr--momentum-0.9 ,Train Acc, 100.00 ,Val Acc, 95.78 ,Test Acc, 95.26
@@ -362,8 +361,6 @@
 /jmain01/home/JAD035/pkm01/shared/models/results/cifar100/wrn100-alig--k-2--eta-0.1--l2-100.0--b-128-run_thr--momentum-0.9 ,Train Acc, 99.98 ,Val Acc, 76.42 ,Test Acc, 76.26
 /jmain01/home/JAD035/pkm01/shared/models/results/cifar100/wrn100-alig--k-2--eta-0.1--l2-75.0--b-256-run_thr--momentum-0.9 ,Train Acc, 99.97 ,Val Acc, 76.36 ,Test Acc, 75.35
 /jmain01/home/JAD035/pkm01/shared/models/results/cifar100/wrn100-alig--k-2--eta-0.1--l2-75.0--b-256-run_two--momentum-0.9 ,Train Acc, 99.97 ,Val Acc, 75.62 ,Test Acc, 75.51
-                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                              /jmain01/home/JAD035/pkm01/shared/models/results/cifar100/dn100-sbd--k-3--eta-0.1--l2-75.0--b-128-run3--momentum-0.9 ,Train Acc, 99.97 ,Val Acc, 76.34 ,Test Acc, 76.45
-/jmain01/home/JAD035/pkm01/shared/models/results/cifar100/wrn100-sbd--k-5--eta-0.1--l2-50.0--b-128-run1--momentum-0.9 ,Train Acc, 99.93 ,Val Acc, 76.96 ,Test Acc, 75.70
 /jmain01/home/JAD035/pkm01/shared/models/results/cifar100/dn100-sbd--k-5--eta-0.1--l2-75.0--b-64-run2--momentum-0.9 ,Train Acc, 99.97 ,Val Acc, 76.36 ,Test Acc, 75.71
 /jmain01/home/JAD035/pkm01/shared/models/results/cifar100/wrn100-sbd--k-5--eta-0.1--l2-50.0--b-128-run2--momentum-0.9 ,Train Acc, 99.96 ,Val Acc, 76.54 ,Test Acc, 75.74
 /jmain01/home/JAD035/pkm01/shared/models/results/cifar100/dn100-sbd--k-5--eta-0.1--l2-75.0--b-64-run3--momentum-0.9 ,Train Acc, 99.74 ,Val Acc, 75.38 ,Test Acc, 74.96
@@ -422,4 +419,5 @@
 /jmain01/home/JAD035/pkm01/shared/models/results/cifar100/wrn100-sgd--k-1--eta-10.0--l2-150.0--b-128-sgd_norm_svm--momentum-0.9 ,Train Acc, 1.00 ,Val Acc, 1.30 ,Test Acc, 1.00
 /jmain01/home/JAD035/pkm01/shared/models/results/cifar100/wrn100-sgd--k-1--eta-10.0--l2-100.0--b-128-sgd_norm_svm--momentum-0.9 ,Train Acc, 1.07 ,Val Acc, 1.32 ,Test Acc, 1.00
 /jmain01/home/JAD035/pkm01/shared/models/results/cifar100/wrn100-sgd--k-1--eta-10.0--l2-250.0--b-128-sgd_norm_svm--momentum-0.9 ,Train Acc, 1.01 ,Val Acc, 1.32 ,Test Acc, 1.00
+--------------------------------------------------------------------------------------------------------------------------------------------------------------------
 --------------------------------------------------------------------------------------------------------------------------------------------------------------------
