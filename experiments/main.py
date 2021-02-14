@@ -31,13 +31,13 @@ def main(args):
     optimizer = get_optimizer(args, model, loss, parameters=model.parameters())
     save_state(model, optimizer, '{}/x_0.pkl'.format(args.xp_name))
     xp = setup_xp(args, model, optimizer)
-    if 'mol' in args.dataset:
+    if 'ogbg' in args.dataset:
         evaluator = Evaluator(args.dataset)
         dataset = PygGraphPropPredDataset(name = args.dataset)
 
     for i in range(args.epochs):
         xp.epoch.update(i)
-        if 'mol' in args.dataset:
+        if 'ogbg' in args.dataset:
             train_graph(model, loss, optimizer, evaluator, dataset, loader_train, args, xp)
             test_graph(model, optimizer, evaluator, dataset, loader_val, args, xp)
         else:
@@ -58,7 +58,7 @@ def main(args):
         test_graph(model, optimizer, evaluator, dataset, loader_test, args, xp)
     else:
         test(model, optimizer, loader_test, args, xp)
-    write_results(args, xp)
+    write_results(args, xp, '.')
 
 
 if __name__ == '__main__':

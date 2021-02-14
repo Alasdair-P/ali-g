@@ -144,6 +144,8 @@ def _add_misc_parser(parser):
 
 
 def set_xp_name(args):
+    if 'ogbg_' in args.dataset:
+        args.dataset = 'ogbg-' + args.dataset[5:]
     if args.debug:
         args.visdom = False
         args.batch_size = 3

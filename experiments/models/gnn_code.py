@@ -4,7 +4,7 @@ from torch_geometric.nn import global_add_pool, global_mean_pool, global_max_poo
 import torch.nn.functional as F
 from torch_geometric.nn.inits import uniform
 
-from conv import GNN_node, GNN_node_Virtualnode
+from .conv_code import GNN_node, GNN_node_Virtualnode
 
 from torch_scatter import scatter_mean
 
@@ -17,7 +17,7 @@ class GNN_CODE(torch.nn.Module):
             virtual_node (bool): whether to add virtual node or not
         '''
 
-        super(GNN, self).__init__()
+        super(GNN_CODE, self).__init__()
 
         self.num_layer = num_layer
         self.drop_ratio = drop_ratio

@@ -5,12 +5,14 @@ from tqdm import tqdm
 # from dfw.losses import set_smoothing_enabled
 from utils import accuracy, regularization
 from ogb.graphproppred import PygGraphPropPredDataset
+from utils_gnn import decode_arr_to_seq
 
 
 def train_graph(model, loss, optimizer, evaluator, dataset, loader, args, xp):
     model.train()
     y_true = []
     y_pred = []
+    arr_to_seq = lambda arr: decode_arr_to_seq(arr, loader.idx2vocab)
 
     for metric in xp.train.metrics():
         metric.reset()
@@ -24,15 +26,15 @@ def train_graph(model, loss, optimizer, evaluator, dataset, loader, args, xp):
         if batch.x.shape[0] == 1 or batch.batch[-1] == 0:
             pass
         else:
-            pred = model(batch).to(torch.float32)
-
-            # print('pred', pred.size())
+            pred = model(batch)
             optimizer.zero_grad()
+
             ## ignore nan targets (unlabeled) when computing training loss.
             is_labeled = batch.y == batch.y
             # print('pred', pred[:5,:5], 'is_labeled',is_labeled[:5,:5])
 
             if 'molpcba' in args.dataset and args.opt == 'alig2':
+                pred = pred.to(torch.float32)
                 N = is_labeled.sum(dim = 1)
                 pred[~is_labeled] = -1e6
                 y_ = batch.y.to(torch.float32)
@@ -41,6 +43,28 @@ def train_graph(model, loss, optimizer, evaluator, dataset, loader, args, xp):
                 losses[N==0] = 0
                 # print('N',N[:5],'pred', pred[:5,:5],'y_',y_,'losses',losses[5:], losses.size())
                 # input('press any key')
+            elif 'code' in  args.dataset:
+
+                loss_value = 0
+                for i in range(len(pred)):
+                    loss_value += loss(pred[i].to(torch.float32), batch.y_arr[:,i]).mean()
+
+                mat = []
+                for i in range(len(pred)):
+                    mat.append(torch.argmax(pred[i], dim = 1).view(-1,1))
+                mat = torch.cat(mat, dim = 1)
+                seq_pred = [arr_to_seq(arr) for arr in mat]
+                # PyG = 1.4.3
+                # seq_ref = [batch.y[i][0] for i in range(len(batch.y))]
+
+                # PyG >= 1.5.0
+                seq_ref = [batch.y[i] for i in range(len(batch.y))]
+
+                y_true.extend(seq_ref)
+                y_pred.extend(seq_pred)
+
+                losses = loss_value / len(pred)
+
             else:
                 losses = loss(pred.to(torch.float32)[is_labeled], batch.y.to(torch.float32)[is_labeled])
 
@@ -59,8 +83,9 @@ def train_graph(model, loss, optimizer, evaluator, dataset, loader, args, xp):
                optimizer.step()
 
             # input('press any key')
-        y_true.append(batch.y.view(pred.shape).detach().cpu())
-        y_pred.append(pred.detach().cpu())
+        if 'mol' in args.dataset:
+            y_true.append(batch.y.view(pred.shape).detach().cpu())
+            y_pred.append(pred.detach().cpu())
 
         # y_true = batch.y.view(pred.shape).detach().cpu().numpy()
         # y_pred = pred.detach().cpu().numpy()
@@ -83,11 +108,13 @@ def train_graph(model, loss, optimizer, evaluator, dataset, loader, args, xp):
         xp.train.alpha3.update(optimizer.step_3, weighting=batch_size)
         xp.train.alpha4.update(optimizer.step_4, weighting=batch_size)
 
-    y_true = torch.cat(y_true, dim = 0).numpy()
-    y_pred = torch.cat(y_pred, dim = 0).numpy()
+    if 'mol' in args.dataset:
+        y_true = torch.cat(y_true, dim = 0).numpy()
+        y_pred = torch.cat(y_pred, dim = 0).numpy()
+        input_dict = {"y_true": y_true, "y_pred": y_pred}
+    else:
+        input_dict = {"seq_ref": y_true, "seq_pred": y_pred}
     batch_size = len(y_pred)
-    input_dict = {"y_true": y_true, "y_pred": y_pred}
-    # print('input dic', input_dict)
     roc = evaluator.eval(input_dict)
     # print('roc', roc)
     # for p in model.parameters():
@@ -123,7 +150,7 @@ def train(model, loss, optimizer, loader, args, xp):
         metric.reset()
 
     for idx, data in tqdm(loader, disable=not args.tqdm, desc='Train Epoch',
-                                               leave=False, total=len(loader)):
+                                               leave=False, total=len(loader.dataset)):
         x_, y = data
         if isinstance(x_,dict):
             transforms, x = x_['trans'], x_['image']
@@ -203,24 +230,12 @@ def train_old(model, loss, optimizer, loader, args, xp):
                      leave=False, total=len(loader)):
         (x, y) = (x.cuda(), y.cuda()) if args.cuda else (x, y)
 
-        # if args.opt == 'sbd-sb':
-            # # while not (optimizer.n == 1):
-            # for _ in range(args.k-1):
-                # loss_value, scores = forward_backwards(model, loss, optimizer, x, y)
-        # else:
-            # loss_value, scores = forward_backwards(model, loss, optimizer, x, y)
 
-        # forward pass
         scores = model(x)
-        # compute the loss function, possibly using smoothing
-        # with set_smoothing_enabled(args.smooth_svm):
         loss_value = loss(scores, y)
-        # backward pass
         optimizer.zero_grad()
         loss_value.backward()
-        # optimization step
         optimizer.step(lambda: float(loss_value))
-
         if 'sbd' in args.opt and not optimizer.n == 1:
             continue
 
@@ -343,6 +358,7 @@ def test(model, optimizer, loader, args, xp):
 def test_graph(model, optimizer, evaluator, dataset, loader, args, xp):
     model.eval()
     device = torch.device("cuda:" + str(torch.cuda.current_device())) if torch.cuda.is_available() else torch.device("cpu")
+    arr_to_seq = lambda arr: decode_arr_to_seq(arr, loader.idx2vocab)
 
     if loader.tag == 'val':
         xp_group = xp.val
@@ -364,13 +380,34 @@ def test_graph(model, optimizer, evaluator, dataset, loader, args, xp):
             with torch.no_grad():
                 pred = model(batch)
 
+        if 'code' in  args.dataset:
+
+            mat = []
+            for i in range(len(pred_list)):
+                mat.append(torch.argmax(pred_list[i], dim = 1).view(-1,1))
+            mat = torch.cat(mat, dim = 1)
+            seq_pred = [arr_to_seq(arr) for arr in mat]
+            # PyG = 1.4.3
+            # seq_ref = [batch.y[i][0] for i in range(len(batch.y))]
+
+            # PyG >= 1.5.0
+            seq_ref = [batch.y[i] for i in range(len(batch.y))]
+
+            seq_ref_list.extend(seq_ref)
+            seq_pred_list.extend(seq_pred)
+
+        else:
+
             y_true.append(batch.y.view(pred.shape).detach().cpu())
             y_pred.append(pred.detach().cpu())
 
-    y_true = torch.cat(y_true, dim = 0).numpy()
-    y_pred = torch.cat(y_pred, dim = 0).numpy()
+    if 'code' in  args.dataset:
+        input_dict = {"seq_ref": y_true, "seq_pred": y_pred}
+    else:
+        y_true = torch.cat(y_true, dim = 0).numpy()
+        y_pred = torch.cat(y_pred, dim = 0).numpy()
 
-    input_dict = {"y_true": y_true, "y_pred": y_pred}
+        input_dict = {"y_true": y_true, "y_pred": y_pred}
 
     roc = evaluator.eval(input_dict)
     xp_group.acc.update(roc[dataset.eval_metric], weighting=len(y_true))

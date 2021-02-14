@@ -4,12 +4,19 @@ import torch.utils.data as data
 import torchvision.datasets as datasets
 import torchvision.transforms as transforms
 import numpy as np
+import pandas as pd
 from .balancedsampler import BalancedBatchSampler
 from .transforms import RandomHorizontalFlipIndex, RandomCropIndex, ToTensorIndex, NormalizeCifar, FormatTransDict, CreateTransDict, HorizontalFlipIndex, CropIndex
 from torch_geometric.data import DataLoader
 from ogb.graphproppred import PygGraphPropPredDataset, Evaluator
 
 from .utils import random_subsets, Subset
+
+### importing utils
+from utils_gnn import ASTNodeEncoder, get_vocab_mapping
+### for data transform
+from utils_gnn import augment_edge, encode_y_to_arr, decode_arr_to_seq
+
 
 class IndexedDataset(data.Dataset):
     def __init__(self, dataset):
@@ -273,9 +280,9 @@ def loaders_mol(dataset, batch_size, cuda,
 
     split_idx = dataset.get_idx_split()
 
-    train_idxed_loader = DataLoader(IndexedDataset(dataset[split_idx["train"]]), batch_size=batch_size, shuffle=True, num_workers = 2)
-    val_loader = DataLoader(dataset[split_idx["valid"]], batch_size=batch_size, shuffle=False, num_workers = 2)
-    test_loader = DataLoader(dataset[split_idx["test"]], batch_size=batch_size, shuffle=False, num_workers = 2)
+    train_idxed_loader = DataLoader(IndexedDataset(dataset[split_idx["train"]]), batch_size=batch_size, shuffle=True, num_workers = 0)
+    val_loader = DataLoader(dataset[split_idx["valid"]], batch_size=batch_size, shuffle=False, num_workers = 0)
+    test_loader = DataLoader(dataset[split_idx["test"]], batch_size=batch_size, shuffle=False, num_workers = 0)
 
     # train_loader = DataLoader(dataset[split_idx["train"]], batch_size=batch_size, shuffle=True, num_workers = 2)
     print('train',len(dataset[split_idx["train"]]) )
@@ -297,54 +304,58 @@ def loaders_mol(dataset, batch_size, cuda,
 
     return train_idxed_loader, val_loader, test_loader
 
-def loaders_code(dataset, batch_size, cuda,
-                n_classes, eq_class, feature, max_seq_len, train_size=32901, augment=False,
-                val_size=4113, test_size=4113, **kwargs):
+def loaders_code(dataset, batch_size, cuda, num_vocab, width,
+                n_classes, eq_class, feature, max_seq_len, train_size=407976, augment=False,
+                val_size=22817, test_size=21948, **kwargs):
 
     assert 'code' in dataset
 
     root_ = '{}/{}'.format(os.environ['GRAPH_DATA'], dataset)
-    dataset = PygGraphPropPredDataset(name = dataset, root = root_)
+    print('root_', root_)
+    dataset_ = PygGraphPropPredDataset(name = dataset, root = root_)
 
-    seq_len_list = np.array([len(seq) for seq in dataset.data.y])
+    seq_len_list = np.array([len(seq) for seq in dataset_.data.y])
     print('Target seqence less or equal to {} is {}%.'.format(max_seq_len, np.sum(seq_len_list <= max_seq_len) / len(seq_len_list)))
 
-    split_idx = dataset.get_idx_split()
+    split_idx = dataset_.get_idx_split()
 
-    vocab2idx, idx2vocab = get_vocab_mapping([dataset.data.y[i] for i in split_idx['train']], num_vocab)
+    vocab2idx, idx2vocab = get_vocab_mapping([dataset_.data.y[i] for i in split_idx['train']], num_vocab)
 
     # encode_y_to_arr: add y_arr to PyG data object, indicating the array representation of a sequence.
-    dataset.transform = transforms.Compose([augment_edge, lambda data: encode_y_to_arr(data, vocab2idx, max_seq_len)])
+    dataset_.transform = transforms.Compose([augment_edge, lambda data: encode_y_to_arr(data, vocab2idx, max_seq_len)])
 
     ### automatic evaluator. takes dataset name as input
-    evaluator = Evaluator(args.dataset)
+    evaluator = Evaluator(dataset)
 
-    train_loader = DataLoader(dataset[split_idx["train"]], batch_size=batch_size, shuffle=True, num_workers = args.num_workers)
-    valid_loader = DataLoader(dataset[split_idx["valid"]], batch_size=batch_size, shuffle=False, num_workers = args.num_workers)
-    test_loader = DataLoader(dataset[split_idx["test"]], batch_size=batch_size, shuffle=False, num_workers = args.num_workers)
+    train_loader = DataLoader(IndexedDataset(dataset_[split_idx["train"]]), batch_size=batch_size, shuffle=True, num_workers = 0)
+    val_loader = DataLoader(dataset_[split_idx["valid"]], batch_size=batch_size, shuffle=False, num_workers = 0)
+    test_loader = DataLoader(dataset_[split_idx["test"]], batch_size=batch_size, shuffle=False, num_workers = 0)
 
-    print('train',len(dataset[split_idx["train"]]) )
-    print('valid',len(dataset[split_idx["valid"]]) )
-    print('test',len(dataset[split_idx["test"]]) )
-    input('press any key')
+    # print('train',len(dataset_[split_idx["train"]]) )
+    # print('valid',len(dataset_[split_idx["valid"]]) )
+    # print('test',len(dataset_[split_idx["test"]]) )
+    # input('press any key')
 
 
-    nodetypes_mapping = pd.read_csv(os.path.join(dataset.root, 'mapping', 'typeidx2type.csv.gz'))
-    nodeattributes_mapping = pd.read_csv(os.path.join(dataset.root, 'mapping', 'attridx2attr.csv.gz'))
+    nodetypes_mapping = pd.read_csv(os.path.join(dataset_.root, 'mapping', 'typeidx2type.csv.gz'))
+    nodeattributes_mapping = pd.read_csv(os.path.join(dataset_.root, 'mapping', 'attridx2attr.csv.gz'))
 
     ### Encoding node features into emb_dim vectors.
     ### The following three node features are used.
     # 1. node type
     # 2. node attribute
     # 3. node depth
-    node_encoder = ASTNodeEncoder(args.emb_dim, num_nodetypes = len(nodetypes_mapping['type']), num_nodeattributes = len(nodeattributes_mapping['attr']), max_depth = 20)
+    node_encoder = ASTNodeEncoder(width, num_nodetypes = len(nodetypes_mapping['type']), num_nodeattributes = len(nodeattributes_mapping['attr']), max_depth = 20)
 
-    train_idxed_loader.tag = 'train'
+    # train_idxed_loader.tag = 'train'
     train_loader.tag = 'train'
     val_loader.tag = 'val'
     test_loader.tag = 'test'
+    train_loader.idx2vocab = idx2vocab
+    val_loader.idx2vocab = idx2vocab
+    test_loader.idx2vocab = idx2vocab
 
-    return train_idxed_loader, val_loader, test_loader
+    return train_loader, val_loader, test_loader
 
 def loaders_tiny_imagenet(dataset, batch_size, cuda,
                      train_size=100000, augment=True, val_size=10000,

@@ -10,6 +10,7 @@ from collections import OrderedDict
 from .gnn_mol import GNN
 from .gnn_code import GNN_CODE
 from ogb.graphproppred import PygGraphPropPredDataset
+from utils_gnn import ASTNodeEncoder, get_vocab_mapping
 
 
 def get_model(args):
@@ -36,7 +37,7 @@ def get_model(args):
         nodetypes_mapping = pd.read_csv(os.path.join(root, 'mapping', 'typeidx2type.csv.gz'))
         nodeattributes_mapping = pd.read_csv(os.path.join(root, 'mapping', 'attridx2attr.csv.gz'))
         node_encoder = ASTNodeEncoder(args.width, num_nodetypes = len(nodetypes_mapping['type']), num_nodeattributes = len(nodeattributes_mapping['attr']), max_depth = 20)
-        model = GNN_CODE(num_vocab = len(vocab2idx), max_seq_len = args.max_seq_len, node_encoder = node_encoder, num_layer = args.depth, gnn_type = gnn_type, emb_dim = args.width, drop_ratio = args.dropout, virtual_node = virtual_node)
+        model = GNN_CODE(num_vocab = 5002, max_seq_len = args.max_seq_len, node_encoder = node_encoder, num_layer = args.depth, emb_dim = args.width,  gnn_type = gnn_type, virtual_node = virtual_node, drop_ratio = args.dropout)
     else:
         raise NotImplementedError
 
