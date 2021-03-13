@@ -1,1 +1,1 @@
-- {model: wrn, dataset: cifar100, batch_size: 128, opt: sbd, eta: 1.0, max_norm: 100, k: 3, momentum: 0.0}
+- {model: wrn, dataset: cifar100, batch_size: 128, opt: sbd, eta: 1.0, max_norm: 100, k: 5, momentum: 0.9, tag: test, epoch: 5}

@@ -1,4 +1,5 @@
 import itertools
+import time
 try:
     import torch
     import concurrent.futures
@@ -42,8 +43,15 @@ class SBD(torch.optim.Optimizer):
         self.last_loss = 1e12
         self.reset_bundle()
 
+        self.step_time = 0
+        self.solve_time = 0
+
         if self.projection is not None:
             self.projection()
+
+    @torch.autograd.no_grad()
+    def print_times(self):
+        print('fraction of time spent in solve method:',self.solve_time/self.step_time*100)
 
     @torch.autograd.no_grad()
     def reset_bundle(self):
@@ -59,13 +67,16 @@ class SBD(torch.optim.Optimizer):
 
     @torch.autograd.no_grad()
     def step(self, loss):
+        tic = time.time()
         self.update_bundle(loss())
         self.Update_Q_and_b()
         if self.solve_forward or self.n == self.N:
+            toc = time.time()
             if self.n == 2:
                 self.alig_solve()
             else:
                 self.solve_dual()
+            self.solve_time += time.time() - toc
         else:
             self.sgd_solve()
         self.update_parameters()
@@ -74,6 +85,7 @@ class SBD(torch.optim.Optimizer):
             if self.projection is not None:
                 self.projection()
             self.reset_bundle()
+        self.step_time += time.time() - tic
 
     @torch.autograd.no_grad()
     def update_bundle(self, loss):
@@ -139,24 +151,27 @@ class SBD(torch.optim.Optimizer):
             dual_val = -1
         return dual_val, alpha
 
-
     @torch.autograd.no_grad()
     def solve_dual(self):
         self.Q_ = self.Q.clone().cpu()
         self.b_ = self.b.clone().cpu()
+        # tic = time.time()
         iters = [i for i in itertools.product([1,0], repeat=self.n-1)]
         with concurrent.futures.ThreadPoolExecutor() as executor:
             a = executor.map(self.solve_system, iters)
         results = [x for x in a]
         dual_vals, alphas = zip(*results)
         idx, val = argmax(dual_vals)
-        if val > self.max_dual_value:
+        if val.cuda() > self.max_dual_value:
             self.max_dual_value = val
             self.last_alpha = self.best_alpha.clone()
             self.best_alpha.copy_(torch.Tensor(alphas[idx]))
         else:
             if self.print:
                 print('using last alpha')
+        # t = time.time() - tic
+        # print('time taken {time:.3f}'.format(time=t))
+        # input('press any key')
 
     @torch.autograd.no_grad()
     def alig_solve(self):

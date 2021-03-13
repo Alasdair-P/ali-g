@@ -1,0 +1,70 @@
+#- {model: wrn, dataset: cifar100, batch_size: 128, opt: sgd, k: 1, eta: 0.1, weight_decay: 0.0001, loss: ce, tag: constant, epochs: 200, noise: 0.0}
+#- {model: wrn, dataset: cifar100, batch_size: 128, opt: sgd, k: 1, eta: 0.1, weight_decay: 0.0005, loss: ce, tag: constant, epochs: 200, noise: 0.0}
+#- {model: wrn, dataset: cifar100, batch_size: 256, opt: sgd, k: 1, eta: 0.1, weight_decay: 0.0001, loss: ce, tag: constant, epochs: 200, noise: 0.0}
+#- {model: wrn, dataset: cifar100, batch_size: 256, opt: sgd, k: 1, eta: 0.1, weight_decay: 0.0005, loss: ce, tag: constant, epochs: 200, noise: 0.0}
+#- {model: wrn, dataset: cifar100, batch_size: 512, opt: sgd, k: 1, eta: 0.1, weight_decay: 0.0001, loss: ce, tag: constant, epochs: 200, noise: 0.0}
+#- {model: wrn, dataset: cifar100, batch_size: 512, opt: sgd, k: 1, eta: 0.1, weight_decay: 0.0005, loss: ce, tag: constant, epochs: 200, noise: 0.0}
+#- {model: wrn, dataset: cifar100, batch_size: 128, opt: sgd, k: 1, eta: 0.01, weight_decay: 0.0001, loss: ce, tag: constant, epochs: 200, noise: 0.0}
+#- {model: wrn, dataset: cifar100, batch_size: 128, opt: sgd, k: 1, eta: 0.01, weight_decay: 0.0005, loss: ce, tag: constant, epochs: 200, noise: 0.0}
+#- {model: wrn, dataset: cifar100, batch_size: 256, opt: sgd, k: 1, eta: 0.01, weight_decay: 0.0001, loss: ce, tag: constant, epochs: 200, noise: 0.0}
+#- {model: wrn, dataset: cifar100, batch_size: 256, opt: sgd, k: 1, eta: 0.01, weight_decay: 0.0005, loss: ce, tag: constant, epochs: 200, noise: 0.0}
+#- {model: wrn, dataset: cifar100, batch_size: 512, opt: sgd, k: 1, eta: 0.01, weight_decay: 0.0001, loss: ce, tag: constant, epochs: 200, noise: 0.0}
+#- {model: wrn, dataset: cifar100, batch_size: 512, opt: sgd, k: 1, eta: 0.01, weight_decay: 0.0005, loss: ce, tag: constant, epochs: 200, noise: 0.0}
+#- {model: wrn, dataset: cifar100, batch_size: 128, opt: sgd, k: 1, eta: 1.0, weight_decay: 0.0001, loss: ce, tag: constant, epochs: 200, noise: 0.0}
+#- {model: wrn, dataset: cifar100, batch_size: 128, opt: sgd, k: 1, eta: 1.0, weight_decay: 0.0005, loss: ce, tag: constant, epochs: 200, noise: 0.0}
+#- {model: wrn, dataset: cifar100, batch_size: 256, opt: sgd, k: 1, eta: 1.0, weight_decay: 0.0001, loss: ce, tag: constant, epochs: 200, noise: 0.0}
+#- {model: wrn, dataset: cifar100, batch_size: 256, opt: sgd, k: 1, eta: 1.0, weight_decay: 0.0005, loss: ce, tag: constant, epochs: 200, noise: 0.0}
+#- {model: wrn, dataset: cifar100, batch_size: 512, opt: sgd, k: 1, eta: 1.0, weight_decay: 0.0001, loss: ce, tag: constant, epochs: 200, noise: 0.0}
+#- {model: wrn, dataset: cifar100, batch_size: 512, opt: sgd, k: 1, eta: 1.0, weight_decay: 0.0005, loss: ce, tag: constant, epochs: 200, noise: 0.0}
+#- {model: wrn, dataset: cifar10, batch_size: 128, opt: sgd, k: 1, eta: 1.0, weight_decay: 0.0001, loss: ce, tag: constant, epochs: 200, noise: 0.0}
+#- {model: wrn, dataset: cifar10, batch_size: 128, opt: sgd, k: 1, eta: 1.0, weight_decay: 0.0005, loss: ce, tag: constant, epochs: 200, noise: 0.0}
+#- {model: wrn, dataset: cifar10, batch_size: 256, opt: sgd, k: 1, eta: 1.0, weight_decay: 0.0001, loss: ce, tag: constant, epochs: 200, noise: 0.0}
+#- {model: wrn, dataset: cifar10, batch_size: 256, opt: sgd, k: 1, eta: 1.0, weight_decay: 0.0005, loss: ce, tag: constant, epochs: 200, noise: 0.0}
+#- {model: wrn, dataset: cifar10, batch_size: 512, opt: sgd, k: 1, eta: 1.0, weight_decay: 0.0001, loss: ce, tag: constant, epochs: 200, noise: 0.0}
+#- {model: wrn, dataset: cifar10, batch_size: 512, opt: sgd, k: 1, eta: 1.0, weight_decay: 0.0005, loss: ce, tag: constant, epochs: 200, noise: 0.0}
+
+#- {model: dn, dataset: cifar100, batch_size: 128, opt: sgd, k: 1, eta: 0.1, weight_decay: 0.0001, loss: ce, tag: constant, epochs: 300, noise: 0.0}
+#- {model: dn, dataset: cifar100, batch_size: 128, opt: sgd, k: 1, eta: 0.1, weight_decay: 0.0005, loss: ce, tag: constant, epochs: 300, noise: 0.0}
+#- {model: dn, dataset: cifar100, batch_size: 256, opt: sgd, k: 1, eta: 0.1, weight_decay: 0.0001, loss: ce, tag: constant, epochs: 300, noise: 0.0}
+#- {model: dn, dataset: cifar100, batch_size: 256, opt: sgd, k: 1, eta: 0.1, weight_decay: 0.0005, loss: ce, tag: constant, epochs: 300, noise: 0.0}
+#- {model: dn, dataset: cifar100, batch_size: 512, opt: sgd, k: 1, eta: 0.1, weight_decay: 0.0001, loss: ce, tag: constant, epochs: 300, noise: 0.0}
+#- {model: dn, dataset: cifar100, batch_size: 512, opt: sgd, k: 1, eta: 0.1, weight_decay: 0.0005, loss: ce, tag: constant, epochs: 300, noise: 0.0}
+#- {model: dn, dataset: cifar100, batch_size: 128, opt: sgd, k: 1, eta: 0.01, weight_decay: 0.0001, loss: ce, tag: constant, epochs: 300, noise: 0.0}
+#- {model: dn, dataset: cifar100, batch_size: 128, opt: sgd, k: 1, eta: 0.01, weight_decay: 0.0005, loss: ce, tag: constant, epochs: 300, noise: 0.0}
+#- {model: dn, dataset: cifar100, batch_size: 256, opt: sgd, k: 1, eta: 0.01, weight_decay: 0.0001, loss: ce, tag: constant, epochs: 300, noise: 0.0}
+#- {model: dn, dataset: cifar100, batch_size: 256, opt: sgd, k: 1, eta: 0.01, weight_decay: 0.0005, loss: ce, tag: constant, epochs: 300, noise: 0.0}
+#- {model: dn, dataset: cifar100, batch_size: 512, opt: sgd, k: 1, eta: 0.01, weight_decay: 0.0001, loss: ce, tag: constant, epochs: 300, noise: 0.0}
+#- {model: dn, dataset: cifar100, batch_size: 512, opt: sgd, k: 1, eta: 0.01, weight_decay: 0.0005, loss: ce, tag: constant, epochs: 300, noise: 0.0}
+
+#- {model: dn, dataset: cifar10, batch_size: 128, opt: sgd, k: 1, eta: 0.1, weight_decay: 0.0001, loss: ce, tag: constant, epochs: 300, noise: 0.0}
+#- {model: dn, dataset: cifar10, batch_size: 128, opt: sgd, k: 1, eta: 0.1, weight_decay: 0.0005, loss: ce, tag: constant, epochs: 300, noise: 0.0}
+#- {model: dn, dataset: cifar10, batch_size: 256, opt: sgd, k: 1, eta: 0.1, weight_decay: 0.0001, loss: ce, tag: constant, epochs: 300, noise: 0.0}
+#- {model: dn, dataset: cifar10, batch_size: 256, opt: sgd, k: 1, eta: 0.1, weight_decay: 0.0005, loss: ce, tag: constant, epochs: 300, noise: 0.0}
+#- {model: dn, dataset: cifar10, batch_size: 512, opt: sgd, k: 1, eta: 0.1, weight_decay: 0.0001, loss: ce, tag: constant, epochs: 300, noise: 0.0}
+#- {model: dn, dataset: cifar10, batch_size: 512, opt: sgd, k: 1, eta: 0.1, weight_decay: 0.0005, loss: ce, tag: constant, epochs: 300, noise: 0.0}
+#- {model: dn, dataset: cifar10, batch_size: 128, opt: sgd, k: 1, eta: 0.01, weight_decay: 0.0001, loss: ce, tag: constant, epochs: 300, noise: 0.0}
+#- {model: dn, dataset: cifar10, batch_size: 128, opt: sgd, k: 1, eta: 0.01, weight_decay: 0.0005, loss: ce, tag: constant, epochs: 300, noise: 0.0}
+#- {model: dn, dataset: cifar10, batch_size: 256, opt: sgd, k: 1, eta: 0.01, weight_decay: 0.0001, loss: ce, tag: constant, epochs: 300, noise: 0.0}
+#- {model: dn, dataset: cifar10, batch_size: 256, opt: sgd, k: 1, eta: 0.01, weight_decay: 0.0005, loss: ce, tag: constant, epochs: 300, noise: 0.0}
+#- {model: dn, dataset: cifar10, batch_size: 512, opt: sgd, k: 1, eta: 0.01, weight_decay: 0.0001, loss: ce, tag: constant, epochs: 300, noise: 0.0}
+#- {model: dn, dataset: cifar10, batch_size: 512, opt: sgd, k: 1, eta: 0.01, weight_decay: 0.0005, loss: ce, tag: constant, epochs: 300, noise: 0.0}
+
+#- {model: dn, dataset: cifar10, batch_size: 64, opt: sgd, k: 1, eta: 0.01, weight_decay: 0.0001, loss: ce, tag: constant, epochs: 300, noise: 0.0}
+#- {model: dn, dataset: cifar10, batch_size: 64, opt: sgd, k: 1, eta: 0.01, weight_decay: 0.0005, loss: ce, tag: constant, epochs: 300, noise: 0.0}
+#- {model: dn, dataset: cifar10, batch_size: 64, opt: sgd, k: 1, eta: 0.1, weight_decay: 0.0001, loss: ce, tag: constant, epochs: 300, noise: 0.0}
+#- {model: dn, dataset: cifar10, batch_size: 64, opt: sgd, k: 1, eta: 0.1, weight_decay: 0.0005, loss: ce, tag: constant, epochs: 300, noise: 0.0}
+
+#- {model: dn, dataset: cifar100, batch_size: 64, opt: sgd, k: 1, eta: 0.01, weight_decay: 0.0001, loss: ce, tag: constant, epochs: 300, noise: 0.0}
+#- {model: dn, dataset: cifar100, batch_size: 64, opt: sgd, k: 1, eta: 0.01, weight_decay: 0.0005, loss: ce, tag: constant, epochs: 300, noise: 0.0}
+#- {model: dn, dataset: cifar100, batch_size: 64, opt: sgd, k: 1, eta: 0.1, weight_decay: 0.0001, loss: ce, tag: constant, epochs: 300, noise: 0.0}
+#- {model: dn, dataset: cifar100, batch_size: 64, opt: sgd, k: 1, eta: 0.1, weight_decay: 0.0005, loss: ce, tag: constant, epochs: 300, noise: 0.0}
+
+#- {model: dn, dataset: cifar100, batch_size: 64, opt: sgd, k: 1, eta: 0.01, weight_decay: 0.0001, loss: ce, tag: constant_2, epochs: 300, noise: 0.0}
+#- {model: dn, dataset: cifar10, batch_size: 64, opt: sgd, k: 1, eta: 0.01, weight_decay: 0.0001, loss: ce, tag: constant_2, epochs: 300, noise: 0.0}
+#- {model: dn, dataset: cifar100, batch_size: 64, opt: sgd, k: 1, eta: 0.01, weight_decay: 0.0001, loss: ce, tag: constant_3, epochs: 300, noise: 0.0}
+#- {model: dn, dataset: cifar10, batch_size: 64, opt: sgd, k: 1, eta: 0.01, weight_decay: 0.0001, loss: ce, tag: constant_3, epochs: 300, noise: 0.0}
+
+- {model: wrn, dataset: cifar100, batch_size: 128, opt: sgd, k: 1, eta: 0.01, weight_decay: 0.0001, loss: ce, tag: constant_2, epochs: 200, noise: 0.0}
+- {model: wrn, dataset: cifar100, batch_size: 128, opt: sgd, k: 1, eta: 0.01, weight_decay: 0.0001, loss: ce, tag: constant_3, epochs: 200, noise: 0.0}
+- {model: wrn, dataset: cifar10, batch_size: 128, opt: sgd, k: 1, eta: 0.01, weight_decay: 0.0005, loss: ce, tag: constant_2, epochs: 200, noise: 0.0}
+- {model: wrn, dataset: cifar10, batch_size: 128, opt: sgd, k: 1, eta: 0.01, weight_decay: 0.0005, loss: ce, tag: constant_3, epochs: 200, noise: 0.0}

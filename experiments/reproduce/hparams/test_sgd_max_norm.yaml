@@ -1,0 +1,1 @@
+- {model: wrn, dataset: cifar100, batch_size: 128, opt: sgd, eta: 10.0, max_norm: 50, loss: svm, tag: svm}

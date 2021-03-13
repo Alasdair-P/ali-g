@@ -7,7 +7,7 @@ def get_loss(args):
         if 'cifar' in args.dataset:
             args.smooth_svm = True
     elif args.loss == 'map':
-        loss_fn = AP(n_classes=args.n_classes)
+        loss_fn = ap_final(n_classes=args.n_classes)
     elif args.loss == 'ndcg':
         loss_fn = NDCG(n_classes=args.n_classes)
     elif args.dataset == 'imagenet':
@@ -301,12 +301,12 @@ class AP(nn.Module):
             loss += self.calc_loss_for_cth_class(scores[:,i], class_lables, i)
         return loss/self.n_classes
 
-class ap(nn.Module):
+class ap_final(nn.Module):
     """Implementation of <Efficient Optimization for Rank-based Loss Functions>.
     """
 
     def __init__(self, n_classes):
-        super(ap, self).__init__()
+        super(ap_final, self).__init__()
         self.print = True
         self.print = False
         self.count = 0

@@ -64,9 +64,9 @@ def train(model, loss, optimizer, loader, args, xp):
         loss_value.backward()
         # optimization step
         optimizer.step(lambda: float(loss_value))
-        
+
         if 'sgd' in args.opt and args.max_norm:
-            l2_projection(model.parameters(), args.max_norm)
+            l2_projection(list(model.parameters()), args.max_norm)
 
         if 'sbd' in args.opt and not optimizer.n == 1:
             continue

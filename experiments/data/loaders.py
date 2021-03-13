@@ -5,7 +5,7 @@ import torchvision.datasets as datasets
 import torchvision.transforms as transforms
 from .balancedsampler import BalancedBatchSampler
 
-from .utils import random_subsets, Subset
+from .utils import random_subsets, Subset, LabelNoise
 
 def create_loaders(dataset_train, dataset_val, dataset_test,
                    train_size, val_size, test_size, batch_size, test_batch_size,
@@ -93,9 +93,11 @@ def loaders_mnist(dataset, batch_size=64, cuda=0,
 
 def loaders_cifar(dataset, batch_size, cuda, n_classes, eq_class,
                   train_size=45000, augment=True, val_size=5000, test_size=10000,
-                  test_batch_size=128, **kwargs):
+                  test_batch_size=128, noise=False, **kwargs):
 
     assert dataset in ('cifar10', 'cifar100')
+    if noise:
+        assert dataset == 'cifar100'
 
     root = '{}/{}'.format(os.environ['VISION_DATA'], dataset)
 
@@ -129,6 +131,9 @@ def loaders_cifar(dataset, batch_size, cuda, n_classes, eq_class,
                           transform=transform_test)
     dataset_test = dataset(root=root, train=False, download=True,
                            transform=transform_test)
+    # label noise
+    if noise:
+        dataset_train = LabelNoise(dataset_train, k=5, n_labels=100, p=noise)
 
     return create_loaders(dataset_train, dataset_val,
                           dataset_test, train_size, val_size, test_size,

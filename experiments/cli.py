@@ -29,6 +29,8 @@ def _add_dataset_parser(parser):
                           help="training data size")
     d_parser.add_argument('--val_size', type=int, default=None,
                           help="val data size")
+    d_parser.add_argument('--noise', type=float, default=None,
+                          help="fraction of corrupted labels")
     d_parser.add_argument('--test_size', type=int, default=None,
                           help="test data size")
     d_parser.add_argument('--no_data_augmentation', dest='augment',
@@ -145,7 +147,10 @@ def set_xp_name(args):
         xp_name = args.log_dir
         xp_name += 'results/{data}/'.format(data=args.dataset)
         xp_name += "{model}{data}-{opt}--k-{k}--eta-{eta}--l2-{l2}--b-{b}-{tag}"
-        l2 = args.max_norm if (args.opt == 'alig') or (args.opt == 'sbd') or (args.opt == 'sgd') else args.weight_decay
+        if args.max_norm:
+            l2 = args.max_norm if (args.opt == 'alig') or (args.opt == 'sbd') or (args.opt == 'sgd') else args.weight_decay
+        else:
+            l2 = args.max_norm if (args.opt == 'alig') or (args.opt == 'sbd') else args.weight_decay
         data = args.dataset.replace("cifar", "")
         xp_name += "--momentum-{}".format(args.momentum)
         args.k = 2 if args.opt == 'alig' else args.k
@@ -164,10 +169,12 @@ def set_xp_name(args):
         # generate automatic experiment name if not provided
         print('xp_name', args.xp_name)
         if os.path.exists(args.xp_name):
-            if not args.debug:
+            if not args.debug and not ('test' in args.tag):
                 warnings.warn('An experiment already exists at {}'
                               .format(os.path.abspath(args.xp_name)))
                 raise RuntimeError
+            else:
+                print("overing writing experiment at {}".format(os.path.abspath(args.xp_name)))
         else:
             os.makedirs(args.xp_name)
 

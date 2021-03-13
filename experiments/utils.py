@@ -122,7 +122,7 @@ def write_results(args, xp, path):
         file_name = 'results.txt'
     save_path = os.path.join(path, file_name)
     with open(save_path, 'a') as results:
-        results.write('dataset,{ds},model,{model},opt,{opt},bs,{bs},eta,{eta},wd,{wd},max_norm,{mn},tr_acc,{tracc:.2f},val_acc,{vacc:.2f},te_acc,{teacc:.2f},name,{xp_name}\n'
+        results.write('name,{xp_name},dataset,{ds},model,{model},opt,{opt},bs,{bs},eta,{eta},wd,{wd},max_norm,{mn},tr_acc,{tracc:.4f},val_acc,{vacc:.4f},te_acc,{teacc:.4f}\n'
                 .format(ds=args.dataset,
                         model=args.model,
                         opt=args.opt,

@@ -33,7 +33,6 @@ class Subset(data.Dataset):
     def __len__(self):
         return self.n_samples
 
-
 def random_subsets(subset_sizes, n_total, seed=None, replace=False):
     """
     Return subsets of indices, with sizes given by the iterable
@@ -59,3 +58,26 @@ def random_subsets(subset_sizes, n_total, seed=None, replace=False):
     # restore initial random state
     np.random.set_state(state)
     return res
+
+class LabelNoise(data.Dataset):
+    def __init__(self, dataset, k, n_labels, p=1):
+
+        assert n_labels % k == 0
+
+        self.dataset = dataset
+        self.k = k
+        # random label between 0 and k-1
+        self.noise = np.random.choice(k, size=len(self.dataset))
+        # noisy labels are introduced for each sample with probability p
+        self.p = np.random.binomial(1, p, size=len(self.dataset))
+
+        print('Noisy labels (p={})'.format(p))
+
+    def __getitem__(self, idx):
+        img, label = self.dataset[idx]
+        if self.p[idx]:
+            label = label - label % self.k + self.noise[idx]
+        return img, label
+
+    def __len__(self):
+        return len(self.dataset)
