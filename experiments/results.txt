@@ -1006,3 +1006,4 @@ name,/data0/clean/results/cifar10/wrn10-sgd--k-1--eta-0.01--l2-0.0005--b-128-con
 name,/data0/clean/results/cifar10/wrn10-sgd--k-1--eta-0.01--l2-0.0005--b-128-constant_3--momentum-0.9,dataset,cifar10,model,wrn,opt,sgd,bs,128,eta,0.01,wd,0.0005,max_norm,None,tr_acc,98.5133,val_acc,93.0000,te_acc,91.3200
 name,/data0/clean/results/cifar10/dn10-sgd--k-1--eta-0.01--l2-0.0001--b-64-constant_2--momentum-0.9,dataset,cifar10,model,dn,opt,sgd,bs,64,eta,0.01,wd,0.0001,max_norm,None,tr_acc,98.9800,val_acc,93.0600,te_acc,91.3800
 name,/data0/clean/results/cifar100/dn100-sgd--k-1--eta-0.01--l2-0.0001--b-64-constant_3--momentum-0.9,dataset,cifar100,model,dn,opt,sgd,bs,64,eta,0.01,wd,0.0001,max_norm,None,tr_acc,97.3178,val_acc,68.3400,te_acc,67.3300
+name,/data0/clean/results/cifar10/dn10-sgd--k-1--eta-0.01--l2-0.0001--b-64-constant_3--momentum-0.9,dataset,cifar10,model,dn,opt,sgd,bs,64,eta,0.01,wd,0.0001,max_norm,None,tr_acc,99.0956,val_acc,92.5000,te_acc,91.5100
