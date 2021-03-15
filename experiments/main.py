@@ -34,7 +34,6 @@ def main(args):
     if 'ogbg' in args.dataset:
         evaluator = Evaluator(args.dataset)
         dataset = PygGraphPropPredDataset(name = args.dataset)
-
     for i in range(args.epochs):
         xp.epoch.update(i)
         if 'ogbg' in args.dataset:

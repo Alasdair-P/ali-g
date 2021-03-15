@@ -383,8 +383,8 @@ def test_graph(model, optimizer, evaluator, dataset, loader, args, xp):
         if 'code' in  args.dataset:
 
             mat = []
-            for i in range(len(pred_list)):
-                mat.append(torch.argmax(pred_list[i], dim = 1).view(-1,1))
+            for i in range(len(pred)):
+                mat.append(torch.argmax(pred[i], dim = 1).view(-1,1))
             mat = torch.cat(mat, dim = 1)
             seq_pred = [arr_to_seq(arr) for arr in mat]
             # PyG = 1.4.3
@@ -393,8 +393,8 @@ def test_graph(model, optimizer, evaluator, dataset, loader, args, xp):
             # PyG >= 1.5.0
             seq_ref = [batch.y[i] for i in range(len(batch.y))]
 
-            seq_ref_list.extend(seq_ref)
-            seq_pred_list.extend(seq_pred)
+            y_true.extend(seq_ref)
+            y_pred.extend(seq_pred)
 
         else:
 

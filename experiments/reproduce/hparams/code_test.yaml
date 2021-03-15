@@ -1,0 +1,2 @@
+#- {model: gcn, dataset: ogbg-code, batch_size: 64, opt: adam, eta: 0.001, weight_decay: 0.0, tag: adam}
+- {model: gcn, dataset: ogbg-code, batch_size: 64, opt: sgd, eta: 0.01, weight_decay: 0.0, tag: sgd}
