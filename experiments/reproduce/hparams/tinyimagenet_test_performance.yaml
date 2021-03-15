@@ -1,0 +1,2 @@
+- {model: wrn, dataset: tiny_imagenet, batch_size: 500, opt: sgd, eta: 1e-10, epochs: 0, loss: ce, tag: sgd-0.01-50,
+  load_model: /jmain01/home/JAD035/pkm01/shared/models/results/tiny_imagenet/wrntiny_imagenet-sgd--k-1--eta-0.01--l2-50.0--b-128---momentum-0.9/best_model.pkl}

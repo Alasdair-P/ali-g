@@ -1,0 +1,101 @@
+- {model: wrn, dataset: tiny_imagenet, batch_size: 128, opt: sgd, eta: 10.0, max_norm: 50, epochs: 200, loss: svm, tag: svm}
+- {model: wrn, dataset: tiny_imagenet, batch_size: 128, opt: sgd, eta: 1.0, max_norm: 50, epochs: 200, loss: svm, tag: svm}
+- {model: wrn, dataset: tiny_imagenet, batch_size: 128, opt: sgd, eta: 0.1, max_norm: 50, epochs: 200, loss: svm, tag: svm}
+- {model: wrn, dataset: tiny_imagenet, batch_size: 128, opt: sgd, eta: 0.01, max_norm: 50, epochs: 200, loss: svm, tag: svm}
+- {model: wrn, dataset: tiny_imagenet, batch_size: 128, opt: sgd, eta: 10.0, max_norm: 100, epochs: 200, loss: svm, tag: svm}
+- {model: wrn, dataset: tiny_imagenet, batch_size: 128, opt: sgd, eta: 1.0, max_norm: 100, epochs: 200, loss: svm, tag: svm}
+- {model: wrn, dataset: tiny_imagenet, batch_size: 128, opt: sgd, eta: 0.1, max_norm: 100, epochs: 200, loss: svm, tag: svm}
+- {model: wrn, dataset: tiny_imagenet, batch_size: 128, opt: sgd, eta: 0.01, max_norm: 100, epochs: 200, loss: svm, tag: svm}
+- {model: wrn, dataset: tiny_imagenet, batch_size: 128, opt: sgd, eta: 10.0, max_norm: 150, epochs: 200, loss: svm, tag: svm}
+- {model: wrn, dataset: tiny_imagenet, batch_size: 128, opt: sgd, eta: 1.0, max_norm: 150, epochs: 200, loss: svm, tag: svm}
+- {model: wrn, dataset: tiny_imagenet, batch_size: 128, opt: sgd, eta: 0.1, max_norm: 150, epochs: 200, loss: svm, tag: svm}
+- {model: wrn, dataset: tiny_imagenet, batch_size: 128, opt: sgd, eta: 0.01, max_norm: 150, epochs: 200, loss: svm, tag: svm}
+- {model: wrn, dataset: tiny_imagenet, batch_size: 128, opt: sgd, eta: 10.0, max_norm: 200, epochs: 200, loss: svm, tag: svm}
+- {model: wrn, dataset: tiny_imagenet, batch_size: 128, opt: sgd, eta: 1.0, max_norm: 200, epochs: 200, loss: svm, tag: svm}
+- {model: wrn, dataset: tiny_imagenet, batch_size: 128, opt: sgd, eta: 0.1, max_norm: 200, epochs: 200, loss: svm, tag: svm}
+- {model: wrn, dataset: tiny_imagenet, batch_size: 128, opt: sgd, eta: 0.01, max_norm: 200, epochs: 200, loss: svm, tag: svm}
+- {model: wrn, dataset: tiny_imagenet, batch_size: 128, opt: sgd, eta: 10.0, max_norm: 250, epochs: 200, loss: svm, tag: svm}
+- {model: wrn, dataset: tiny_imagenet, batch_size: 128, opt: sgd, eta: 1.0, max_norm: 250, epochs: 200, loss: svm, tag: svm}
+- {model: wrn, dataset: tiny_imagenet, batch_size: 128, opt: sgd, eta: 0.1, max_norm: 250, epochs: 200, loss: svm, tag: svm}
+- {model: wrn, dataset: tiny_imagenet, batch_size: 128, opt: sgd, eta: 0.01, max_norm: 250, epochs: 200, loss: svm, tag: svm}
+- {model: wrn, dataset: tiny_imagenet, batch_size: 128, opt: alig, eta: 10.0, max_norm: 50, epochs: 200, loss: svm, tag: svm}
+- {model: wrn, dataset: tiny_imagenet, batch_size: 128, opt: alig, eta: 1.0, max_norm: 50, epochs: 200, loss: svm, tag: svm}
+- {model: wrn, dataset: tiny_imagenet, batch_size: 128, opt: alig, eta: 0.1, max_norm: 50, epochs: 200, loss: svm, tag: svm}
+- {model: wrn, dataset: tiny_imagenet, batch_size: 128, opt: alig, eta: 0.01, max_norm: 50, epochs: 200, loss: svm, tag: svm}
+- {model: wrn, dataset: tiny_imagenet, batch_size: 128, opt: alig, eta: 10.0, max_norm: 100, epochs: 200, loss: svm, tag: svm}
+- {model: wrn, dataset: tiny_imagenet, batch_size: 128, opt: alig, eta: 1.0, max_norm: 100, epochs: 200, loss: svm, tag: svm}
+- {model: wrn, dataset: tiny_imagenet, batch_size: 128, opt: alig, eta: 0.1, max_norm: 100, epochs: 200, loss: svm, tag: svm}
+- {model: wrn, dataset: tiny_imagenet, batch_size: 128, opt: alig, eta: 0.01, max_norm: 100, epochs: 200, loss: svm, tag: svm}
+- {model: wrn, dataset: tiny_imagenet, batch_size: 128, opt: alig, eta: 10.0, max_norm: 150, epochs: 200, loss: svm, tag: svm}
+- {model: wrn, dataset: tiny_imagenet, batch_size: 128, opt: alig, eta: 1.0, max_norm: 150, epochs: 200, loss: svm, tag: svm}
+- {model: wrn, dataset: tiny_imagenet, batch_size: 128, opt: alig, eta: 0.1, max_norm: 150, epochs: 200, loss: svm, tag: svm}
+- {model: wrn, dataset: tiny_imagenet, batch_size: 128, opt: alig, eta: 0.01, max_norm: 150, epochs: 200, loss: svm, tag: svm}
+- {model: wrn, dataset: tiny_imagenet, batch_size: 128, opt: alig, eta: 10.0, max_norm: 200, epochs: 200, loss: svm, tag: svm}
+- {model: wrn, dataset: tiny_imagenet, batch_size: 128, opt: alig, eta: 1.0, max_norm: 200, epochs: 200, loss: svm, tag: svm}
+- {model: wrn, dataset: tiny_imagenet, batch_size: 128, opt: alig, eta: 0.1, max_norm: 200, epochs: 200, loss: svm, tag: svm}
+- {model: wrn, dataset: tiny_imagenet, batch_size: 128, opt: alig, eta: 0.01, max_norm: 200, epochs: 200, loss: svm, tag: svm}
+- {model: wrn, dataset: tiny_imagenet, batch_size: 128, opt: alig, eta: 10.0, max_norm: 250, epochs: 200, loss: svm, tag: svm}
+- {model: wrn, dataset: tiny_imagenet, batch_size: 128, opt: alig, eta: 1.0, max_norm: 250, epochs: 200, loss: svm, tag: svm}
+- {model: wrn, dataset: tiny_imagenet, batch_size: 128, opt: alig, eta: 0.1, max_norm: 250, epochs: 200, loss: svm, tag: svm}
+- {model: wrn, dataset: tiny_imagenet, batch_size: 128, opt: alig, eta: 0.01, max_norm: 250, epochs: 200, loss: svm, tag: svm}
+- {model: wrn, dataset: tiny_imagenet, batch_size: 128, opt: sbd, eta: 10.0, max_norm: 50, epochs: 200, k: 3, loss: svm, tag: svm}
+- {model: wrn, dataset: tiny_imagenet, batch_size: 128, opt: sbd, eta: 1.0, max_norm: 50, epochs: 200, k: 3, loss: svm, tag: svm}
+- {model: wrn, dataset: tiny_imagenet, batch_size: 128, opt: sbd, eta: 0.1, max_norm: 50, epochs: 200, k: 3, loss: svm, tag: svm}
+- {model: wrn, dataset: tiny_imagenet, batch_size: 128, opt: sbd, eta: 0.01, max_norm: 50, epochs: 200, k: 3, loss: svm, tag: svm}
+- {model: wrn, dataset: tiny_imagenet, batch_size: 128, opt: sbd, eta: 10.0, max_norm: 100, epochs: 200, k: 3, loss: svm, tag: svm}
+- {model: wrn, dataset: tiny_imagenet, batch_size: 128, opt: sbd, eta: 1.0, max_norm: 100, epochs: 200, k: 3, loss: svm, tag: svm}
+- {model: wrn, dataset: tiny_imagenet, batch_size: 128, opt: sbd, eta: 0.1, max_norm: 100, epochs: 200, k: 3, loss: svm, tag: svm}
+- {model: wrn, dataset: tiny_imagenet, batch_size: 128, opt: sbd, eta: 0.01, max_norm: 100, epochs: 200, k: 3, loss: svm, tag: svm}
+- {model: wrn, dataset: tiny_imagenet, batch_size: 128, opt: sbd, eta: 10.0, max_norm: 150, epochs: 200, k: 3, loss: svm, tag: svm}
+- {model: wrn, dataset: tiny_imagenet, batch_size: 128, opt: sbd, eta: 1.0, max_norm: 150, epochs: 200, k: 3, loss: svm, tag: svm}
+- {model: wrn, dataset: tiny_imagenet, batch_size: 128, opt: sbd, eta: 0.1, max_norm: 150, epochs: 200, k: 3, loss: svm, tag: svm}
+- {model: wrn, dataset: tiny_imagenet, batch_size: 128, opt: sbd, eta: 0.01, max_norm: 150, epochs: 200, k: 3, loss: svm, tag: svm}
+- {model: wrn, dataset: tiny_imagenet, batch_size: 128, opt: sbd, eta: 10.0, max_norm: 200, epochs: 200, k: 3, loss: svm, tag: svm}
+- {model: wrn, dataset: tiny_imagenet, batch_size: 128, opt: sbd, eta: 1.0, max_norm: 200, epochs: 200, k: 3, loss: svm, tag: svm}
+- {model: wrn, dataset: tiny_imagenet, batch_size: 128, opt: sbd, eta: 0.1, max_norm: 200, epochs: 200, k: 3, loss: svm, tag: svm}
+- {model: wrn, dataset: tiny_imagenet, batch_size: 128, opt: sbd, eta: 0.01, max_norm: 200, epochs: 200, k: 3, loss: svm, tag: svm}
+- {model: wrn, dataset: tiny_imagenet, batch_size: 128, opt: sbd, eta: 10.0, max_norm: 250, epochs: 200, k: 3, loss: svm, tag: svm}
+- {model: wrn, dataset: tiny_imagenet, batch_size: 128, opt: sbd, eta: 1.0, max_norm: 250, epochs: 200, k: 3, loss: svm, tag: svm}
+- {model: wrn, dataset: tiny_imagenet, batch_size: 128, opt: sbd, eta: 0.1, max_norm: 250, epochs: 200, k: 3, loss: svm, tag: svm}
+- {model: wrn, dataset: tiny_imagenet, batch_size: 128, opt: sbd, eta: 0.01, max_norm: 250, epochs: 200, k: 3, loss: svm, tag: svm}
+- {model: wrn, dataset: tiny_imagenet, batch_size: 128, opt: sbd, eta: 10.0, max_norm: 50, epochs: 200, k: 5, loss: svm, tag: svm}
+- {model: wrn, dataset: tiny_imagenet, batch_size: 128, opt: sbd, eta: 1.0, max_norm: 50, epochs: 200, k: 5, loss: svm, tag: svm}
+- {model: wrn, dataset: tiny_imagenet, batch_size: 128, opt: sbd, eta: 0.1, max_norm: 50, epochs: 200, k: 5, loss: svm, tag: svm}
+- {model: wrn, dataset: tiny_imagenet, batch_size: 128, opt: sbd, eta: 0.01, max_norm: 50, epochs: 200, k: 5, loss: svm, tag: svm}
+- {model: wrn, dataset: tiny_imagenet, batch_size: 128, opt: sbd, eta: 10.0, max_norm: 100, epochs: 200, k: 5, loss: svm, tag: svm}
+- {model: wrn, dataset: tiny_imagenet, batch_size: 128, opt: sbd, eta: 1.0, max_norm: 100, epochs: 200, k: 5, loss: svm, tag: svm}
+- {model: wrn, dataset: tiny_imagenet, batch_size: 128, opt: sbd, eta: 0.1, max_norm: 100, epochs: 200, k: 5, loss: svm, tag: svm}
+- {model: wrn, dataset: tiny_imagenet, batch_size: 128, opt: sbd, eta: 0.01, max_norm: 100, epochs: 200, k: 5, loss: svm, tag: svm}
+- {model: wrn, dataset: tiny_imagenet, batch_size: 128, opt: sbd, eta: 10.0, max_norm: 150, epochs: 200, k: 5, loss: svm, tag: svm}
+- {model: wrn, dataset: tiny_imagenet, batch_size: 128, opt: sbd, eta: 1.0, max_norm: 150, epochs: 200, k: 5, loss: svm, tag: svm}
+- {model: wrn, dataset: tiny_imagenet, batch_size: 128, opt: sbd, eta: 0.1, max_norm: 150, epochs: 200, k: 5, loss: svm, tag: svm}
+- {model: wrn, dataset: tiny_imagenet, batch_size: 128, opt: sbd, eta: 0.01, max_norm: 150, epochs: 200, k: 5, loss: svm, tag: svm}
+- {model: wrn, dataset: tiny_imagenet, batch_size: 128, opt: sbd, eta: 10.0, max_norm: 200, epochs: 200, k: 5, loss: svm, tag: svm}
+- {model: wrn, dataset: tiny_imagenet, batch_size: 128, opt: sbd, eta: 1.0, max_norm: 200, epochs: 200, k: 5, loss: svm, tag: svm}
+- {model: wrn, dataset: tiny_imagenet, batch_size: 128, opt: sbd, eta: 0.1, max_norm: 200, epochs: 200, k: 5, loss: svm, tag: svm}
+- {model: wrn, dataset: tiny_imagenet, batch_size: 128, opt: sbd, eta: 0.01, max_norm: 200, epochs: 200, k: 5, loss: svm, tag: svm}
+- {model: wrn, dataset: tiny_imagenet, batch_size: 128, opt: sbd, eta: 10.0, max_norm: 250, epochs: 200, k: 5, loss: svm, tag: svm}
+- {model: wrn, dataset: tiny_imagenet, batch_size: 128, opt: sbd, eta: 1.0, max_norm: 250, epochs: 200, k: 5, loss: svm, tag: svm}
+- {model: wrn, dataset: tiny_imagenet, batch_size: 128, opt: sbd, eta: 0.1, max_norm: 250, epochs: 200, k: 5, loss: svm, tag: svm}
+- {model: wrn, dataset: tiny_imagenet, batch_size: 128, opt: sbd, eta: 0.01, max_norm: 250, epochs: 200, k: 5, loss: svm, tag: svm}
+
+#- {model: wrn, dataset: tiny_imagenet, batch_size: 128, opt: adam, eta: 0.01, weight_decay: 1e-2, epochs: 200, k: 1, loss: svm, tag: svm}
+#- {model: wrn, dataset: tiny_imagenet, batch_size: 128, opt: adam, eta: 0.001, weight_decay: 1e-2, epochs: 200, k: 1, loss: svm, tag: svm}
+#- {model: wrn, dataset: tiny_imagenet, batch_size: 128, opt: adam, eta: 0.0001, weight_decay: 1e-2, epochs: 200, k: 1, loss: svm, tag: svm}
+#- {model: wrn, dataset: tiny_imagenet, batch_size: 128, opt: adam, eta: 0.00001, weight_decay: 1e-2, epochs: 200, k: 1, loss: svm, tag: svm}
+#- {model: wrn, dataset: tiny_imagenet, batch_size: 128, opt: adam, eta: 0.01, weight_decay: 1e-3, epochs: 200, k: 1, loss: svm, tag: svm}
+#- {model: wrn, dataset: tiny_imagenet, batch_size: 128, opt: adam, eta: 0.001, weight_decay: 1e-3, epochs: 200, k: 1, loss: svm, tag: svm}
+#- {model: wrn, dataset: tiny_imagenet, batch_size: 128, opt: adam, eta: 0.0001, weight_decay: 1e-3, epochs: 200, k: 1, loss: svm, tag: svm}
+#- {model: wrn, dataset: tiny_imagenet, batch_size: 128, opt: adam, eta: 0.00001, weight_decay: 1e-3, epochs: 200, k: 1, loss: svm, tag: svm}
+#- {model: wrn, dataset: tiny_imagenet, batch_size: 128, opt: adam, eta: 0.01, weight_decay: 1e-4, epochs: 200, k: 1, loss: svm, tag: svm}
+#- {model: wrn, dataset: tiny_imagenet, batch_size: 128, opt: adam, eta: 0.001, weight_decay: 1e-4, epochs: 200, k: 1, loss: svm, tag: svm}
+#- {model: wrn, dataset: tiny_imagenet, batch_size: 128, opt: adam, eta: 0.0001, weight_decay: 1e-4, epochs: 200, k: 1, loss: svm, tag: svm}
+#- {model: wrn, dataset: tiny_imagenet, batch_size: 128, opt: adam, eta: 0.00001, weight_decay: 1e-4, epochs: 200, k: 1, loss: svm, tag: svm}
+#- {model: wrn, dataset: tiny_imagenet, batch_size: 128, opt: adam, eta: 0.01, weight_decay: 1e-5, epochs: 200, k: 1, loss: svm, tag: svm}
+#- {model: wrn, dataset: tiny_imagenet, batch_size: 128, opt: adam, eta: 0.001, weight_decay: 1e-5, epochs: 200, k: 1, loss: svm, tag: svm}
+#- {model: wrn, dataset: tiny_imagenet, batch_size: 128, opt: adam, eta: 0.0001, weight_decay: 1e-5, epochs: 200, k: 1, loss: svm, tag: svm}
+#- {model: wrn, dataset: tiny_imagenet, batch_size: 128, opt: adam, eta: 0.00001, weight_decay: 1e-5, epochs: 200, k: 1, loss: svm, tag: svm}
+#- {model: wrn, dataset: tiny_imagenet, batch_size: 128, opt: adam, eta: 0.01, weight_decay: 1e-6, epochs: 200, k: 1, loss: svm, tag: svm}
+#- {model: wrn, dataset: tiny_imagenet, batch_size: 128, opt: adam, eta: 0.001, weight_decay: 1e-6, epochs: 200, k: 1, loss: svm, tag: svm}
+#- {model: wrn, dataset: tiny_imagenet, batch_size: 128, opt: adam, eta: 0.0001, weight_decay: 1e-6, epochs: 200, k: 1, loss: svm, tag: svm}
+#- {model: wrn, dataset: tiny_imagenet, batch_size: 128, opt: adam, eta: 0.00001, weight_decay: 1e-6, epochs: 200, k: 1, loss: svm, tag: svm}

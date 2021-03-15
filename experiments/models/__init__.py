@@ -47,6 +47,7 @@ def get_model(args):
 
 
 def load_best_model(model, filename):
+    print('filename', filename)
     if os.path.exists(filename):
         best_model_state = torch.load(filename)['model']
         model.load_state_dict(best_model_state)
