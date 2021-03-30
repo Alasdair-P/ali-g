@@ -30,9 +30,9 @@ class AliG2(torch.optim.Optimizer):
         that gives the current value of the loss function.
     """
 
-    def __init__(self, params, max_lr=None, momentum=0, projection_fn=None, data_size=None, transforms_size=0, eps=1e-5, adjusted_momentum=False):
-        if max_lr is not None and max_lr <= 0.0:
-            raise ValueError("Invalid max_lr: {}".format(max_lr))
+    def __init__(self, params, max_lr=None, momentum=0, projection_fn=None, data_size=None, transforms_size=0, path_to_losses=None, eps=1e-5, adjusted_momentum=False):
+        # if max_lr is not None and max_lr <= 0.0:
+            # raise ValueError("Invalid max_lr: {}".format(max_lr))
         if momentum < 0.0:
             raise ValueError("Invalid momentum value: {}".format(momentum))
 
@@ -45,6 +45,8 @@ class AliG2(torch.optim.Optimizer):
         self.eps = eps
         self.sgd_mode = False
         self.first_update = True
+        self.path_to_losses = path_to_losses
+        self.eta_is_zero = (max_lr == 0.0)
 
         self.print = True
         self.print = False
@@ -57,7 +59,18 @@ class AliG2(torch.optim.Optimizer):
         self.device = p.device
 
         if data_size:
-            self.fhat = torch.zeros(data_size, device=self.device) # Estimated optimal value
+            if self.path_to_losses:
+
+                # if isinstance(path_to_losses, str):
+                    # losses = np.load(path_to_losses)
+                    # self.fhat = torch.Tensor(losses).to(self.device) # Estimated optimal value
+                # else:
+
+                self.fhat = torch.zeros(data_size, device=self.device).fill_(2.0)
+            else:
+                self.fhat = torch.zeros(data_size, device=self.device) # Estimated optimal value
+                self.fhat = torch.zeros(data_size, device=self.device).fill_(2.0)
+            print('mean EOV: {m_loss}'.format(m_loss=self.fhat.mean()))
             self.delta = torch.zeros(data_size, device=self.device)
             self.fhat_old = torch.zeros(data_size, device=self.device)
             self.fxbar = torch.ones(data_size, device=self.device) * 1e6 # Loss of sample from best epoch
@@ -79,9 +92,11 @@ class AliG2(torch.optim.Optimizer):
         if self.print:
             print('average fhat', float(self.fhat.mean()), 'fxbar', float(self.fxbar.mean()))
 
-        reached_lb = (self.fxbar.le(self.fhat+self.delta*1e-1)).float()
+        reached_lb = (self.fxbar.le(self.fhat+self.delta*1e-3)).float()
         self.delta = (0.5*self.fxbar - 0.5*self.fhat).mul(1-reached_lb) + self.delta.mul(reached_lb)
-        self.fhat = (0.5*self.fhat + 0.5*self.fxbar).mul(1-reached_lb) + (self.fhat - self.delta).clamp(min=0).mul(reached_lb)
+        self.fhat = (0.5*self.fhat + 0.5*self.fxbar).mul(1-reached_lb) + (self.fhat - 0.5 * self.delta).clamp(min=0).mul(reached_lb)
+        #print('UPDATE MEAN')
+        #self.fhat = (0.5*self.fhat + 0.5*self.fxbar)
         self.delta = self.delta.mul(1+reached_lb)
         if self.first_update:
             self.delta = (0.5*self.fxbar - 0.5*self.fhat)
@@ -128,6 +143,7 @@ class AliG2(torch.optim.Optimizer):
         # compute unclipped step-size
         # self.step_size_unclipped = float((losses - lbs).mean() / (2 * grad_sqrd_norm + 1e-6))
         self.step_size_unclipped = float((losses - lbs).mean() / (grad_sqrd_norm + 1e-6))
+        self.step_3 = grad_sqrd_norm
 
         if self.sgd_mode:
             for group in self.param_groups:
@@ -155,6 +171,10 @@ class AliG2(torch.optim.Optimizer):
             print('idx', idx, 'fbar',self.fhat[idx])
 
         self.fx[idx] = losses
+
+        if self.eta_is_zero:
+            return
+
         fhat = self.fhat[idx]
         self.compute_step_size(losses, fhat)
 

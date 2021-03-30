@@ -53,7 +53,7 @@ def main(args):
     load_best_model(model, '{}/best_model.pkl'.format(args.xp_name))
     if args.loss == 'map' or args.loss  == 'ndcg':
         test_rank(model, loss, optimizer, loader_test, args, xp)
-    elif 'mol' in args.dataset:
+    elif 'ogbg' in args.dataset:
         test_graph(model, optimizer, evaluator, dataset, loader_test, args, xp)
     else:
         test(model, optimizer, loader_test, args, xp)

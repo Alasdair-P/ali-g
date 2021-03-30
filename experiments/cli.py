@@ -138,7 +138,7 @@ def _add_misc_parser(parser):
                           help="tag used to indenify experiments")
     m_parser.add_argument('--save_loses', dest='save_loses', action='store_true',
                           help="flag to save loses")
-    m_parser.add_argument('--load_loses', dest='load_loses', type=str, default='best_loses.npy',
+    m_parser.add_argument('--load_loses', dest='load_loses', type=str, default=None,
                           help="path to load loses")
     m_parser.set_defaults(visdom=True, log=True, debug=False, parallel_gpu=False, tqdm=True)
 
