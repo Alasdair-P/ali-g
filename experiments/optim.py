@@ -34,7 +34,7 @@ def get_optimizer(args, model, loss, parameters):
                          projection_fn=lambda: l2_projection(parameters, args.max_norm))
     elif args.opt == 'alig2':
         optimizer = AliG2(parameters, max_lr=args.eta, momentum=args.momentum,
-                         projection_fn=lambda: l2_projection(parameters, args.max_norm), data_size=data_size, transforms_size=args.transforms, path_to_losses=args.load_loses)
+                         projection_fn=lambda: l2_projection(parameters, args.max_norm), data_size=data_size, transforms_size=args.transforms, path_to_losses=args.path_to_losses, global_lb=args.global_lb, save=args.sgdf)
     elif args.opt == 'bpgrad':
         optimizer = BPGrad(parameters, eta=args.eta, momentum=args.momentum, weight_decay=args.weight_decay)
     elif args.opt == 'l4adam':
@@ -64,6 +64,7 @@ def get_optimizer(args, model, loss, parameters):
     optimizer.step_2 = 0
     optimizer.step_3 = 0
     optimizer.step_4 = 0
+    optimizer.step_5 = 0
 
     if args.load_opt:
         state = torch.load(args.load_opt)['optimizer']

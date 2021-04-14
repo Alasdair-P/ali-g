@@ -79,6 +79,7 @@ def setup_xp(args, model, optimizer):
     xp.train.alpha2 = mlogger.metric.Average(visdom_plotter=visdom_plotter, summary_writer=summary_writer, plot_title="Step-Type", plot_legend="alpha2")
     xp.train.alpha3 = mlogger.metric.Average(visdom_plotter=visdom_plotter, summary_writer=summary_writer, plot_title="Step-Type", plot_legend="alpha3")
     xp.train.alpha4 = mlogger.metric.Average(visdom_plotter=visdom_plotter, summary_writer=summary_writer, plot_title="Step-Type", plot_legend="alpha4")
+    xp.train.alpha5 = mlogger.metric.Average(visdom_plotter=visdom_plotter, summary_writer=summary_writer, plot_title="Step-Type", plot_legend="alpha5")
 
     xp.train.step_size = mlogger.metric.Average(visdom_plotter=visdom_plotter, summary_writer=summary_writer, plot_title="Step-Size", plot_legend="clipped")
     xp.train.step_size_u = mlogger.metric.Average(visdom_plotter=visdom_plotter, summary_writer=summary_writer, plot_title="Step-Size", plot_legend="unclipped")
@@ -131,20 +132,20 @@ def write_results(args, xp, path):
         file_name = 'jade_results.txt'
     else:
         file_name = 'results.txt'
-        save_path = os.path.join(path, file_name)
-        with open(save_path, 'a') as results:
-            results.write('dataset,{ds},model,{model},opt,{opt},bs,{bs},eta,{eta},wd,{wd},max_norm,{mn},tr_acc,{tracc:.2f},val_acc,{vacc:.2f},te_acc,{teacc:.2f},name,{xp_name}\n'
-                    .format(ds=args.dataset,
-                            model=args.model,
-                            opt=args.opt,
-                            bs=args.batch_size,
-                            eta=args.eta,
-                            wd=args.weight_decay,
-                            mn=args.max_norm,
-                            tracc=xp.train.acc.value,
-                            vacc=xp.max_val.value,
-                            teacc=xp.test.acc.value,
-                            xp_name=args.xp_name))
+    save_path = os.path.join(path, file_name)
+    with open(save_path, 'a') as results:
+        results.write('dataset,{ds},model,{model},opt,{opt},bs,{bs},eta,{eta},wd,{wd},max_norm,{mn},tr_acc,{tracc:.2f},val_acc,{vacc:.2f},te_acc,{teacc:.2f},name,{xp_name}\n'
+                .format(ds=args.dataset,
+                        model=args.model,
+                        opt=args.opt,
+                        bs=args.batch_size,
+                        eta=args.eta,
+                        wd=args.weight_decay,
+                        mn=args.max_norm,
+                        tracc=xp.train.acc.value,
+                        vacc=xp.max_val.value,
+                        teacc=xp.test.acc.value,
+                        xp_name=args.xp_name))
 
 
 @torch.autograd.no_grad()

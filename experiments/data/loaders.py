@@ -357,7 +357,7 @@ def loaders_code(dataset, batch_size, cuda, num_vocab, width,
 
     return train_loader, val_loader, test_loader
 
-def loaders_tiny_imagenet(dataset, batch_size, cuda,
+def loaders_tiny_imagenet(dataset, batch_size, cuda, n_classes,
                      train_size=100000, augment=True, val_size=10000,
                      test_size=10000, test_batch_size=128, topk=None, noise=False,
                      multiple_crops=False, data_root=None, **kwargs):
@@ -394,5 +394,5 @@ def loaders_tiny_imagenet(dataset, batch_size, cuda,
     dataset_test = datasets.ImageFolder(testdir, transform_test)
     return create_loaders(dataset_train, dataset_val,
                           dataset_test, train_size, val_size, test_size,
-                          batch_size, test_batch_size, cuda, num_workers=8, split=False)
+                          batch_size, test_batch_size, cuda, n_classes, num_workers=8, split=False)
 

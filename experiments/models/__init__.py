@@ -26,6 +26,8 @@ def get_model(args):
                           bottleneck=bool(args.bottleneck), dropRate=args.dropout)
     elif args.model == "wrn":
         model = WideResNet(args.depth, args.n_classes, args.width, dropRate=args.dropout)
+    elif args.model == "rn":
+        model = WideResNet(args.depth, args.n_classes, 1, dropRate=args.dropout)
     elif args.model == "mlp":
         model = MLP(args.depth, args.n_classes, args.width, args.input_dims)
     elif args.dataset == 'imagenet':
@@ -37,6 +39,13 @@ def get_model(args):
         nodetypes_mapping = pd.read_csv(os.path.join(root, 'mapping', 'typeidx2type.csv.gz'))
         nodeattributes_mapping = pd.read_csv(os.path.join(root, 'mapping', 'attridx2attr.csv.gz'))
         node_encoder = ASTNodeEncoder(args.width, num_nodetypes = len(nodetypes_mapping['type']), num_nodeattributes = len(nodeattributes_mapping['attr']), max_depth = 20)
+
+        # if args.model == 'gcnbig':
+            # model = GNN_CODE(num_vocab = 5002, max_seq_len = args.max_seq_len, node_encoder = node_encoder, num_layer = 5, emb_dim = 300,  gnn_type = gnn_type, virtual_node = virtual_node, drop_ratio = args.dropout)
+        # elif args.model == 'gcnsmall':
+            # model = GNN_CODE(num_vocab = 5002, max_seq_len = args.max_seq_len, node_encoder = node_encoder, num_layer = 3, emb_dim = 50,  gnn_type = gnn_type, virtual_node = virtual_node, drop_ratio = args.dropout)
+        # else:
+
         model = GNN_CODE(num_vocab = 5002, max_seq_len = args.max_seq_len, node_encoder = node_encoder, num_layer = args.depth, emb_dim = args.width,  gnn_type = gnn_type, virtual_node = virtual_node, drop_ratio = args.dropout)
     else:
         raise NotImplementedError

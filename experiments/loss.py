@@ -54,7 +54,7 @@ class MultiClassHingeLoss(nn.Module):
     This implements a Crammer & Singer formulation, which penalizes the maximal margin violation.
     Note that `torch.nn.MultiMarginLoss` uses the Weston & Watkins formulation,
     which penalizes the sum of the margin violations and performs significantly worse in our experience.
-    """
+    """ 
 
     smooth = False
 
@@ -66,10 +66,8 @@ class MultiClassHingeLoss(nn.Module):
     def forward(self, x, y):
         aug = self._augmented_scores(x, y)
         xi = self._compute_xi(x, aug, y)
-
         loss = torch.sum(aug * xi) / x.size(0)
         return loss
-
     def _augmented_scores(self, s, y):
         if self._range is None:
             delattr(self, '_range')
@@ -100,7 +98,7 @@ class MultiClassHingeLoss(nn.Module):
         return xi
 
     def __repr__(self):
-        return 'MultiClassHingeLoss()'
+         return 'MultiClassHingeLoss()'
 
 class set_smoothing_enabled(object):
     def __init__(self, mode):
@@ -589,6 +587,7 @@ class NDCG(nn.Module):
         for i in range(self.n_classes):
             loss += self.calc_loss_for_cth_class(scores[:,i], class_lables, i)
         return loss/self.n_classes
+
 
 if __name__ == "__main__":
     rankloss = NDCG(1)

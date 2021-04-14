@@ -7,30 +7,10 @@ except ImportError:
 
 class AliG2(torch.optim.Optimizer):
     r"""
-    Implements the Adaptive Learning-rate for Interpolation with Gradients (ALI-G) algorithm.
-
-    Args:
-        params (iterable): iterable of parameters to optimize or dicts defining
-            parameter groups
-        max_lr (float): maximal learning rate
-        momentum (float, optional): momentum factor (default: 0)
-        projection_fn (function, optional): projection function to enforce constraints (default: None)
-        eps (float, optional): small constant for numerical stability (default: 1e-5)
-        adjusted momentum (bool, optional): if True, use pytorch-like momentum, instead of standard Nesterov momentum
-
-    Example:
-        >>> optimizer = AliG(model.parameters(), max_lr=0.1, momentum=0.9)
-        >>> optimizer.zero_grad()
-        >>> loss_value = loss_fn(model(input), target)
-        >>> loss_value.backward()
-        >>> optimizer.step(lambda: float(loss_value))
-
-    .. note::
-        In order to compute the step-size, this optimizer requires a closure at every step
-        that gives the current value of the loss function.
+       GLOBAL VERSION
     """
 
-    def __init__(self, params, max_lr=None, momentum=0, projection_fn=None, data_size=None, transforms_size=0, path_to_losses=None, eps=1e-5, adjusted_momentum=False):
+    def __init__(self, params, max_lr=None, momentum=0, projection_fn=None, data_size=None, transforms_size=0, path_to_losses=None, global_lb=True, save=False, eps=1e-5,adjusted_momentum=False):
         # if max_lr is not None and max_lr <= 0.0:
             # raise ValueError("Invalid max_lr: {}".format(max_lr))
         if momentum < 0.0:
@@ -43,10 +23,12 @@ class AliG2(torch.optim.Optimizer):
         self.adjusted_momentum = adjusted_momentum
         self.projection = projection_fn
         self.eps = eps
-        self.sgd_mode = False
+        self.sgd_mode = save
+        # self.sgd_mode = True
         self.first_update = True
         self.path_to_losses = path_to_losses
         self.eta_is_zero = (max_lr == 0.0)
+        self.global_lb = global_lb
 
         self.print = True
         self.print = False
@@ -60,39 +42,36 @@ class AliG2(torch.optim.Optimizer):
 
         if data_size:
             if self.path_to_losses:
-
-                # if isinstance(path_to_losses, str):
-                    # losses = np.load(path_to_losses)
-                    # self.fhat = torch.Tensor(losses).to(self.device) # Estimated optimal value
-                # else:
-
-                self.fhat = torch.zeros(data_size, device=self.device).fill_(2.0)
+                losses = np.load(path_to_losses)
+                self.fhat = torch.Tensor(losses).to(self.device) # Estimated optimal value
+                # self.fhat = torch.zeros(data_size, device=self.device).fill_(float(path_to_losses)) # Estimated optimal value
             else:
                 self.fhat = torch.zeros(data_size, device=self.device) # Estimated optimal value
-                self.fhat = torch.zeros(data_size, device=self.device).fill_(2.0)
             print('mean EOV: {m_loss}'.format(m_loss=self.fhat.mean()))
             self.delta = torch.zeros(data_size, device=self.device)
-            self.fhat_old = torch.zeros(data_size, device=self.device)
             self.fxbar = torch.ones(data_size, device=self.device) * 1e6 # Loss of sample from best epoch
             self.fx = torch.ones(data_size, device=self.device) * 1e6 # Current loss of samble this epoch
             self.step_0 = self.fhat.mean()
             self.step_1 = self.fxbar.mean()
             self.step_2 = self.fx.mean()
 
-        if self.adjusted_momentum:
-            self.apply_momentum = self.apply_momentum_adjusted
-        else:
-            self.apply_momentum = self.apply_momentum_standard
+            # self.fhat = torch.zeros(1, device=self.device).fill_(2.2) # Estimated optimal value
+            # self.fxbar = torch.ones(1, device=self.device) * 1e6 # Loss of sample from best epoch
+            # self.delta = torch.zeros(1, device=self.device)
+
+        self.apply_momentum = self.apply_momentum_standard
 
         if self.projection is not None:
             self.projection()
+
 
     @torch.autograd.no_grad()
     def update_lb(self):
         if self.print:
             print('average fhat', float(self.fhat.mean()), 'fxbar', float(self.fxbar.mean()))
 
-        reached_lb = (self.fxbar.le(self.fhat+self.delta*1e-3)).float()
+        # reached_lb = (self.fxbar.le(self.fhat+self.delta*0.1)).float()
+        reached_lb = (self.fxbar.le(self.fhat+self.delta*1.0)).float()
         self.delta = (0.5*self.fxbar - 0.5*self.fhat).mul(1-reached_lb) + self.delta.mul(reached_lb)
         self.fhat = (0.5*self.fhat + 0.5*self.fxbar).mul(1-reached_lb) + (self.fhat - 0.5 * self.delta).clamp(min=0).mul(reached_lb)
         #print('UPDATE MEAN')
@@ -119,11 +98,15 @@ class AliG2(torch.optim.Optimizer):
     @torch.autograd.no_grad()
     def epoch(self):
         if self.fx.mean() < self.fxbar.mean():
-            self.fxbar = self.fx
+            if self.global_lb:
+                self.fxbar.fill_(self.fx.mean())
+            else:
+                self.fxbar = self.fx
         self.step_1 = self.fxbar.mean()
         if self.sgd_mode:
-            print('savign to...', )
-            np.save('losses_.npy', self.fxbar.detach().cpu().numpy())
+            print('savign losses')
+            # np.save('model_dataset.npy', self.fxbar.detach().cpu().numpy())
+            np.save('losses.npy', self.fxbar.detach().cpu().numpy())
         self.step_0 = self.fhat.mean()
         self.step_4 = self.delta.mean()
         self.step_2 = self.fx.mean()
@@ -142,20 +125,22 @@ class AliG2(torch.optim.Optimizer):
 
         # compute unclipped step-size
         # self.step_size_unclipped = float((losses - lbs).mean() / (2 * grad_sqrd_norm + 1e-6))
-        self.step_size_unclipped = float((losses - lbs).mean() / (grad_sqrd_norm + 1e-6))
+        self.step_size_unclipped = float((losses - lbs).mean() / (grad_sqrd_norm + 1e-4))
         self.step_3 = grad_sqrd_norm
+        self.step_5 = losses.mean()
 
         if self.sgd_mode:
             for group in self.param_groups:
                 self.step_size_unclipped = group["max_lr"]
 
         if self.print:
-            print('numerator', float((losses - lbs).mean()), '|g|^2', float(grad_sqrd_norm), 'step_size: ', self.step_size_unclipped)
+            print('losses', losses, 'lbs', lbs, 'numerator', float((losses - lbs).mean()), '|g|^2', float(grad_sqrd_norm), 'step_size: ', self.step_size_unclipped)
+            input('press any key')
 
         # compute effective step-size (clipped)
         for group in self.param_groups:
             if group["max_lr"] is not None:
-                group["step_size"] = min(self.step_size_unclipped, group["max_lr"])
+                group["step_size"] = max(min(self.step_size_unclipped, group["max_lr"]),0.0)
             else:
                 # print('max_lr is None')
                 group["step_size"] = self.step_size_unclipped
@@ -166,20 +151,22 @@ class AliG2(torch.optim.Optimizer):
     @torch.autograd.no_grad()
     def step(self, closure):
         idx, losses = closure()
-
-        if self.print:
-            print('idx', idx, 'fbar',self.fhat[idx])
-
         self.fx[idx] = losses
+
+        # losses = losses.clamp(min=float(self.fhat))
+        # losses = losses.mean()
+        # losses = losses.clamp(min=float(self.fhat))
+
+
 
         if self.eta_is_zero:
             return
 
         fhat = self.fhat[idx]
+        if self.print:
+            print('idx', idx, 'losses', losses, 'fbar', fhat)
         self.compute_step_size(losses, fhat)
 
-        if self.print:
-            print('losses', losses, 'fbar',self.fhat[idx])
 
         for group in self.param_groups:
             step_size = group["step_size"]

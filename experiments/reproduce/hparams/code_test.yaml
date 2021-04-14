@@ -1,13 +1,17 @@
 #- {model: gcn, dataset: ogbg-code, batch_size: 64, opt: adam, eta: 0.001, weight_decay: 0.0, tag: adam}
-#- {model: gcn, dataset: ogbg-code, batch_size: 64, opt: sgd, eta: 0.01, weight_decay: 0.0, tag: sgd}
+#- {model: gcn, dataset: ogbg-code, batch_size: 128, opt: sgd, eta: 1.0, weight_decay: 0.0, tag: sgdT50, T: 50}
+#- {model: gcn, dataset: ogbg-code, batch_size: 128, opt: sgd, eta: 1.0, weight_decay: 0.0, tag: sgdT100, T: 100}
+#- {model: gcn, dataset: ogbg-code, batch_size: 128, opt: sgd, eta: 1.0, weight_decay: 0.0, tag: sgdT150, T: 150}
+#- {model: gcn, dataset: ogbg-code, batch_size: 128, opt: sgd, eta: 1.0, weight_decay: 0.0, tag: sgdT100150, T: 100 150}
 #- {model: gcn, dataset: ogbg-code, batch_size: 64, opt: adam, eta: 0.001, weight_decay: 1e-3, tag: adam}
 #- {model: gcn, dataset: ogbg-code, batch_size: 64, opt: adam, eta: 0.001, weight_decay: 1e-4, tag: adam}
 #- {model: gcn, dataset: ogbg-code, batch_size: 64, opt: adam, eta: 0.001, weight_decay: 0.0, tag: adam_smaller_model}
 #- {model: gcn, dataset: ogbg-code, batch_size: 128, opt: alig2, eta: 1.0, weight_decay: 0.0, tag: aalig-smaller-model-step-lr--e-100--t-10-no-momentum, epochs: 100, t: 10, momentum: 0.0}
 #- {model: gcn, dataset: ogbg-code, batch_size: 128, opt: alig2, eta: 1.0, weight_decay: 0.0, tag: aalig-05d-smaller-model-step-lr--e-200--t-1, epochs: 200, t: 1}
-#- {model: gcn, dataset: ogbg-code, batch_size: 128, opt: alig2, eta: 0.0, weight_decay: 0.0, tag: test-save-losses-2, epochs: 1, t: 1, load_model: /data0/clean/results/ogbg-code/gcnogbg-code-sgd--k-1--eta-1.0--l2-0.0--b-128-sgd-smaller-model-long-step-lr--momentum-0.9/best_model.pkl}
+#- {model: gcn, dataset: ogbg-code, batch_size: 128, opt: alig2, eta: 0.0, weight_decay: 0.0, tag: test-save-losses-1, epochs: 1, t: 1, load_model: /data0/clean/results/ogbg-code/gcnogbg-code-sgd--k-1--eta-1.0--l2-0.0--b-128-sgd-smaller-model-long-step-lr--momentum-0.9/best_model.pkl}
 #- {model: gcn, dataset: ogbg-code, batch_size: 128, opt: alig2, eta: 1.0, weight_decay: 0.0, tag: fake-alig-plus-1.0, epochs: 200, t: 201, load_loses: /home/alasdair/ali-g/experiments/losses_.npy}
-#- {model: gcn, dataset: ogbg-code, batch_size: 128, opt: alig2, eta: 1.0, weight_decay: 0.0, tag: fake-alig-1.8-big-model, epochs: 200, t: 201, load_loses: 2.5}
+#- {model: gcn, dataset: ogbg-code, batch_size: 128, opt: alig2, eta: 1.0, weight_decay: 0.0, tag: fake-alig-big-model-1.8, epochs: 300, t: 301, max_norm: 260, depth: 5, width: 300}
+- {model: gcn, dataset: ogbg-code, batch_size: 128, opt: sgd, eta: 1.0, weight_decay: 1e-5, tag: sgd, epochs: 200, T: 150, max_norm: 260, depth: 3, width: 50}
 #- {model: gcn, dataset: ogbg-code, batch_size: 128, opt: adam, eta: 0.01, weight_decay: 0.0, tag: adam-smaller-model-long, epochs: 200}
 #- {model: gcn, dataset: ogbg-code, batch_size: 128, opt: sgd, eta: 0.01, weight_decay: 0.0, tag: sgd-smaller-model, epochs: 100}
 #- {model: gcn, dataset: ogbg-molpcba, batch_size: 128, opt: sgd, eta: 1.0, epochs: 400, momentum: 0.9, tag: sgd-constant--e-400, port: 9002 }
@@ -18,4 +22,4 @@
 #- {model: gcn, dataset: ogbg-molpcba, batch_size: 128, opt: adam, eta: 0.001, epochs: 400, momentum: 0.9, tag: adam-constant--e-400, port: 9002 }
 #- {model: gcn, dataset: ogbg-molpcba, batch_size: 128, opt: adam, eta: 0.0001, epochs: 400, momentum: 0.9, tag: adam-constant--e-400, port: 9002 }
 #- {model: gcn, dataset: ogbg-molpcba, batch_size: 128, opt: adam, eta: 0.00001, epochs: 400, momentum: 0.9, tag: adam-constant--e-400, port: 9002 }
-- {model: gcn, dataset: ogbg-code, batch_size: 128, opt: alig2, eta: 1.0, weight_decay: 0.0, tag: fake-alig-2.0-from-2.5, epochs: 100, t: 101, load_model: /data0/clean/results/ogbg-code/gcnogbg-code-alig2--k-1--eta-1.0--l2-None--b-128-fake-alig-2.5--momentum-0.9/model.pkl}
+#- {model: gcn, dataset: ogbg-code, batch_size: 128, opt: alig2, eta: 1.0, weight_decay: 0.0, tag: fake-alig-2.0-from-2.5, epochs: 100, t: 101, load_model: /data0/clean/results/ogbg-code/gcnogbg-code-alig2--k-1--eta-1.0--l2-None--b-128-fake-alig-2.5--momentum-0.9/model.pkl}

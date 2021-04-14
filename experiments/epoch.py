@@ -7,6 +7,13 @@ from utils import accuracy, regularization
 from ogb.graphproppred import PygGraphPropPredDataset
 from utils_gnn import decode_arr_to_seq
 
+def smooth_lower_bound(losses, lb, temp=0.1):
+    # lb = float(lb)
+    # maxl = losses.clamp(min=lb)
+    # minl = losses.clamp(max=lb)
+    maxl = torch.max(losses, lb)
+    minl = torch.min(losses, lb)
+    return temp * (torch.log(torch.exp(minl-maxl/temp) + 1) + maxl/temp)
 
 def train_graph(model, loss, optimizer, evaluator, dataset, loader, args, xp):
     model.train()
@@ -68,8 +75,12 @@ def train_graph(model, loss, optimizer, evaluator, dataset, loader, args, xp):
             else:
                 losses = loss(pred.to(torch.float32)[is_labeled], batch.y.to(torch.float32)[is_labeled])
 
+            raw_loss = losses.mean().clone()
             if args.opt == 'alig2':
-                clipped_losses = torch.max(losses, optimizer.fhat[idx])
+                if args.temp:
+                    clipped_losses = smooth_lower_bound(losses, optimizer.fhat[idx], args.temp)
+                else:
+                     clipped_losses = torch.max(losses, optimizer.fhat[idx])
                 losses = clipped_losses
                 # print('losses', losses.size(), 'idx', idx.size(), 'fhat', optimizer.fhat[idx].size(), 'pred', pred.size())
 
@@ -99,7 +110,7 @@ def train_graph(model, loss, optimizer, evaluator, dataset, loader, args, xp):
         # xp.train.acc.update(roc[dataset.eval_metric], weighting=batch_size)
 
         batch_size = len(pred)
-        xp.train.loss.update(loss_value, weighting=batch_size)
+        xp.train.loss.update(raw_loss, weighting=batch_size)
         xp.train.step_size.update(optimizer.step_size, weighting=batch_size)
         xp.train.step_size_u.update(optimizer.step_size_unclipped, weighting=batch_size)
         xp.train.alpha0.update(optimizer.step_0, weighting=batch_size)
@@ -150,7 +161,8 @@ def train(model, loss, optimizer, loader, args, xp):
         metric.reset()
 
     for idx, data in tqdm(loader, disable=not args.tqdm, desc='Train Epoch',
-                                               leave=False, total=len(loader.dataset)):
+                                               leave=False, total=len(loader)):
+                                               # leave=False, total=len(loader.dataset)):
         x_, y = data
         if isinstance(x_,dict):
             transforms, x = x_['trans'], x_['image']
@@ -166,12 +178,22 @@ def train(model, loss, optimizer, loader, args, xp):
         # compute the loss function, possibly using smoothing
         # with set_smoothing_enabled(args.smooth_svm):
         losses = loss(scores, y)
-        if args.opt == 'alig2':
-            clipped_losses = torch.max(losses, optimizer.fhat[idx])
-            losses = clipped_losses
+        raw_loss = losses.mean().clone()
 
-        loss_value = losses.mean()
-        print('loss', loss_value)
+        if args.opt == 'alig2':
+            if args.temp:
+                clipped_losses = smooth_lower_bound(losses, optimizer.fhat[idx], args.temp)
+            else:
+                if args.global_lb:
+                    clipped_losses = losses
+                else:
+                    clipped_losses = torch.max(losses, optimizer.fhat[idx])
+                    # clipped_losses = losses
+
+        else:
+            clipped_losses = losses
+
+        loss_value = clipped_losses.mean()
 
         # backward pass
         optimizer.zero_grad()
@@ -188,7 +210,7 @@ def train(model, loss, optimizer, loader, args, xp):
         # monitoring
         batch_size = x.size(0)
         xp.train.acc.update(accuracy(scores, y), weighting=batch_size)
-        xp.train.loss.update(loss_value, weighting=batch_size)
+        xp.train.loss.update(raw_loss, weighting=batch_size)
         xp.train.step_size.update(optimizer.step_size, weighting=batch_size)
         xp.train.step_size_u.update(optimizer.step_size_unclipped, weighting=batch_size)
         if args.dataset == "imagenet":
@@ -198,6 +220,7 @@ def train(model, loss, optimizer, loader, args, xp):
         xp.train.alpha2.update(optimizer.step_2, weighting=batch_size)
         xp.train.alpha3.update(optimizer.step_3, weighting=batch_size)
         xp.train.alpha4.update(optimizer.step_4, weighting=batch_size)
+        xp.train.alpha5.update(optimizer.step_5, weighting=batch_size)
 
     xp.train.grad_norm.update(torch.sqrt(sum(p.grad.data.norm() ** 2  for p in model.parameters())))
     xp.train.weight_norm.update(torch.sqrt(sum(p.data.norm() ** 2 for p in model.parameters())))

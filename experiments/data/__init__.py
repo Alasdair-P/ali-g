@@ -21,6 +21,8 @@ def get_data_loaders(args):
         loader_train, loader_val, loader_test = loaders_code(**vars(args))
     elif args.dataset == 'imagenet':
         loader_train, loader_val, loader_test = loaders_imagenet(**vars(args))
+    elif args.dataset == 'tiny_imagenet':
+        loader_train, loader_val, loader_test = loaders_tiny_imagenet(**vars(args))
     else:
         raise NotImplementedError
 

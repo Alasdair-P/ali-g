@@ -87,7 +87,8 @@ def _add_optimization_parser(parser):
                           help='data file with opt')
     o_parser.add_argument('--sgdf', action='store_true',
                           help='sbd mode selection')
-
+    o_parser.add_argument('--glb', dest='global_lb',type=int, default=False,
+                          help='global or elementwise AOV')
 
 def _add_loss_parser(parser):
     l_parser = parser.add_argument_group(title='Loss parameters')
@@ -99,6 +100,8 @@ def _add_loss_parser(parser):
                           help="loss function to use ('svm' or 'ce' or 'map' or 'ndcg')")
     l_parser.add_argument('--smooth_svm', dest="smooth_svm", action="store_true",
                           help="smooth SVM")
+    l_parser.add_argument('--smooth_lb', dest="temp", type=float, default=None,
+                          help="temp for smoothing lower bound")
     l_parser.add_argument('--rankloss', type=int, default=0,
                           help="index of true class to learn, note 1 indexed")
     l_parser.set_defaults(smooth_svm=False)
@@ -120,7 +123,7 @@ def _add_misc_parser(parser):
                           help="server for visdom")
     m_parser.add_argument('--tb_dir', dest="tb_dir", type=str, default='/data0/tb_logs',
                           help="destiation for tensorboard logs to be saved too")
-    m_parser.add_argument('--port', type=int, default=9000,
+    m_parser.add_argument('--port', type=int, default=9006,
                           help="port for visdom")
     m_parser.add_argument('--xp_name', type=str, default=None,
                           help="name of experiment")
@@ -138,7 +141,7 @@ def _add_misc_parser(parser):
                           help="tag used to indenify experiments")
     m_parser.add_argument('--save_loses', dest='save_loses', action='store_true',
                           help="flag to save loses")
-    m_parser.add_argument('--load_loses', dest='load_loses', type=str, default=None,
+    m_parser.add_argument('--path_to_losses', type=str, default=None,
                           help="path to load loses")
     m_parser.set_defaults(visdom=True, log=True, debug=False, parallel_gpu=False, tqdm=True)
 
@@ -212,6 +215,9 @@ def set_num_classes(args):
         args.n_classes = 10
     elif args.dataset == 'imagenet':
         args.n_classes = 1000
+    elif args.dataset == 'tiny_imagenet':
+        args.n_classes = 200
+        args.transforms = [1]
     elif 'mol' in args.dataset:
         args.n_classes = 2
         args.transforms = [1]
