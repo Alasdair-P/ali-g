@@ -45,7 +45,7 @@
 
 
 #- {model: rn, dataset: tiny_imagenet, batch_size: 128, opt: alig2, eta: 0.1, tag: resnet-10-lb-0.0-alig-loaded-losses-reg-end, epochs: 500, depth: 10, path_to_losses: rn10_tiny_r1em5_no_data_end.npy, glb: 0, t: 501, smooth_lb: 0.0}
-- {model: rn, dataset: tiny_imagenet, batch_size: 128, opt: alig2, eta: 0.1, tag: resnet-10-lb-0.0-alig-loaded-losses-reg-end-05, epochs: 500, depth: 10, path_to_losses: rn10_tiny_r1em5_no_data_end.npy, glb: 0, t: 501, smooth_lb: 0.5}
+#- {model: rn, dataset: tiny_imagenet, batch_size: 128, opt: alig2, eta: 0.1, tag: resnet-10-lb-0.0-alig-loaded-losses-reg-end-05, epochs: 500, depth: 10, path_to_losses: rn10_tiny_r1em5_no_data_end.npy, glb: 0, t: 501, smooth_lb: 0.5}
 #- {model: rn, dataset: tiny_imagenet, batch_size: 1024, opt: alig2, eta: 0.1, tag: resnet-10-lb-0.0-alig-loaded-losses-smooth-01, epochs: 400, depth: 10, path_to_losses: rn10_tiny_no_data.npy, glb: 0, t: 401, smooth_lb: 0.1}
 
 
@@ -56,3 +56,79 @@
 
 
 #- {model: rn, dataset: tiny_imagenet, batch_size: 128, opt: alig2, eta: 1.0, tag: resnet-10-lb-3-test-glb, epochs: 200, depth: 10, t: 201, path_to_losses: 3, max_norm: 100, glb: True}
+
+#- {model: rn, dataset: tiny_imagenet, batch_size: 128, opt: sgd, eta: 0.1, tag: baseline-resnet-10-no-data_aug, epochs: 200, depth: 10, T: 100 150, weight_decay: 0.0}
+#- {model: rn, dataset: tiny_imagenet, batch_size: 128, opt: sgd, eta: 0.1, tag: baseline-resnet-10-no-data_aug, epochs: 200, depth: 10, T: 100 150, weight_decay: 1e-6}
+#- {model: rn, dataset: tiny_imagenet, batch_size: 128, opt: sgd, eta: 0.1, tag: baseline-resnet-10-no-data_aug, epochs: 200, depth: 10, T: 100 150, weight_decay: 1e-5}
+#- {model: rn, dataset: tiny_imagenet, batch_size: 128, opt: sgd, eta: 0.1, tag: baseline-resnet-10-no-data_aug, epochs: 200, depth: 10, T: 100 150, weight_decay: 1e-4}
+#- {model: rn, dataset: tiny_imagenet, batch_size: 128, opt: sgd, eta: 1.0, tag: baseline-resnet-10-no-data_aug, epochs: 200, depth: 10, T: 100 150, weight_decay: 0.0}
+#- {model: rn, dataset: tiny_imagenet, batch_size: 128, opt: sgd, eta: 1.0, tag: baseline-resnet-10-no-data_aug, epochs: 200, depth: 10, T: 100 150, weight_decay: 1e-6}
+#- {model: rn, dataset: tiny_imagenet, batch_size: 128, opt: sgd, eta: 1.0, tag: baseline-resnet-10-no-data_aug, epochs: 200, depth: 10, T: 100 150, weight_decay: 1e-5}
+#- {model: rn, dataset: tiny_imagenet, batch_size: 128, opt: sgd, eta: 1.0, tag: baseline-resnet-10-no-data_aug, epochs: 200, depth: 10, T: 100 150, weight_decay: 1e-4}
+#- {model: rn, dataset: tiny_imagenet, batch_size: 128, opt: adam, eta: 0.01, tag: baseline-resnet-10-no-data_aug, epochs: 200, depth: 10, weight_decay: 0.0}
+#- {model: rn, dataset: tiny_imagenet, batch_size: 128, opt: adam, eta: 0.01, tag: baseline-resnet-10-no-data_aug, epochs: 200, depth: 10, weight_decay: 1e-6}
+#- {model: rn, dataset: tiny_imagenet, batch_size: 128, opt: adam, eta: 0.01, tag: baseline-resnet-10-no-data_aug, epochs: 200, depth: 10, weight_decay: 1e-5}
+#- {model: rn, dataset: tiny_imagenet, batch_size: 128, opt: adam, eta: 0.01, tag: baseline-resnet-10-no-data_aug, epochs: 200, depth: 10, weight_decay: 1e-4}
+#- {model: rn, dataset: tiny_imagenet, batch_size: 128, opt: adam, eta: 0.001, tag: baseline-resnet-10-no-data_aug, epochs: 200, depth: 10, weight_decay: 0.0}
+#- {model: rn, dataset: tiny_imagenet, batch_size: 128, opt: adam, eta: 0.001, tag: baseline-resnet-10-no-data_aug, epochs: 200, depth: 10, weight_decay: 1e-6}
+#- {model: rn, dataset: tiny_imagenet, batch_size: 128, opt: adam, eta: 0.001, tag: baseline-resnet-10-no-data_aug, epochs: 200, depth: 10, weight_decay: 1e-5}
+#- {model: rn, dataset: tiny_imagenet, batch_size: 128, opt: adam, eta: 0.001, tag: baseline-resnet-10-no-data_aug, epochs: 200, depth: 10, weight_decay: 1e-4}
+
+#- {model: rn, dataset: tiny_imagenet, batch_size: 128, opt: sgd, eta: 0.1, tag: baseline-resnet-16-no-data_aug, epochs: 200, depth: 16, T: 100 150, weight_decay: 0.0}
+#- {model: rn, dataset: tiny_imagenet, batch_size: 128, opt: sgd, eta: 0.1, tag: baseline-resnet-16-no-data_aug, epochs: 200, depth: 16, T: 100 150, weight_decay: 1e-6}
+#- {model: rn, dataset: tiny_imagenet, batch_size: 128, opt: sgd, eta: 0.1, tag: baseline-resnet-16-no-data_aug, epochs: 200, depth: 16, T: 100 150, weight_decay: 1e-5}
+#- {model: rn, dataset: tiny_imagenet, batch_size: 128, opt: sgd, eta: 0.1, tag: baseline-resnet-16-no-data_aug, epochs: 200, depth: 16, T: 100 150, weight_decay: 1e-4}
+#- {model: rn, dataset: tiny_imagenet, batch_size: 128, opt: sgd, eta: 1.0, tag: baseline-resnet-16-no-data_aug, epochs: 200, depth: 16, T: 100 150, weight_decay: 0.0}
+#- {model: rn, dataset: tiny_imagenet, batch_size: 128, opt: sgd, eta: 1.0, tag: baseline-resnet-16-no-data_aug, epochs: 200, depth: 16, T: 100 150, weight_decay: 1e-6}
+#- {model: rn, dataset: tiny_imagenet, batch_size: 128, opt: sgd, eta: 1.0, tag: baseline-resnet-16-no-data_aug, epochs: 200, depth: 16, T: 100 150, weight_decay: 1e-5}
+#- {model: rn, dataset: tiny_imagenet, batch_size: 128, opt: sgd, eta: 1.0, tag: baseline-resnet-16-no-data_aug, epochs: 200, depth: 16, T: 100 150, weight_decay: 1e-4}
+#- {model: rn, dataset: tiny_imagenet, batch_size: 128, opt: adam, eta: 0.01, tag: baseline-resnet-16-no-data_aug, epochs: 200, depth: 16, weight_decay: 0.0}
+#- {model: rn, dataset: tiny_imagenet, batch_size: 128, opt: adam, eta: 0.01, tag: baseline-resnet-16-no-data_aug, epochs: 200, depth: 16, weight_decay: 1e-6}
+#- {model: rn, dataset: tiny_imagenet, batch_size: 128, opt: adam, eta: 0.01, tag: baseline-resnet-16-no-data_aug, epochs: 200, depth: 16, weight_decay: 1e-5}
+#- {model: rn, dataset: tiny_imagenet, batch_size: 128, opt: adam, eta: 0.01, tag: baseline-resnet-16-no-data_aug, epochs: 200, depth: 16, weight_decay: 1e-4}
+#- {model: rn, dataset: tiny_imagenet, batch_size: 128, opt: adam, eta: 0.001, tag: baseline-resnet-16-no-data_aug, epochs: 200, depth: 16, weight_decay: 0.0}
+#- {model: rn, dataset: tiny_imagenet, batch_size: 128, opt: adam, eta: 0.001, tag: baseline-resnet-16-no-data_aug, epochs: 200, depth: 16, weight_decay: 1e-6}
+#- {model: rn, dataset: tiny_imagenet, batch_size: 128, opt: adam, eta: 0.001, tag: baseline-resnet-16-no-data_aug, epochs: 200, depth: 16, weight_decay: 1e-5}
+#- {model: rn, dataset: tiny_imagenet, batch_size: 128, opt: adam, eta: 0.001, tag: baseline-resnet-16-no-data_aug, epochs: 200, depth: 16, weight_decay: 1e-4}
+
+#- {model: rn, dataset: tiny_imagenet, batch_size: 128, opt: sgd, eta: 0.1, tag: baseline-resnet-10-data_aug, epochs: 200, depth: 10, T: 100 150, weight_decay: 0.0}
+#- {model: rn, dataset: tiny_imagenet, batch_size: 128, opt: sgd, eta: 0.1, tag: baseline-resnet-10-data_aug, epochs: 200, depth: 10, T: 100 150, weight_decay: 1e-6}
+#- {model: rn, dataset: tiny_imagenet, batch_size: 128, opt: sgd, eta: 0.1, tag: baseline-resnet-10-data_aug, epochs: 200, depth: 10, T: 100 150, weight_decay: 1e-5}
+#- {model: rn, dataset: tiny_imagenet, batch_size: 128, opt: sgd, eta: 0.1, tag: baseline-resnet-10-data_aug, epochs: 200, depth: 10, T: 100 150, weight_decay: 1e-4}
+#- {model: rn, dataset: tiny_imagenet, batch_size: 128, opt: sgd, eta: 0.1, tag: baseline-resnet-10-data_aug, epochs: 200, depth: 10, T: 100 150, weight_decay: 1e-3}
+#- {model: rn, dataset: tiny_imagenet, batch_size: 128, opt: sgd, eta: 1.0, tag: baseline-resnet-10-data_aug, epochs: 200, depth: 10, T: 100 150, weight_decay: 0.0}
+#- {model: rn, dataset: tiny_imagenet, batch_size: 128, opt: sgd, eta: 1.0, tag: baseline-resnet-10-data_aug, epochs: 200, depth: 10, T: 100 150, weight_decay: 1e-6}
+#- {model: rn, dataset: tiny_imagenet, batch_size: 128, opt: sgd, eta: 1.0, tag: baseline-resnet-10-data_aug, epochs: 200, depth: 10, T: 100 150, weight_decay: 1e-5}
+#- {model: rn, dataset: tiny_imagenet, batch_size: 128, opt: sgd, eta: 1.0, tag: baseline-resnet-10-data_aug, epochs: 200, depth: 10, T: 100 150, weight_decay: 1e-4}
+#- {model: rn, dataset: tiny_imagenet, batch_size: 128, opt: sgd, eta: 1.0, tag: baseline-resnet-10-data_aug, epochs: 200, depth: 10, T: 100 150, weight_decay: 1e-3}
+#- {model: rn, dataset: tiny_imagenet, batch_size: 128, opt: adam, eta: 0.01, tag: baseline-resnet-10-data_aug, epochs: 200, depth: 10, weight_decay: 0.0}
+#- {model: rn, dataset: tiny_imagenet, batch_size: 128, opt: adam, eta: 0.01, tag: baseline-resnet-10-data_aug, epochs: 200, depth: 10, weight_decay: 1e-6}
+#- {model: rn, dataset: tiny_imagenet, batch_size: 128, opt: adam, eta: 0.01, tag: baseline-resnet-10-data_aug, epochs: 200, depth: 10, weight_decay: 1e-5}
+#- {model: rn, dataset: tiny_imagenet, batch_size: 128, opt: adam, eta: 0.01, tag: baseline-resnet-10-data_aug, epochs: 200, depth: 10, weight_decay: 1e-4}
+#- {model: rn, dataset: tiny_imagenet, batch_size: 128, opt: adam, eta: 0.01, tag: baseline-resnet-10-data_aug, epochs: 200, depth: 10, weight_decay: 1e-3}
+#- {model: rn, dataset: tiny_imagenet, batch_size: 128, opt: adam, eta: 0.001, tag: baseline-resnet-10-data_aug, epochs: 200, depth: 10, weight_decay: 0.0}
+#- {model: rn, dataset: tiny_imagenet, batch_size: 128, opt: adam, eta: 0.001, tag: baseline-resnet-10-data_aug, epochs: 200, depth: 10, weight_decay: 1e-6}
+#- {model: rn, dataset: tiny_imagenet, batch_size: 128, opt: adam, eta: 0.001, tag: baseline-resnet-10-data_aug, epochs: 200, depth: 10, weight_decay: 1e-5}
+#- {model: rn, dataset: tiny_imagenet, batch_size: 128, opt: adam, eta: 0.001, tag: baseline-resnet-10-data_aug, epochs: 200, depth: 10, weight_decay: 1e-4}
+#- {model: rn, dataset: tiny_imagenet, batch_size: 128, opt: adam, eta: 0.001, tag: baseline-resnet-10-data_aug, epochs: 200, depth: 10, weight_decay: 1e-3}
+
+- {model: rn, dataset: tiny_imagenet, batch_size: 128, opt: sgd, eta: 0.01, tag: baseline-resnet-10-data_aug, epochs: 200, depth: 10, T: 100 150, weight_decay: 0.0}
+- {model: rn, dataset: tiny_imagenet, batch_size: 128, opt: sgd, eta: 0.01, tag: baseline-resnet-10-data_aug, epochs: 200, depth: 10, T: 100 150, weight_decay: 1e-6}
+- {model: rn, dataset: tiny_imagenet, batch_size: 128, opt: sgd, eta: 0.01, tag: baseline-resnet-10-data_aug, epochs: 200, depth: 10, T: 100 150, weight_decay: 1e-5}
+- {model: rn, dataset: tiny_imagenet, batch_size: 128, opt: sgd, eta: 0.01, tag: baseline-resnet-10-data_aug, epochs: 200, depth: 10, T: 100 150, weight_decay: 1e-4}
+- {model: rn, dataset: tiny_imagenet, batch_size: 128, opt: sgd, eta: 0.01, tag: baseline-resnet-10-data_aug, epochs: 200, depth: 10, T: 100 150, weight_decay: 1e-3}
+- {model: rn, dataset: tiny_imagenet, batch_size: 128, opt: sgd, eta: 0.1, tag: baseline-resnet-10-data_aug-150, epochs: 200, depth: 10, T: 150, weight_decay: 0.0}
+- {model: rn, dataset: tiny_imagenet, batch_size: 128, opt: sgd, eta: 0.1, tag: baseline-resnet-10-data_aug-150, epochs: 200, depth: 10, T: 150, weight_decay: 1e-6}
+- {model: rn, dataset: tiny_imagenet, batch_size: 128, opt: sgd, eta: 0.1, tag: baseline-resnet-10-data_aug-150, epochs: 200, depth: 10, T: 150, weight_decay: 1e-5}
+- {model: rn, dataset: tiny_imagenet, batch_size: 128, opt: sgd, eta: 0.1, tag: baseline-resnet-10-data_aug-150, epochs: 200, depth: 10, T: 150, weight_decay: 1e-4}
+- {model: rn, dataset: tiny_imagenet, batch_size: 128, opt: sgd, eta: 0.1, tag: baseline-resnet-10-data_aug-150, epochs: 200, depth: 10, T: 150, weight_decay: 1e-3}
+- {model: rn, dataset: tiny_imagenet, batch_size: 128, opt: adam, eta: 0.1, tag: baseline-resnet-10-data_aug, epochs: 200, depth: 10, weight_decay: 0.0}
+- {model: rn, dataset: tiny_imagenet, batch_size: 128, opt: adam, eta: 0.1, tag: baseline-resnet-10-data_aug, epochs: 200, depth: 10, weight_decay: 1e-6}
+- {model: rn, dataset: tiny_imagenet, batch_size: 128, opt: adam, eta: 0.1, tag: baseline-resnet-10-data_aug, epochs: 200, depth: 10, weight_decay: 1e-5}
+- {model: rn, dataset: tiny_imagenet, batch_size: 128, opt: adam, eta: 0.1, tag: baseline-resnet-10-data_aug, epochs: 200, depth: 10, weight_decay: 1e-4}
+- {model: rn, dataset: tiny_imagenet, batch_size: 128, opt: adam, eta: 0.1, tag: baseline-resnet-10-data_aug, epochs: 200, depth: 10, weight_decay: 1e-3}
+- {model: rn, dataset: tiny_imagenet, batch_size: 128, opt: adam, eta: 0.0001, tag: baseline-resnet-10-data_aug, epochs: 200, depth: 10, weight_decay: 0.0}
+- {model: rn, dataset: tiny_imagenet, batch_size: 128, opt: adam, eta: 0.0001, tag: baseline-resnet-10-data_aug, epochs: 200, depth: 10, weight_decay: 1e-6}
+- {model: rn, dataset: tiny_imagenet, batch_size: 128, opt: adam, eta: 0.0001, tag: baseline-resnet-10-data_aug, epochs: 200, depth: 10, weight_decay: 1e-5}
+- {model: rn, dataset: tiny_imagenet, batch_size: 128, opt: adam, eta: 0.0001, tag: baseline-resnet-10-data_aug, epochs: 200, depth: 10, weight_decay: 1e-4}
+- {model: rn, dataset: tiny_imagenet, batch_size: 128, opt: adam, eta: 0.0001, tag: baseline-resnet-10-data_aug, epochs: 200, depth: 10, weight_decay: 1e-3}

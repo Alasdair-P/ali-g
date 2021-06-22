@@ -8,8 +8,10 @@ def create_jobs():
     wrn_opts = " --depth 40 --width 4 --epochs 200"
     dn_opts = " --depth 40 --growth 40 --epochs 300"
     gcn_opts = " --depth 5 --width 300 --epochs 500"
+    # rn_opts = " --width 1 --no_data_augmentation "
+    rn_opts = " --width 1 "
 
-    with open("reproduce/hparams/molpcba.yaml", "r") as f:
+    with open("reproduce/hparams/global_cifar.yaml", "r") as f:
         hparams = yaml.safe_load(f)
 
     jobs = []
@@ -17,6 +19,8 @@ def create_jobs():
         command = template + " ".join("--{} {}".format(key, value) for key, value in hparam.items())
         if hparam['model'] == "wrn":
             command += wrn_opts
+        elif hparam['model'] == "rn":
+            command += rn_opts
         elif hparam['model'] == "dn":
             command += dn_opts
         elif hparam['model'] == "gcn":
